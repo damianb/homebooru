@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!--
+	Copyright (c) 2012 Damian Bushong
+	All rights reserved
+-->
+<html lang="en-us" dir="ltr">
+<head>
+	<meta charset="utf-8">
+	<title>homebooru</title>
+	{% if DEBUG -%}
+		<link rel="stylesheet/less" href="{{ asset.less.main }}">
+	{% else -%}
+	<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700|Droid+Sans+Mono'>
+	<link rel="stylesheet" href="{{ asset.css.main }}">
+	{% endif -%}
+</head>
+<body>
+
+
+	<div class="fullhome container">
+		<div class="span3 pull-left">
+			<h1><small>homebooru</small></h1>
+		</div>
+		<div class="span8 pull-right">
+{% if admin.message -%}
+			<div class="alert alert-error announcement">
+				<div class="span2 l">
+					<div class="gravatar"><img src="{{ admin.gravatar|raw }}" alt="gravatar"></div>
+					<div class="name"><strong>{{ admin.name }}</strong></div>
+				</div>
+				<div class="message">{{ admin.message|nl2br }}</div>
+			</div>
+{% else %}
+	&nbsp;
+{%- endif %}
+		</div>
+	</div>
+
+	<div class="fullnav container">
+		<div class="span4 pull-left">
+			<form class="form-inline" method="get" action="{{ url.search() }}">
+				<input type="text" class="span3" placeholder="search tags..." name="q">
+				<button type="submit" class="btn btn-danger">search</button>
+			</form>
+		</div>
+		<div class="span7 pull-right">
+			<nav data-home-url="{{ url.home() }}">
+				<ul class="nav nav-pills">
+					<li{% if page.home %} class="active"{% endif %}><a href="{{ url.home() }}">home</a></li>
+					<li{% if page.submit %} class="active"{% endif %}><a href="{{ url.submit() }}">post</a></li>
+					<li{% if page.latest %} class="active"{% endif %}><a href="{{ url.latest() }}">latest</a></li>
+					<li{% if page.archive %} class="active"{% endif %}><a href="{{ url.archive() }}">archive</a></li>
+					<!--<li{% if page.account %} class="active"{% endif %}><a href="{{ url.account() }}">my account</a></li>-->
+				</ul>
+			</nav>
+		</div>
+	</div>
+
+	<div class="container">
+		{% block content %}{% endblock %}
+	</div>
+
+	{#
+	<header class="container">
+		<nav data-home-url="{{ url.home() }}">
+			<div class="logo pull-left">
+				<img src="{{ asset.image.logo }}" alt="logo">
+			</div>
+			<h1 class="pull-left"><small>homebooru</small></h1>
+			<ul class="nav nav-pills pull-right">
+				<li{% if page.latest %} class="active"{% endif %}><a href="{{ url.latest() }}">latest</a></li>
+				<li{% if page.top %} class="active"{% endif %}><a href="{{ url.top() }}">top</a></li>
+				<li{% if page.archive %} class="active"{% endif %}><a href="{{ url.archive() }}">archive</a></li>
+				<li{% if page.submit %} class="active"{% endif %}><a href="{{ url.submit() }}">submit</a></li>
+			</ul>
+		</nav>
+	</header>
+	#}
+
+	<div class="container">
+		<footer>
+			<div>
+				<div class="l">&copy; 2012 <a href="http://codebite.net/">codebite.net</a> - All Rights Reserved</div>
+				<div class="r"><span id="touch">&gt;<span class="b">//</span>&lt;</span></div>
+			</div>
+			<div>
+				<div id="poweredby" style="display:none">running <strong>codebite\homebooru</strong> {% if stat.commit() %}(git: {{ stat.commit}}) {% endif %}on "{{ stat.server() }}" | memory usage: {{ stat.mem() }} | page gen: {{ stat.time() }} s</div>
+			</div>
+
+			<script src="{{ asset.js.jquery }}"></script>
+			<script src="{{ asset.js.relatize }}"></script>
+			<script src="{{ asset.js.bootstrap_alert }}"></script>
+			<!--<script src="{{ asset.js.bootstrap_dropdown }}"></script>-->
+			{% if DEBUG -%}
+				<script src="{{ asset.js.less }}"></script>
+			{% endif -%}
+			<script src="{{ asset.js.tsun }}"></script>
+		</footer>
+	</div>
+</body>
+</html>

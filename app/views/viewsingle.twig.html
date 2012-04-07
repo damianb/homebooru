@@ -1,0 +1,30 @@
+{% extends "layout.twig.html" %}
+{% block content %}
+	<h2>view post</h2>
+	<div class="middle">
+		<ul class="thumbnails singlepost">
+			{% set image = post.bestFit() %}
+			<li class="img span12" id="post{{ post.id }}">
+				{% if post.small_file %}
+				<a href="{{ site.imageurl ~ post.full_file }}" class="image thumbnail" title="click for full image" style="height: {{ image.height + 2 }}px; width: {{ image.width + 2 }}px">
+					<img src="{{ image.path ~ image.file }}" alt="" style="height: {{ image.height }}px; width: {{ image.width }}px">
+				</a>
+				{% else %}
+				<div class="image thumbnail" style="height: {{ image.height + 2 }}px; width: {{ image.width + 2 }}px">
+					<img src="{{ image.path ~ image.file }}" alt="" style="height: {{ image.height }}px; width: {{ image.width }}px">
+				</div>
+				{% endif %}
+				<div class="size" style="width: {{ image.width + 42 }}px">
+					<div class="pull-left">rating: <span class="rating rating-{{ post.getRating() }}" title="{{ post.getRating() }}">{{ post.getRating() }}</span></div>
+					<div class="pull-right">{{ post.full_height }} &times; {{ post.full_width }}</div>
+				</div>
+				{#
+				<div class="metadata">
+					<div class="tags">{% for tag in post.getTags() %}<a href="{{ url.search_tag(tag|url_encode) }}">{{ tag }}</a> {% endfor %}</div>
+				</div>
+				#}
+			</li>
+		</ul>
+	</div>
+	<div class="clear" style="clear:both;"></div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{
+	"shot.assets.entries":{
+		"js":{
+			"jquery":"jquery-1.7.1.min.js",
+			"relatize":"jquery.relatize_date.min.js",
+			"less":"less-1.2.0.min.js",
+			"bootstrap_alert":"bootstrap/bootstrap-alert.js",
+			"bootstrap_dropdown":"bootstrap/bootstrap-dropdown.js",
+			"main":"homebooru.js"
+		},
+
+		"image":{
+			"logo":"tsun.png",
+			"shana":"shana_error.jpg",
+			"shana_hmph":"shana_snub.jpg"
+		},
+
+
+		"css":{
+			"bootstrap":"bootstrap.css",
+			"main":"homebooru.css"
+		},
+
+		"less":{
+			"main":"homebooru.less"
+		}
+	}
+}

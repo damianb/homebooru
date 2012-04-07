@@ -1,0 +1,8 @@
+{% extends "layout.twig.html" %}
+{% block content %}
+<div class="error">
+		<h2>{{ error.code }} {{ error.message }}</h2>
+		<div class="shana"><img src="{{ asset.image.shana }}" alt="O//O"></div>
+		<h3 class="caption">Oh noes!</h3>
+</div>
+{% endblock %}

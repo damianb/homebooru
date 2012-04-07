@@ -1,0 +1,9 @@
+{% extends "layout_micro.twig.html" %}
+{% block content %}
+	<form class="well form-inline" method="get" action="{{ url.search() }}">
+		<div class="microoffset">
+			<input type="text" class="span4" placeholder="search tags..." name="q">
+			<button type="submit" class="btn btn-danger">search</button>
+		</div>
+	</form>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "layout.twig.html" %}
+{% block content %}
+	<h2>view {% if not page.single %}posts{% else %}post{% endif %}</h2>
+
+
+{% if posts %}
+	<ul class="thumbnails posts">
+	{%- for post in posts %}
+		<li class="img span3" id="post{{ post.id }}">
+			<a href="{{ url.archive_id(post.id) }}" class="thumbnail" style="width:{{ post.thumb_width + 2 }}px; height:{{ post.thumb_height + 2 }}px">
+				<img src="{{ site.thumburl ~ post.thumb_file }}" alt="{{ post.getTags()|join(' ') }}" title="{{ post.getTags()|join(' ') }}" style="height: {{ post.thumb_height }}px; width: {{ post.thumb_width }}px">
+			</a>
+			<div class="size" style="width:{{ post.thumb_width + 22}}px"><div class="pull-left">rating: <span class="rating rating-{{ post.getRating() }}" title="{{ post.getRating() }}">{% if post.getRating() == 'unknown' %}?{% else %}{{ post.getRating()|slice(0, 1)|capitalize }}{% endif %}</span></div><div class="pull-right">{{ post.full_height }} &times; {{ post.full_width }}</div></div>
+		</li>
+	{% endfor -%}
+	</ul>
+{% else %}
+	<div class="shana"><img src="{{ asset.image.shana_hmph }}" alt="hmph!"></div>
+	<h3 class="caption">Nothing to see here yet.<br>  Move along or <a href="{{ url.submit() }}">submit something</a>.</h3>
+{% endif %}
+	<div class="clear" style="clear:both;"></div>
+	{% if pagination -%}
+	<div class="pagination pagination-right">
+		<ul>
+			<li{% if pagination.current == pagination.first %} class="disabled"{% endif %}><a href="{% if pagination.current == pagination.first %}#{% else %}{{ url.archive_page(pagination.first) }}{% endif %}">&laquo;</a></li>
+			{% for page in pagination.pages -%}
+			<li{% if pagination.current == page %} class="active"{% endif %}><a href="{% if pagination.current == page %}#{% else %}{{ url.archive_page(page) }}{% endif %}">{{ page }}</a></li>
+			{%- endfor %}
+			<li{% if pagination.current == pagination.last %} class="disabled"{% endif %}><a href="{% if pagination.current == pagination.last %}#{% else %}{{ url.archive_page(pagination.last) }}{% endif %}">&raquo;</a></li>
+		</ul>
+		<!-- f:{{ pagination.first }} p:{{ pagination.prev }} c:{{ pagination.current }} n:{{ pagination.next }} l:{{ pagination.last }} t:{{ pagination.total }} -->
+	</div>
+	{% endif %}
+{% endblock %}

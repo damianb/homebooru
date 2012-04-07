@@ -1,0 +1,63 @@
+{
+	"shot.routes.entries":{
+		"home":{
+			"path":"/home/",
+			"callback":"site.controller.home"
+		},
+
+		"view_latest":{
+			"path":"/view/latest/",
+			"callback":"site.controller.home"
+		},
+
+		"view_top":{
+			"path":"/view/top/",
+			"callback":"site.controller.top"
+		},
+
+		"view":{
+			"path":"/view/archive/",
+			"callback":"site.controller.view"
+		},
+
+		"view_page":{
+			"path":"/view/archive/page/$page:int/",
+			"callback":"site.controller.view"
+		},
+
+		"view_id":{
+			"path":"/view/id/$id:int/",
+			"callback":"site.controller.single"
+		},
+
+		"search":{
+			"path":"/search/",
+			"callback":"site.controller.search"
+		},
+
+		"submit":{
+			"path":"/submit/",
+			"callback":"site.controller.add"
+		},
+
+		"mod":{
+			"path":"/moderator/",
+			"callback":"site.controller.moderator"
+		},
+
+		"ajax":{
+			"path":"/ajax/$action:str/",
+			"callback":"site.controller.ajax"
+		},
+
+		"ajax_id":{
+			"path":"/ajax/$action:str/$id:int/",
+			"callback":"site.controller.ajax"
+		},
+
+		"error":{
+			"path":"/error/",
+			"callback":"site.controller.error"
+		}
+	}
+}

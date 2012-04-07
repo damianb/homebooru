@@ -1,0 +1,74 @@
+<Files .htaccess>
+	Order Allow,Deny
+	Deny from all
+</files>
+
+# Provide support for gz compressed stylesheets/js files
+<IfModule mime_module.c>
+	AddEncoding x-gzip .gz .tgz
+	AddType text/css .css.gz
+	AddType application/javascript .js.gz
+</IfModule>
+
+# Asset caching
+<IfModule mod_headers.c>
+	<FilesMatch "\.(css|css\.gz)$">
+		# 2 day cache
+		Header set Cache-Control "public, max-age=172800"
+		Header set X-Content-Type-Options "nosniff"
+		Header set Content-Type "text/css; charset=UTF-8"
+	</FilesMatch>
+
+	<FilesMatch "\.(js|js\.gz)$">
+		# 2 day cache
+		Header set Cache-Control "public, max-age=172800"
+		Header set X-Content-Type-Options "nosniff"
+		Header set Content-Type "application/javascript; charset=UTF-8"
+	</FilesMatch>
+
+	<FilesMatch "\.(jpg|jpeg)$">
+		# 1 week cache
+		Header set Cache-Control "public, max-age=604800"
+		Header set X-Content-Type-Options "nosniff"
+		Header set Content-Type "image/jpeg; charset=UTF-8"
+
+	</FilesMatch>
+
+	<FilesMatch "\.png$">
+		# 1 week cache
+		Header set Cache-Control "public, max-age=604800"
+		Header set X-Content-Type-Options "nosniff"
+		Header set Content-Type "image/png; charset=UTF-8"
+
+	</FilesMatch>
+
+	<FilesMatch "\.gif$">
+		# 1 week cache
+		Header set Cache-Control "public, max-age=604800"
+		Header set X-Content-Type-Options "nosniff"
+		Header set Content-Type "image/gif; charset=UTF-8"
+	</FilesMatch>
+</IfModule>
+
+<IfModule mod_expires.c>
+	ExpiresActive On
+	ExpiresByType application/javascript A172800
+	ExpiresByType text/css A172800
+	ExpiresByType image/gif A604800
+	ExpiresByType image/png A604800
+	ExpiresByType image/jpeg A604800
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule . index.php [L,QSA]
+</IfModule>
+
+# no page indexes!
+Options -Indexes
+
+ErrorDocument 403 /error/
+ErrorDocument 404 /error/

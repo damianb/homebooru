@@ -1,0 +1,26 @@
+{
+	"shot.config.files":[
+		"assets",
+		"routes",
+		"urls",
+		"controllers",
+		"database"
+	],
+	#"admin.message":"Notice: This is a Homebooru development installation. :v",
+	"admin.email":"katana@codebite.net",
+	"admin.name":"Katana",
+	"cookie.prefix":"homebooru",
+	"cookie.domain":"",
+	"cookie.path":"/homebooru/",
+	"site.urlbase":"/homebooru/",
+
+	"site.thumburl":"/hb-images/thumb/",
+	"site.smallurl":"/hb-images/small/",
+	"site.imageurl":"/hb-images/full/",
+
+	"site.small_size":800,
+	"site.thumbnail_size":150,
+
+	"gravatar.disable":false,
+	"gravatar.size":32
+}

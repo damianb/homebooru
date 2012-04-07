@@ -1,0 +1,10 @@
+{
+	"db.type":"sqlite",
+
+	"db.file":"",
+
+	"db.host":"localhost",
+	"db.name":"",
+	"db.user":"",
+	"db.password":""
+}

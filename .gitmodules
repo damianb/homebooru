@@ -1,0 +1,18 @@
+[submodule "app/src/emberlabs/GravatarLib"]
+	path = app/src/emberlabs/GravatarLib
+	url = git://github.com/damianb/gravatarlib.git
+[submodule "app/vendor/Twig"]
+	path = app/vendor/Twig
+	url = git://github.com/fabpot/Twig.git
+[submodule "app/src/emberlabs/openflame"]
+	path = app/src/emberlabs/openflame
+	url = git://github.com/damianb/openflame.git
+[submodule "app/src/emberlabs/shot"]
+	path = app/src/emberlabs/shot
+	url = git://github.com/damianb/shot.git
+[submodule "app/src/emberlabs/sfslib"]
+	path = app/src/emberlabs/sfslib
+	url = git://github.com/damianb/sfslib.git
+[submodule "app/vendor/Imagine"]
+	path = app/vendor/Imagine
+	url = git://github.com/avalanche123/Imagine.git

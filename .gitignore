@@ -1,0 +1,11 @@
+*.komodoproject
+cache/*.tmp
+develop/db/*.db
+cache/viewcache/*/*/*.php
+config/.commit
+cache/viewcache/*/*.php
+cache/viewcache/*/*.tmp
+cache/viewcache/*/*/*.tmp
+upload/*/*
+import/*
+!.gitkeep

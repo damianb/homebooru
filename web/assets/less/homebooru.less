@@ -1,0 +1,217 @@
+/* tsun.less
+ * because we're speshul
+ * ----------------------------------------------------------------- */
+
+@import "bootstrap/bootstrap.less";
+
+@emLink: @orange;
+//@emLinkHover: darken(@orange, 25);
+@emLinkHover: lighten(@black, 15);
+@bg: darken(@grayLighter, 10);
+@borderRadius: 10px;
+
+// html stuff
+
+a {
+ color: #b00;
+}
+a:hover {
+ color: darken(#b00, 10);
+}
+h2 {
+ margin-bottom: 15px;
+}
+
+body {
+ font-family: "Droid Sans";
+}
+
+header {
+ .logo { margin-left: 7px; }
+ h1 { margin: 0 15px; }
+ margin: 0 0 20px;
+ padding: 0 10px;
+
+ .border-radius(0 0 4px 4px);
+ background-color: #ccc;
+ #gradient > .vertical(#c4c4c4, lighten(#c4c4c4, 8));
+
+ border: 1px solid #eee;
+ border: 1px solid rgba(0,0,0,.05);
+ .box-shadow(inset 0 -1px 1px rgba(0,0,0,.07));
+}
+
+nav {
+ margin-top: 14px;
+ .nav-pills a {
+  color: #b00;
+ }
+ .nav-pills .active > a, .nav-pills .active > a:hover {
+  background-color: #b00;
+ }
+}
+
+.microtop {
+ height: 50px;
+ margin-top: 70px;
+ margin-bottom: 30px;
+}
+.microhome {
+ margin-bottom: 100px;
+}
+ h1 {
+ margin-top: 12px;
+ margin-bottom: 15px;
+ margin-left: 6px;
+ small {
+  font-size: 24px;
+  font-weight: bold;
+ }
+}
+.microoffset { margin-left: 65px; }
+
+.fullnav {
+ nav {
+  margin-top: 0px;
+  .pull-right;
+ }
+}
+
+.announcement {
+ margin-top: 5px;
+ min-height: 36px;
+ div {
+  display: inline-block;
+ }
+ .l { margin-left: 0; }
+ .gravatar {
+  display: inline-block;
+  padding: 2px;
+  border: solid 1px @grayLight;
+  background-color: #fff;
+  img {
+   vertical-align: middle;
+   width: 32px;
+   height: 32px;
+  }
+  margin-right: 5px;
+ }
+ .name {
+  font-size: 14px;
+ }
+ .message {
+  margin-top: 9px;
+ }
+}
+
+input, select, textarea {
+ //border-color: @errorText;
+ &:focus {
+   border-color: lighten(@errorText, 15%);
+  .box-shadow(0 0 6px lighten(@errorText, 30%));
+ }
+}
+
+.singlepost {
+ .img {
+  //margin: 0 auto;
+  text-align: center;
+  .thumbnail {
+   background-color: #fcfcfc;
+   margin: 0 auto;
+   img {
+	border: 1px solid #e3e3e3;
+   }
+  }
+  a.thumbnail:hover {
+   border: 1px solid lighten(saturate(@errorText, 30), 15);
+  }
+  .size {
+   margin: 5px auto;
+  }
+ }
+}
+
+.posts {
+ .img {
+  margin: inherit auto;
+  text-align: center;
+  a.thumbnail {
+   background-color: #fcfcfc;
+   margin: 0 auto;
+   img {
+	border: 1px solid #e3e3e3;
+   }
+   &:hover {
+	border: 1px solid lighten(saturate(@errorText, 30), 15);
+   }
+  }
+  .size {
+   display: inline-block;
+   margin: 5px auto;
+   font-size: 13px;
+  }
+ }
+}
+
+span.rating {
+ font-weight: bold;
+ font-size: 12px;
+}
+span.rating-safe {
+ color: @successText;
+}
+span.rating-questionable {
+ color: @warningText;
+}
+span.rating-explicit {
+ color: @errorText;
+}
+
+#tos {
+ @border: #aaa;
+ margin-top: 15px;
+ padding: 10px;
+ border-bottom: 1px solid @border;
+ border-top: 1px solid @border;
+}
+
+// error page css
+.shana {
+ border: solid 1px #aaa;
+ border-radius: 7px;
+ width: 806px;
+ height: 456px;
+ margin: 10px auto;
+ > img {
+  border-radius: 5px;
+  margin: 3px;
+ }
+}
+.error > h2, .error > h3, .tsunentries > h3 {
+ text-align: center;
+}
+.error > h3, .tsunentries > h3 {
+ margin: 15px 0;
+}
+
+// footer
+footer {
+ padding: 10px 5px 0;
+ border-top: 1px solid #ddd;
+ div > div.l { .pull-left }
+ div > div.r { .pull-right }
+ div { .clearfix }
+ line-height: 1.5em;
+ font-size: 12px;
+ height: 60px;
+ #touch {
+  font-weight: bold;
+  .b { color:#c00; }
+ }
+}
+#poweredby {
+ .pull-right;
+ margin-top: 4px;
+ color: @gray;
+}

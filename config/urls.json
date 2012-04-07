@@ -1,0 +1,18 @@
+{
+	"shot.urls.entries":{
+		"home":"/",
+		"latest":"/view/latest/",
+		"top":"/view/top/",
+		"archive":"/view/archive/",
+		"archive_page":"/view/archive/page/%d/",
+		"archive_id":"/view/id/%d/",
+
+		"search":"/search/",
+		"search_tag":"/search/?q=%s",
+
+		"vote_up":"/ajax/vu/%d/",
+		"vote_down":"/ajax/vd/%d/",
+		"submit":"/submit/",
+		"moderator":"/moderator/"
+	}
+}
