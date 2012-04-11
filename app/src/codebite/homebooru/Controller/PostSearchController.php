@@ -100,8 +100,7 @@ class PostSearchController
 		// at this point we should have four possible arrays of search parameters
 
 		// @todo handle tag use properly
-
-		$beans = R::taggedAll('post', $tags);
+		$beans = R::taggedAll('post', $normal_tags);
 
 		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
 
