@@ -72,6 +72,7 @@ class AddEntryController
 
 				$bean->full_md5 = hash_file('md5', $file);
 				$bean->full_sha1 = $hash;
+				$bean->full_size = filesize($file);
 
 				// small version, only if needed
 				if($bean->full_height > $this->app['site.small_size'] && $bean->full_width > $this->app['site.small_size'])
@@ -89,6 +90,7 @@ class AddEntryController
 
 					$bean->small_md5 = hash_file('md5', HOMEBOORU_IMAGE_SMALL_ROOT . '/' . $small_file);
 					$bean->small_sha1 = hash_file('sha1', HOMEBOORU_IMAGE_SMALL_ROOT . '/' . $small_file);
+					$bean->small_size = filesize(HOMEBOORU_IMAGE_SMALL_ROOT . '/' . $small_file);
 				}
 
 				// thumbnail
@@ -106,11 +108,14 @@ class AddEntryController
 
 				$bean->thumb_md5 = hash_file('md5', HOMEBOORU_IMAGE_THUMB_ROOT . '/' . $thumb_file);
 				$bean->thumb_sha1 = hash_file('sha1', HOMEBOORU_IMAGE_THUMB_ROOT . '/' . $thumb_file);
+				$bean->thumb_size = filesize(HOMEBOORU_IMAGE_THUMB_ROOT . '/' . $thumb_file);
 
 				unset($image);
 				unset($small);
 				unset($thumb);
 
+				// special metadata
+				$bean->source = ''; // unknown, default
 				$bean->rating = BooruPostModel::RATING_UNKNOWN;
 
 				$bean->submit_time = $now;
