@@ -19,6 +19,8 @@ class PostSearchController
 
 		$tags = explode(' ', $tags);
 
+		// tag search, now with only TWO DAMN PCRE'S! LIKE A BAWSS
+
 		// sort out "normal" tags
 		$normal_tags = preg_grep('#^\-?[\w]+[\w\(\)]*$#i', $tags);
 		$_normal_tags = array_unique($normal_tags);
@@ -33,43 +35,69 @@ class PostSearchController
 		$whitelist_params = array(
 			'source',
 			'rating',
+			'md5',
+			'sha1',
 			'id',
 		);
 
 		$exclude_normal_tags = $normal_tags = $param_tags = $exclude_param_tags = array();
-		foreach($_param_tags as $tag)
+		if(!empty($_param_tags))
 		{
-			$exclude = false;
-			list($param, $value) = explode(':', $tag, 2);
+			foreach($_param_tags as $tag)
+			{
+				$exclude = false;
+				list($param, $value) = explode(':', $tag, 2);
 
-			if($param[0] == '-')
-			{
-				$param = substr($param, 1);
-				$exclude = true;
-			}
-			if(in_array($param, $whitelist_params))
-			{
-				if($exclude)
+				if($param[0] == '-')
 				{
-					$param_tags[] = array($param, $value);
+					$param = substr($param, 1);
+					$exclude = true;
+				}
+				if(in_array($param, $whitelist_params))
+				{
+					if($exclude)
+					{
+						$param_tags[] = array($param, $value);
+					}
+					else
+					{
+						$exclude_param_tags[] = array($param, $value);
+					}
+				}
+			}
+		}
+		// parse through the normal tags and find any exclusions specified
+		if(!empty($_normal_tags))
+		{
+			foreach($_normal_tags as $tag)
+			{
+				if($tag[0] == '-')
+				{
+					$normal_tags[] = substr($tag, 1);
 				}
 				else
 				{
-					$exclude_param_tags[] = array($param, $value);
+					$exclude_normal_tags[] = $tag;
 				}
 			}
 		}
-		foreach($_normal_tags as $tag)
+
+		// handle instances where we search for both "tag" and "-tag" (or "rating:safe" and "-rating:safe")
+		// -- we basically drop both out of the search parameters.
+		$drop = array_intersect_key($param_tags, $exclude_param_tags);
+		if(!empty($drop))
 		{
-			if($tag[0] == '-')
-			{
-				$normal_tags[] = substr($tag, 1);
-			}
-			else
-			{
-				$exclude_normal_tags[] = $tag;
-			}
+			$param_tags = array_diff($param_tags, $drop);
+			$exclude_param_tags = array_diff($exclude_param_tags, $drop);
 		}
+		$drop = array_intersect($normal_tags, $exclude_normal_tags);
+		if(!empty($drop))
+		{
+			$normal_tags = array_diff($normal_tags, $drop);
+			$exclude_normal_tags = array_diff($exclude_normal_tags, $drop);
+		}
+
+		// at this point we should have four possible arrays of search parameters
 
 		// @todo handle tag use properly
 
