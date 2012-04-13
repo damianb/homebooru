@@ -5,6 +5,7 @@
 			"relatize":"jquery.relatize_date.min.js",
 			"less":"less-1.3.0.min.js",
 			"bootstrap_alert":"bootstrap/bootstrap-alert.js",
+			"bootstrap_button":"bootstrap/bootstrap-button.js",
 			"bootstrap_dropdown":"bootstrap/bootstrap-dropdown.js",
 			"main":"homebooru.js"
 		},
