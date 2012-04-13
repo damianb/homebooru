@@ -1,18 +1,23 @@
 {
 	"shot.urls.entries":{
 		"home":"/",
-		"latest":"/view/latest/",
-		"top":"/view/top/",
-		"archive":"/view/archive/",
-		"archive_page":"/view/archive/page/%d/",
-		"archive_id":"/view/id/%d/",
+		"latest":"/latest/",
+
+		"archive":"/archive/",
+		"archive_page":"/archive/%d/",
+		"archive_id":"/view/%d/",
 
 		"search":"/search/",
 		"search_tag":"/search/?q=%s",
 
+		"edit":"/edit/?id=%d",
+
+		"pools":"/pool/",
+		"create_pool":"/pool/create/",
+		"add_to_pool":"/pool/add/?id=%d",
+
 		"vote_up":"/ajax/vu/%d/",
 		"vote_down":"/ajax/vd/%d/",
-		"submit":"/submit/",
-		"moderator":"/moderator/"
+		"submit":"/submit/"
 	}
 }

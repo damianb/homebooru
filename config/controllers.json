@@ -2,17 +2,12 @@
 	"shot.controllers.entries":{
 		"site.controller.home":"codebite\\homebooru\\Controller\\HomeController",
 
-		"site.controller.add":"codebite\\homebooru\\Controller\\AddEntryController",
+		"site.controller.archive":"codebite\\homebooru\\Controller\\ArchiveController",
 
-		"site.controller.view":"codebite\\homebooru\\Controller\\ViewListController",
-
+		"site.controller.add":"codebite\\homebooru\\Controller\\PostAddController",
 		"site.controller.search":"codebite\\homebooru\\Controller\\PostSearchController",
-
-		"site.controller.top":"codebite\\homebooru\\Controller\\ViewTopController",
-
-		"site.controller.moderator":"codebite\\homebooru\\Controller\\ModeratorController",
-
-		"site.controller.single":"codebite\\homebooru\\Controller\\ViewPostController",
+		"site.controller.edit":"codebite\\homebooru\\Controller\\PostEditController",
+		"site.controller.single":"codebite\\homebooru\\Controller\\PostViewController",
 
 		"site.controller.ajax":"codebite\\homebooru\\Controller\\AjaxController",
 
