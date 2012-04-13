@@ -7,7 +7,7 @@ use \R;
 
 if(!defined('SHOT_ROOT')) exit;
 
-class AddEntryController
+class PostAddController
 	extends ObjectController
 {
 	public function runController()

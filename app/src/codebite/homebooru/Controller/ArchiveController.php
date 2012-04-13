@@ -6,7 +6,7 @@ use \R;
 
 if(!defined('SHOT_ROOT')) exit;
 
-class ViewListController
+class ArchiveController
 	extends ObjectController
 {
 	public function runController()

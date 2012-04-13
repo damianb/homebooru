@@ -6,7 +6,7 @@ use \R;
 
 if(!defined('SHOT_ROOT')) exit;
 
-class ViewPostController
+class PostViewController
 	extends ObjectController
 {
 	public function runController()
