@@ -94,12 +94,25 @@ class BooruPostModel
 	{
 		if(!$this->tags)
 		{
-			$tags = R::tag($this->bean);
-
-			$this->tags = $tags;
+			$this->tags = R::tag($this->bean);
 		}
 
 		return $this->tags;
+	}
+
+	public function getFullTags()
+	{
+		if(!$this->tags)
+		{
+			$this->tags = R::tag($this->bean);
+		}
+
+		if(!$this->tag_beans)
+		{
+			$this->tag_beans = R::find('tag', implode(' OR ', array_fill(0, count($this->tags), 'title = ?')), $this->tags);
+		}
+
+		return $this->tag_beans;
 	}
 
 	public function getRating()
