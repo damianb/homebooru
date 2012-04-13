@@ -29,7 +29,7 @@ function full_compare($a, $b)
 function formatBytes($size, $precision = 2)
 {
     $base = log($size) / log(1024);
-    $suffixes = array('', 'kiB', 'MiB', 'GiB', 'TiB');
+    $suffixes = array('', 'KiB', 'MiB', 'GiB', 'TiB');
 
     return round(pow(1024, $base - floor($base)), $precision) . $suffixes[floor($base)];
 }
