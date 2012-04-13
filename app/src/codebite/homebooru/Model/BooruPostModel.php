@@ -132,4 +132,28 @@ class BooruPostModel
 			);
 		}
 	}
+
+	public function getFullSize()
+	{
+		if($this->bean->full_size)
+		{
+			return \codebite\homebooru\Runtime\formatBytes($this->bean->full_size);
+		}
+	}
+
+	public function getSmallSize()
+	{
+		if($this->bean->small_size)
+		{
+			return \codebite\homebooru\Runtime\formatBytes($this->bean->small_size);
+		}
+	}
+
+	public function getThumbSize()
+	{
+		if($this->bean->thumb_size)
+		{
+			return \codebite\homebooru\Runtime\formatBytes($this->bean->thumb_size);
+		}
+	}
 }

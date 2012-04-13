@@ -24,8 +24,8 @@ $(document).ready(function() {
 	//})
 
 	// clickable header
-	$('header .logo img, header h1').on('click', function(e) {
+	$('.fullhome h1').on('click', function(e) {
 		e.preventDefault()
-		window.location.href = $('header nav').attr('data-home-url')
+		window.location.href = $('nav').attr('data-home-url')
 	})
 });

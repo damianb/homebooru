@@ -18,7 +18,7 @@
 	"site.smallurl":"/hb-images/small/",
 	"site.imageurl":"/hb-images/full/",
 
-	"site.small_size":800,
+	"site.small_size":650,
 	"site.thumbnail_size":150,
 
 	"gravatar.disable":false,

@@ -15,8 +15,7 @@ class PostSearchController
 	{
 		$max = self::SEARCH_MAX;
 
-		$tags = $this->request->getInput('REQUEST::q', '');
-
+		$_search = $tags = $this->request->getInput('REQUEST::q', '');
 		$tags = explode(' ', $tags);
 
 		// tag search, now with only TWO DAMN PCRE'S! LIKE A BAWSS
@@ -330,6 +329,7 @@ class PostSearchController
 				'search'			=> true,
 			),
 			'posts'				=> $beans,
+			'search_tags'		=> $_search,
 		));
 
 		return $this->response;

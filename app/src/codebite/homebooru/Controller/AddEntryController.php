@@ -23,7 +23,6 @@ class AddEntryController
 			$form_time = $this->request->getInput('POST::formtime', 0);
 
 			$data = $this->request->getInput('POST::file', '');
-			//$data = $this->app->seeder->buildRandomString();
 
 			$tags = $this->request->getInput('POST::tags', '');
 
@@ -91,6 +90,8 @@ class AddEntryController
 					$bean->small_md5 = hash_file('md5', HOMEBOORU_IMAGE_SMALL_ROOT . '/' . $small_file);
 					$bean->small_sha1 = hash_file('sha1', HOMEBOORU_IMAGE_SMALL_ROOT . '/' . $small_file);
 					$bean->small_size = filesize(HOMEBOORU_IMAGE_SMALL_ROOT . '/' . $small_file);
+
+					unset($small);
 				}
 
 				// thumbnail
@@ -110,15 +111,14 @@ class AddEntryController
 				$bean->thumb_size = filesize(HOMEBOORU_IMAGE_THUMB_ROOT . '/' . $thumb_file);
 
 				unset($image);
-				unset($small);
 				unset($thumb);
 
 				// special metadata
 				$bean->source = ''; // unknown, default
+				$bean->author = ''; // unknown, default
 				$bean->rating = BooruPostModel::RATING_UNKNOWN;
 
 				$bean->submit_time = $now;
-				//$bean->handle_time = 0;
 
 				$bean->submit_ip = $ip;
 				$bean->submit_id = 1; // ANONYMOUS SUBMISSION. for later if needed.

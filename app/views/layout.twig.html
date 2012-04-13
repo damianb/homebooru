@@ -39,7 +39,7 @@
 	<div class="fullnav container">
 		<div class="span4 pull-left">
 			<form class="form-inline" method="get" action="{{ url.search() }}">
-				<input type="text" class="span3" placeholder="search tags..." name="q">
+				<input type="text" class="span3" placeholder="search tags..." name="q" value="{{ search_tags }}">
 				<button type="submit" class="btn btn-danger">search</button>
 			</form>
 		</div>
@@ -59,23 +59,6 @@
 	<div class="container">
 		{% block content %}{% endblock %}
 	</div>
-
-	{#
-	<header class="container">
-		<nav data-home-url="{{ url.home() }}">
-			<div class="logo pull-left">
-				<img src="{{ asset.image.logo }}" alt="logo">
-			</div>
-			<h1 class="pull-left"><small>homebooru</small></h1>
-			<ul class="nav nav-pills pull-right">
-				<li{% if page.latest %} class="active"{% endif %}><a href="{{ url.latest() }}">latest</a></li>
-				<li{% if page.top %} class="active"{% endif %}><a href="{{ url.top() }}">top</a></li>
-				<li{% if page.archive %} class="active"{% endif %}><a href="{{ url.archive() }}">archive</a></li>
-				<li{% if page.submit %} class="active"{% endif %}><a href="{{ url.submit() }}">submit</a></li>
-			</ul>
-		</nav>
-	</header>
-	#}
 
 	<div class="container">
 		<footer>

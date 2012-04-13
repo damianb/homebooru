@@ -5,26 +5,59 @@
 		<ul class="thumbnails singlepost">
 			{% set image = post.bestFit() %}
 			<li class="img span12" id="post{{ post.id }}">
-				{% if post.small_file %}
-				<a href="{{ site.imageurl ~ post.full_file }}" class="image thumbnail" title="click for full image" style="height: {{ image.height + 2 }}px; width: {{ image.width + 2 }}px">
-					<img src="{{ image.path ~ image.file }}" alt="" style="height: {{ image.height }}px; width: {{ image.width }}px">
-				</a>
-				{% else %}
-				<div class="image thumbnail" style="height: {{ image.height + 2 }}px; width: {{ image.width + 2 }}px">
-					<img src="{{ image.path ~ image.file }}" alt="" style="height: {{ image.height }}px; width: {{ image.width }}px">
+				<div class="pull-left">
+					{% if post.small_file %}
+					<a href="{{ site.imageurl ~ post.full_file }}" class="image thumbnail" title="click for full image" style="height: {{ image.height + 2 }}px; width: {{ image.width + 2 }}px">
+						<img src="{{ image.path ~ image.file }}" alt="" style="height: {{ image.height }}px; width: {{ image.width }}px">
+					</a>
+					{% else %}
+					<div class="image thumbnail" style="height: {{ image.height + 2 }}px; width: {{ image.width + 2 }}px">
+						<img src="{{ image.path ~ image.file }}" alt="" style="height: {{ image.height }}px; width: {{ image.width }}px">
+					</div>
+					{% endif %}
 				</div>
-				{% endif %}
-				<div class="size" style="width: {{ image.width + 42 }}px">
-					<div class="pull-left">rating: <span class="rating rating-{{ post.getRating() }}" title="{{ post.getRating() }}">{{ post.getRating() }}</span></div>
-					<div class="pull-right">{{ post.full_height }} &times; {{ post.full_width }}</div>
+				<div class="img-meta pull-right">
+					<div class="metadata">
+						<h3>image metadata</h3>
+
+						<div class="id">id: {{ post.id }}</div>
+						<div class="rating">rating: <span class="rating rating-{{ post.getRating() }}" title="{{ post.getRating() }}">{{ post.getRating() }}</span></div>
+						<div class="size">
+							<div class="pull-left">
+								<div class="filesize">filesize: {{ post.getFullSize }}</div>
+							</div>
+							<div class="pull-right">
+								<div class="dimensions">{{ post.full_height }}<span class="small">px</span> &times; {{ post.full_width }}<span class="small">px</span></div>
+							</div>
+						</div>
+						<div class="clear"></div>
+						<div class="posted">posted: <time class="js-relative-date" datetime="{{ post.submit_time|date('Y-m-d\TH:i:sP') }}" title="{{ post.submit_time|date('l, F jS, Y H:i:s') }}">{{ post.submit_time|date('F d, Y') }}</time></div>
+						<br>
+
+						<div class="sha1 small"><div class="pull-left">SHA-1: </div><div class="pull-right">&nbsp;&nbsp;&nbsp;&nbsp;{{ post.full_sha1 }}</div></div>
+						<div class="clear"></div>
+						<div class="md5 small"><div class="pull-left">md5: </div><div class="pull-right">&nbsp;{{ post.full_md5 }}</div></div>
+						<div class="clear"></div><br>
+
+						<div class="author">author: {{ post.author|default("unknown") }}</div>
+						<div class="source">source: {{ post.source|default("unknown") }}</div>
+
+
+					</div>
+
+					<div class="tags">
+						<h3>tags</h3>
+						<ul>{% for tag in post.getTags() %}<li><a href="{{ url.search_tag(tag|url_encode) }}">{{ tag }}</a></li>{% endfor %}</ul>
+					</div>
+
+					{% if post.pools %}
+					<div class="pools">
+						<h3>pools</h3>
+					</div>
+					{% endif %}
 				</div>
-				{#
-				<div class="metadata">
-					<div class="tags">{% for tag in post.getTags() %}<a href="{{ url.search_tag(tag|url_encode) }}">{{ tag }}</a> {% endfor %}</div>
-				</div>
-				#}
 			</li>
 		</ul>
 	</div>
-	<div class="clear" style="clear:both;"></div>
+	<div class="clear"></div>
 {% endblock %}
