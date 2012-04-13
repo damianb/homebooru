@@ -19,6 +19,11 @@ class Stat
 		return \codebite\homebooru\Runtime\formatBytes(memory_get_usage(), 2);
 	}
 
+	public function memPeak()
+	{
+		return \codebite\homebooru\Runtime\formatBytes(memory_get_peak_usage(), 2);
+	}
+
 	public function commit()
 	{
 		if(file_exists(SHOT_CONFIG_ROOT . '/.commit'))

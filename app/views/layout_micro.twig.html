@@ -55,7 +55,7 @@
 				<div class="r"><span id="touch">&gt;<span class="b">//</span>&lt;</span></div>
 			</div>
 			<div>
-				<div id="poweredby" style="display:none">running <strong>codebite\homebooru</strong> {% if stat.commit() %}(git: {{ stat.commit}}) {% endif %}on "{{ stat.server() }}" | memory usage: {{ stat.mem() }} | page gen: {{ stat.time() }} s</div>
+				<div id="poweredby" style="display:none">running <strong>codebite\homebooru</strong> {% if stat.commit() %}(git: {{ stat.commit}}) {% endif %}on "{{ stat.server() }}" | memory usage: {{ stat.mem() }} (peak: {{ stat.memPeak() }}) | page gen: {{ stat.time() }} s</div>
 			</div>
 
 			<script src="{{ asset.js.jquery }}"></script>
