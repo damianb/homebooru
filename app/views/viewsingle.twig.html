@@ -41,13 +41,12 @@
 
 						<div class="author">author: {{ post.author|default("unknown") }}</div>
 						<div class="source">source: {{ post.source|default("unknown") }}</div>
-
-
 					</div>
 
 					<div class="tags">
 						<h3>tags</h3>
-						<ul>{% for tag in post.getTags() %}<li><a href="{{ url.search_tag(tag|url_encode) }}">{{ tag }}</a></li>{% endfor %}</ul>
+						{#<ul>{% for tag in post.getTags() %}<li><a href="{{ url.search_tag(tag|url_encode) }}">{{ tag }}</a></li>{% endfor %}</ul>#}
+						{% for tag in post.getTags() %}<span class="label tag"><a href="{{ url.search_tag(tag|url_encode) }}">{{ tag }}</a></span> {% endfor %}
 					</div>
 
 					{% if post.pools %}
@@ -55,6 +54,16 @@
 						<h3>pools</h3>
 					</div>
 					{% endif %}
+
+					<div class="controls">
+						<h3>controls</h3>
+						<ul>
+							<li><a href="{{ site.imageurl ~ post.full_file }}">view full image</a></li>
+							<li><a href="{{ url.add_to_pool(post.id) }}">add to pool</a></li>
+							<li><a href="{{ url.edit(post.id) }}">edit image tags</a></li>
+							<li><a href="{{ url.delete(post.id) }}">delete image</a></li>
+						</ul>
+					</div>
 				</div>
 			</li>
 		</ul>

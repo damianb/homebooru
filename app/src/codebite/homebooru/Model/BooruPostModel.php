@@ -10,7 +10,7 @@ if(!defined('SHOT_ROOT')) exit;
 class BooruPostModel
 	extends RedBean_SimpleModel
 {
-	protected $_app, $_vote;
+	protected $_app, $tags;
 
 	const ENTRY_QUEUE = 2;
 	const ENTRY_DENY = 3;
@@ -92,7 +92,14 @@ class BooruPostModel
 
 	public function getTags()
 	{
-		return R::tag($this->bean);
+		if(!$this->tags)
+		{
+			$tags = R::tag($this->bean);
+
+			$this->tags = $tags;
+		}
+
+		return $this->tags;
 	}
 
 	public function getRating()
