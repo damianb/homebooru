@@ -292,7 +292,10 @@ class PostSearchController
 
 			if(!empty($param_tags) || !empty($exclude_param_tags))
 			{
-				$wheres .= (!empty($search)) ? ' AND (' : '';
+				if(!empty($search))
+				{
+					$wheres = '(' . $wheres . ') AND (';
+				}
 				if($param_tags)
 				{
 					$_param_tags = $param_tags;
