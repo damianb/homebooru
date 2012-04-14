@@ -1,0 +1,27 @@
+{% extends "layout.twig.html" %}
+{% block content %}
+	<h2>view tags</h2>
+
+{% if tags -%}
+	<div class="tag-list">
+	{%- for tag in tags %}
+	<div class="btn-group tag-set"><a class="btn btn-mini" href="{{ url.tag_edit(tag.id) }}">edit</a><a class="btn disabled btn-mini tag tag-{{ tag.getType() }}" title="{{ tag.getDescription() }}">{{ tag.title }}</a><a class="btn btn-mini" href="{{ url.tag_alias(tag.id) }}">alias</a></div>
+	{% endfor -%}
+	</div>
+{% else %}
+	<div class="shana"><img src="{{ asset.image.shana_hmph }}" alt="hmph!"></div>
+	<h3 class="caption">Nothing to see here yet.<br>  Move along or <a href="{{ url.submit() }}">submit something</a>.</h3>
+{% endif %}
+	{% if pagination -%}
+	<div class="pagination pagination-right">
+		<ul>
+			<li{% if pagination.current == pagination.first %} class="disabled"{% endif %}><a href="{% if pagination.current == pagination.first %}#{% else %}{{ url.archive_page(pagination.first) }}{% endif %}">&laquo;</a></li>
+			{% for page in pagination.pages -%}
+			<li{% if pagination.current == page %} class="active"{% endif %}><a href="{% if pagination.current == page %}#{% else %}{{ url.archive_page(page) }}{% endif %}">{{ page }}</a></li>
+			{%- endfor %}
+			<li{% if pagination.current == pagination.last %} class="disabled"{% endif %}><a href="{% if pagination.current == pagination.last %}#{% else %}{{ url.archive_page(pagination.last) }}{% endif %}">&raquo;</a></li>
+		</ul>
+		<!-- f:{{ pagination.first }} p:{{ pagination.prev }} c:{{ pagination.current }} n:{{ pagination.next }} l:{{ pagination.last }} t:{{ pagination.total }} -->
+	</div>
+	{% endif %}
+{% endblock %}
