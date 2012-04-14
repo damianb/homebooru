@@ -10,8 +10,10 @@ class BooruTagModel
 {
 	const TAG_GENERAL = 2;
 	const TAG_CHARACTER = 3;
-	const TAG_ENVIRONMENT = 4;
+	const TAG_AUTHOR = 4;
 	const TAG_PLANE = 5;
+	const TAG_MEDIUM = 6;
+	const TAG_ALIAS = 7;
 
 	public function getType()
 	{
@@ -19,13 +21,37 @@ class BooruTagModel
 		{
 			case self::TAG_CHARACTER:
 				return 'character';
-			case self::TAG_ENVIRONMENT:
-				return 'environment';
+			case self::TAG_AUTHOR:
+				return 'author';
 			case self::TAG_PLANE:
 				return 'plane';
+			case self::TAG_MEDIUM:
+				return 'medium';
+			case self::TAG_ALIAS:
+				return 'alias';
 			case self::TAG_GENERAL:
 			default:
 				return 'general';
+		}
+	}
+
+	public function getDescription()
+	{
+		switch($this->bean->type)
+		{
+			case self::TAG_CHARACTER:
+				return 'character tag';
+			case self::TAG_AUTHOR:
+				return 'author tag';
+			case self::TAG_PLANE:
+				return 'anime/manga series tag';
+			case self::TAG_MEDIUM:
+				return 'medium/art form tag';
+			case self::TAG_ALIAS:
+				return 'aliased tag';
+			case self::TAG_GENERAL:
+			default:
+				return 'general use tag';
 		}
 	}
 }

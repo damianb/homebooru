@@ -95,6 +95,7 @@ class BooruPostModel
 		if(!$this->tags)
 		{
 			$this->tags = R::tag($this->bean);
+			sort($this->tags, SORT_STRING);
 		}
 
 		return $this->tags;
@@ -105,11 +106,12 @@ class BooruPostModel
 		if(!$this->tags)
 		{
 			$this->tags = R::tag($this->bean);
+			sort($this->tags, SORT_STRING);
 		}
 
 		if(!$this->tag_beans)
 		{
-			$this->tag_beans = R::find('tag', implode(' OR ', array_fill(0, count($this->tags), 'title = ?')), $this->tags);
+			$this->tag_beans = R::find('tag', implode(' OR ', array_fill(0, count($this->tags), 'title = ?')) . ' ORDER BY title ASC', $this->tags);
 		}
 
 		return $this->tag_beans;

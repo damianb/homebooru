@@ -45,7 +45,7 @@
 
 					<div class="tags">
 						<h3>tags</h3>
-						{% for tag in post.getFullTags() %}<span class="label tag tag-{{ tag.getType() }}"><a href="{{ url.search_tag(tag.title|url_encode) }}">{{ tag.title }}</a></span> {% endfor %}
+						{% for tag in post.getFullTags() %}<span class="label tag tag-{{ tag.getType() }}" title="{{ tag.getDescription() }}"><a href="{{ url.search_tag(tag.title|url_encode) }}">{{ tag.title }}</a></span> {% endfor %}
 					</div>
 
 					{% if post.pools %}
