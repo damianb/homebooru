@@ -12,15 +12,15 @@ class ViewLatestController
 	public function runController()
 	{
 		$max = 20;
-		$beans = R::find('post', '(status = ? OR status = ?) ORDER BY id desc LIMIT ?', array(BooruPostModel::ENTRY_ACCEPT, BooruPostModel::ENTRY_NOVOTE, $max));
+		$beans = R::find('post', 'status = ? ORDER BY id desc LIMIT ?', array(BooruPostModel::ENTRY_QUEUE, $max));
 
 		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
-		$this->response->setBody('viewtsun.twig.html');
+		$this->response->setBody('viewposts.twig.html');
 		$this->response->setTemplateVars(array(
 			'page'				=> array(
 				'latest'			=> true,
 			),
-			'entries'			=> $beans,
+			'posts'				=> $beans,
 		));
 
 		return $this->response;
