@@ -1,0 +1,10 @@
+{
+	"site.navigation":[
+		"home",
+		"submit",
+		"tags",
+		"latest",
+		"archive"
+		#"account"
+	]
+}

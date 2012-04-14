@@ -46,10 +46,7 @@
 		<div class="span7 pull-right">
 			<nav data-home-url="{{ url.home() }}">
 				<ul class="nav nav-pills">
-					<li{% if page.home %} class="active"{% endif %}><a href="{{ url.home() }}">home</a></li>
-					<li{% if page.submit %} class="active"{% endif %}><a href="{{ url.submit() }}">post</a></li>
-					<li{% if page.latest %} class="active"{% endif %}><a href="{{ url.latest() }}">latest</a></li>
-					<li{% if page.archive %} class="active"{% endif %}><a href="{{ url.archive() }}">archive</a></li>
+					{% for nav in site.nav %}<li{% if page[nav] %} class="active"{% endif %}><a href="{{ attribute(url, nav) }}">{{ nav }}</a></li>{% endfor %}
 					<!--<li{% if page.account %} class="active"{% endif %}><a href="{{ url.account() }}">my account</a></li>-->
 				</ul>
 			</nav>

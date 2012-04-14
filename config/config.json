@@ -4,6 +4,7 @@
 		"routes",
 		"urls",
 		"controllers",
+		"navigation",
 		"database"
 	],
 	#"admin.message":"Notice: This is a Homebooru development installation. :v",

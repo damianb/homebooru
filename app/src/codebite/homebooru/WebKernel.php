@@ -139,10 +139,11 @@ class WebKernel
 				),
 
 				'site'					=> array(
+					'nav'					=> $this['site.navigation'],
 					'thumburl'				=> $this['site.thumburl'],
 					'smallurl'				=> $this['site.smallurl'],
 					'imageurl'				=> $this['site.imageurl'],
-				)
+				),
 			);
 
 			/**
