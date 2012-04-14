@@ -189,16 +189,61 @@ span.rating-explicit {
  color: @errorText;
 }
 
-span.tag, span.tag-general, span.tag-environment {
+.tag-list { margin: 5px 10px; }
+
+.tag-set {
+ display: inline-block;
+ margin: 7px 12px;
+}
+
+.tag-set + .tag-set {
+ margin-left: 12px;
+}
+
+.tag,
+.tag-general {
  background-color: #006ffa;
  a { color: #fff; }
 }
 
-span.tag-character {
+.tag-character {
  background-color: #0a0;
 }
-span.tag-plane {
+.tag-author {
+ background-color: #a00;
+}
+.tag-plane {
  background-color: #a0a;
+}
+.tag-medium {
+ background-color: #aa0;
+}
+.tag-alias {
+ background-color: #222;
+}
+
+.disabled.tag,
+.disabled.tag-general {
+ .tag;
+ font-weight: bold;
+ border-color: rgba(0,0,0,0.4);
+ color: #fff;
+ text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75);
+}
+.disabled.tag-character {
+ .tag-character;
+}
+.disabled.tag-author {
+ .tag-author;
+}
+.disabled.tag-plane {
+ .tag-plane;
+}
+.disabled.tag-medium {
+ .tag-medium;
+}
+.disabled.tag-alias {
+ .tag-alias;
 }
 
 #tos {

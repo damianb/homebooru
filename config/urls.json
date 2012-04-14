@@ -10,7 +10,12 @@
 		"search":"/search/",
 		"search_tag":"/search/?q=%s",
 
+		"tags":"/tags/",
+		"tag_alias":"/tags/alias/?id=%d",
+		"tag_edit":"/tags/edit/?id=%d",
+
 		"edit":"/edit/?id=%d",
+		"delete":"/delete/?id=%d",
 
 		"pools":"/pool/",
 		"create_pool":"/pool/create/",

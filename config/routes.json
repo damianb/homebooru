@@ -5,9 +5,9 @@
 			"callback":"site.controller.home"
 		},
 
-		"view_latest":{
+		"latest":{
 			"path":"/latest/",
-			"callback":"site.controller.home"
+			"callback":"site.controller.latest"
 		},
 
 		"archive":{
@@ -42,22 +42,36 @@
 
 		"pool_list":{
 			"path":"/pool/",
-			"callback":"site.controller.pool.list"
+			"callback":"site.controller.pool"
 		},
-
 		"pool_create":{
 			"path":"/pool/create/",
 			"callback":"site.controller.pool.create"
 		},
-
 		"pool_view":{
 			"path":"/pool/view/$id:int/",
 			"callback":"site.controller.pool.view"
 		},
-
 		"pool_append":{
 			"path":"/pool/add/",
 			"callback":"site.controller.pool.append"
+		},
+
+		"tags_list":{
+			"path":"/tags/list/",
+			"callback":"site.controller.tags"
+		},
+		"tags_list_page":{
+			"path":"/tags/list/$page:int/",
+			"callback":"site.controller.tags"
+		},
+		"tags_alias":{
+			"path":"/tags/alias/",
+			"callback":"site.controller.tags.alias"
+		},
+		"tags_edit":{
+			"path":"/tags/edit/",
+			"callback":"site.controller.tags.edit"
 		},
 
 		"ajax":{
