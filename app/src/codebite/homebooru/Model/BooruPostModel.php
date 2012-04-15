@@ -38,6 +38,8 @@ class BooruPostModel
 			}
 		}
 
+		$this->tags = NULL;
+
 		// NUL-byte check.
 		//if(strpos($this->text, chr(0)) !== false || strpos($this->submitter_name, chr(0)) !== false || strpos($this->submitter_email, chr(0)) !== false)
 		//{
@@ -86,6 +88,11 @@ class BooruPostModel
 			default:
 				return 'unknown';
 		}
+	}
+
+	public function sourceLinkable()
+	{
+		return (bool) filter_var($this->bean->source, FILTER_VALIDATE_URL);
 	}
 
 	public function bestFit()
