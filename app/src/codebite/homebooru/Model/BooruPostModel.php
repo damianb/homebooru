@@ -16,7 +16,7 @@ class BooruPostModel
 	const ENTRY_DENY = 3;
 	const ENTRY_SPAM = 4;
 	const ENTRY_ACCEPT = 5;
-	const ENTRY_NOVOTE = 6;
+	const ENTRY_LOCKED = 6;
 
 	const RATING_SAFE = 2;
 	const RATING_QUESTIONABLE = 3;
@@ -30,33 +30,9 @@ class BooruPostModel
 
 	public function update()
 	{
-		//$this->submitter_name = trim($this->submitter_name);
-		//$this->submitter_email = trim($this->submitter_email);
-		//$this->text = trim($this->text);
-		//
-		//if(empty($this->submitter_name))
-		//{
-		//	throw new SubmitFailException('No username provided');
-		//}
-		//
-		//if(empty($this->submitter_email))
-		//{
-		//	throw new SubmitFailException('Empty email address supplied');
-		//}
-
-		//if(empty($this->text))
-		//{
-		//	throw new SubmitFailException('Empty entry submitted');
-		//}
-
-		//if(filter_var($this->submitter_email, FILTER_VALIDATE_EMAIL) === false)
-		//{
-		//	throw new SubmitFailException('Invalid email address');
-		//}
-
 		if(!SHOT_DEBUG)
 		{
-			if(filter_var($this->submitter_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 & FILTER_FLAG_IPV6 & FILTER_FLAG_NO_PRIV_RANGE & FILTER_FLAG_NO_RES_RANGE) === false)
+			if(filter_var($this->submitter_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 & FILTER_FLAG_IPV6) === false)
 			{
 				throw new SubmitFailException('Invalid IP address');
 			}
@@ -68,27 +44,6 @@ class BooruPostModel
 		//	throw new SubmitFailException('Take your NUL bytes elsewhere kthxbai');
 		//}
 	}
-
-	//public function getRating()
-	//{
-	//	// wilson score interval
-	//	$net = $this->posrating + $this->negrating;
-	//
-	//	if($net == 0)
-	//	{
-	//		return '0';
-	//	}
-	//
-	//	$z = 1.0;
-	//
-	//	$phat = ($this->posrating / $net);
-	//	return sprintf('%01.1f', 100 * sqrt($phat + $z * $z / (2 * $net) - $z * (($phat * (1 - $phat) + pow($z, 2) / (4 * $net)) / $net)) / (1 + $z * $z / $net));
-	//}
-
-	//public function getGravatar()
-	//{
-	//	return $this->_app->gravatar->get($this->submitter_emhash, false);
-	//}
 
 	public function getTags()
 	{

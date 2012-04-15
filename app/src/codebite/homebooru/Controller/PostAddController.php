@@ -42,7 +42,7 @@ class PostAddController
 
 				$bean = R::dispense('post');
 
-				$bean->status = BooruPostModel::ENTRY_QUEUE; // default status (change to config later)
+				$bean->status = BooruPostModel::ENTRY_ACCEPT; // default status (change to config later)
 
 				$file = HOMEBOORU_IMAGE_IMPORT_ROOT . '/' . basename(trim($data));
 				$ext = str_replace(array('jpg'), array('jpeg'), substr($data, strrpos($data, '.') + 1));

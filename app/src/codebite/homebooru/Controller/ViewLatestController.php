@@ -12,7 +12,7 @@ class ViewLatestController
 	public function runController()
 	{
 		$max = 20;
-		$beans = R::find('post', 'status = ? ORDER BY id desc LIMIT ?', array(BooruPostModel::ENTRY_QUEUE, $max));
+		$beans = R::find('post', 'status = ? ORDER BY id desc LIMIT ?', array(BooruPostModel::ENTRY_ACCEPT, $max));
 
 		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
 		$this->response->setBody('viewposts.twig.html');

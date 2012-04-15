@@ -13,7 +13,7 @@ class PostViewController
 	{
 		$id = $this->request->getRoute()->get('id');
 
-		$bean = R::findOne('post', '(status = ? AND id = ?)', array(BooruPostModel::ENTRY_QUEUE, $id));
+		$bean = R::findOne('post', '(status = ? AND id = ?)', array(BooruPostModel::ENTRY_ACCEPT, $id));
 
 		//$tag = R::findOne('tag', 'title = ?', array('shakugan_no_shana'));
 		//$tag->type = \codebite\homebooru\Model\BooruTagModel::TAG_PLANE;

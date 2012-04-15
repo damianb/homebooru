@@ -19,14 +19,14 @@ class ArchiveController
 
 		$max = 50;
 		$offset = $max * ($page - 1);
-		$beans = R::find('post', 'status = ? ORDER BY id desc LIMIT ? OFFSET ?', array(BooruPostModel::ENTRY_QUEUE, $max, $offset));
+		$beans = R::find('post', 'status = ? ORDER BY id desc LIMIT ? OFFSET ?', array(BooruPostModel::ENTRY_ACCEPT, $max, $offset));
 
 		$pagination = array();
 		if(!empty($beans))
 		{
 			$total = (int) R::$f->begin()
 				->select('COUNT(id)')->from('post')
-				->where('status = ?')->put(BooruPostModel::ENTRY_QUEUE) // ENTRY_ACCEPT
+				->where('status = ?')->put(BooruPostModel::ENTRY_ACCEPT)
 				->order('BY id')
 				->get('cell');
 
