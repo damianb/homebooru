@@ -39,8 +39,7 @@
 						<div class="md5 small"><div class="pull-left">md5: </div><div class="pull-right">&nbsp;{{ post.full_md5 }}</div></div>
 						<div class="clear"></div><br>
 
-						<div class="author">author: {{ post.author|default("unknown") }}</div>
-						<div class="source">source: {{ post.source|default("unknown") }}</div>
+						{% if post.source %}<div class="source">source: {% if post.sourceLinkable() %}<a href="{{ post.source }}" title="{{ post.source }}">{% if post.source|length > 25 %}<em>{{ post.source|slice(0, 25) ~ '...' }}</em>{% else %}{{ post.source }}{% endif %}</a>{% else %}{% if post.source|length > 15 %}<span title="{{ post.source }}">{{ '<em>' ~ post.source|slice(0, 15) ~ '...</em>' }}</span>{% else %}{{ post.source }}{% endif %}{% endif %}</div>{% endif %}
 					</div>
 
 					<div class="tags">

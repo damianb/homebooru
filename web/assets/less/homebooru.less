@@ -153,20 +153,21 @@ input, select, textarea {
  }
 }
 
+a.thumbnail {
+ background-color: #fcfcfc;
+ margin: 0 auto;
+ img {
+  border: 1px solid #e3e3e3;
+ }
+ &:hover {
+  border: 1px solid lighten(saturate(@errorText, 30), 15);
+ }
+}
+
 .posts {
  .img {
   margin: inherit auto;
   text-align: center;
-  a.thumbnail {
-   background-color: #fcfcfc;
-   margin: 0 auto;
-   img {
-	border: 1px solid #e3e3e3;
-   }
-   &:hover {
-	border: 1px solid lighten(saturate(@errorText, 30), 15);
-   }
-  }
   .size {
    display: inline-block;
    margin: 5px auto;

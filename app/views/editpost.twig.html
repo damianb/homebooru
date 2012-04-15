@@ -1,0 +1,67 @@
+{% extends "layout.twig.html" %}
+{% block content %}
+	{% if form.submit -%}
+	<div class="alert alert-{% if not form.success %}error{% else %}success{% endif %}">
+		<a class="close" data-dismiss="alert">&#215;</a>
+		{% if not form.success -%}
+			<h4 class="alert-heading">Error</h4>
+			{{ form.error }}
+		{%- else -%}
+			<h4 class="alert-heading">Form submitted successfully</h4>
+			The entry was successfully updated.
+		{%- endif %}
+	</div>
+	{%- endif %}
+
+	<h2>edit image</h2>
+		<div class="editpost">
+			<div class="pull-left">
+				<ul class="thumbnails">
+					<li class="img span3">
+						<a href="{{ url.archive_id(post.id) }}" class="thumbnail" style="width:{{ post.thumb_width + 2 }}px; height:{{ post.thumb_height + 2 }}px">
+							<img src="{{ site.thumburl ~ post.thumb_file }}" alt="{{ post.getTags()|join(' ') }}" title="{{ post.getTags()|join(' ') }}" style="height: {{ post.thumb_height }}px; width: {{ post.thumb_width }}px">
+						</a>
+					</li>
+				</ul>
+			</div>
+
+			<div class="pull-right span9">
+				<form class="form-horizontal" id="editpost" action="{{ url.edit(post.id) }}" method="post">
+					<fieldset>
+						<div class="control-group">
+							<label class="control-label" for="rating">content rating</label>
+							<div class="controls rating-group btn-group" data-toggle="buttons-radio" id="rating">
+								<button id="rating-safe" name="rating-safe" class="btn btn-success btn-small{% if post.rating == constant('codebite\\homebooru\\Model\\BooruPostModel::RATING_SAFE') %} active{% endif %}" data-toggle="button">safe</button>
+								<button id="rating-questionable" name="rating-questionable" class="btn btn-warning btn-small{% if post.rating == constant('codebite\\homebooru\\Model\\BooruPostModel::RATING_QUESTIONABLE') %} active{% endif %}" data-toggle="button">questionable</button>
+								<button id="rating-explicit" name="rating-explicit" class="btn btn-danger btn-small{% if post.rating == constant('codebite\\homebooru\\Model\\BooruPostModel::RATING_EXPLICIT') %} active{% endif%}" data-toggle="button">explicit</button>
+							</div>
+						</div>
+
+						<div class="control-group">
+							<label class="control-label" for="name">source</label>
+							<div class="controls">
+								<input type="text" class="span5" placeholder="image source" value="{{ post.source|raw }}" id="source" name="source">
+							</div>
+						</div>
+
+						<div class="control-group">
+							<label class="control-label" for="tags">tags</label>
+							<div class="controls">
+								<textarea class="input-xxlarge" id="tags" name="tags" rows="3" placeholder="tags">{{ post.getTags()|join(' ') }}</textarea>
+							</div>
+						</div>
+
+						<div class="form-actions">
+							<input type="hidden" name="id" value="{{ post.id }}">
+							<input type="hidden" name="formkey" value="{{ form.key }}">
+							<input type="hidden" name="formtime" value="{{ form.time }}">
+							<input type="hidden" name="submit" value="1">
+							<button type="submit" class="btn btn-danger">Save changes</button>
+							<button class="btn">Cancel</button>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+			<div class="clear"></div>
+		</div>
+{% endblock %}
