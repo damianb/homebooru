@@ -69,6 +69,7 @@ class PostEditController
 				$current_tags = $bean->getTags();
 				R::addTags($bean, array_diff($tags, $current_tags));
 
+				$source = htmlspecialchars_decode($source, ENT_QUOTES);
 				$bean->source = $source;
 				$bean->rating = $rating;
 
