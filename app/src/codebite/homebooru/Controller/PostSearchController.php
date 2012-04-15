@@ -42,7 +42,7 @@ class PostSearchController
 		);
 
 		// mass-define a bunch of array vars
-		$beans = $exclude_normal_tags = $normal_tags = $param_tags = $exclude_param_tags = array();
+		$beans = $search = $exclude_normal_tags = $normal_tags = $param_tags = $exclude_param_tags = array();
 		if(!empty($_param_tags))
 		{
 			foreach($_param_tags as $tag)
@@ -218,105 +218,90 @@ class PostSearchController
 			$exclude_normal_tags = array_diff($exclude_normal_tags, $drop);
 		}
 
+		$fn_put = function($value, $key, $state) {
+			$state->put($value);
+		};
+
 		// at this point we should have four possible arrays of search parameters. now we need to grab their tag data...
 		$where_array = array_merge($normal_tags, $exclude_normal_tags);
 		if(!empty($where_array) || !empty($param_tags))
 		{
-			$search = $drop = array();
 			if(!empty($where_array))
 			{
-				$wheres = '(' . substr(str_repeat('title = ? OR ', count($where_array)), 0, -4) . ')';
-
 				$state = R::$f->begin()
-					->select('*')->from('tag')
-					->where($wheres);
-				foreach($where_array as $put)
+					->select('post_id')->from('post_tag')
+					->left_join('tag')->on('post_tag.tag_id = tag.id')
+					->where('tag.title in(' . implode(',', array_fill(0, count($normal_tags), '?')) . ')');
+				array_walk($normal_tags, $fn_put, $state);
+				$post_ids = $state->get();
+
+				$posts = array();
+				foreach($post_ids as $entry)
 				{
-					$state->put($put);
+					$posts[$entry['post_id']] = (isset($posts[$entry['post_id']])) ? $posts[$entry['post_id']] + 1 : 1;
 				}
-				$tag_data = $state->get();
-
-				unset($wheres, $where_array);
-				// we now have tag id's and stuffs. PROCEED WITH CATGIRL^W WORLD DOMINATION. >:3
-
-				$normal_flip = array_flip($normal_tags);
-				$include_ids = $exclude_ids = array();
-				foreach($tag_data as $tag)
+				foreach($posts as $key => $entry)
 				{
-					if(isset($normal_flip[$tag['title']]))
+					if($entry !== count($normal_tags))
 					{
-						$include_ids[] = (int) $tag['id'];
-					}
-					else
-					{
-						$exclude_ids[] = (int) $tag['id'];
+						unset($posts[$key]);
 					}
 				}
+				$search = array_keys($posts);
 
-				$where_array = array_merge($include_ids, $exclude_ids);
-				$wheres =  '(' . implode(' OR ', array_fill(0, count($where_array), 'tag_id = ?')) . ')';
-
-				$state = R::$f->begin()
-					->select('*')->from('post_tag')
-					->where($wheres);
-				foreach($where_array as $put)
+				if(!empty($posts))
 				{
-					$state->put($put);
-				}
-				$posts_tagged = $state->get();
-
-				$exclude_flip = array_flip($exclude_ids);
-
-				foreach($posts_tagged as $key => $entry)
-				{
-					if(isset($drop[$entry['post_id']]))
+					// check for anything to exclude
+					if(!empty($exclude_normal_tags))
 					{
-						continue;
-					}
+						$state = R::$f->begin()
+							->select('post_id')->from('post_tag')
+							->left_join('tag')->on('post_tag.tag_id = tag.id')
+							->where('(post_tag.post_id in(' . implode(',', array_fill(0, count($search), '?')) . ') AND tag.title in(' . implode(',', array_fill(0, count($exclude_normal_tags), '?')) . '))');
+						array_walk(array_merge($search, $exclude_normal_tags), $fn_put, $state);
+						$exclude_ids = $state->get();
 
-					if(isset($exclude_flip[$entry['tag_id']]))
-					{
-						$drop[$entry['post_id']] = true;
-						unset($search[$entry['post_id']]);
-						continue;
+						foreach($exclude_ids as $entry)
+						{
+							if(isset($posts[$entry['post_id']]))
+							{
+								unset($posts[$entry['post_id']]);
+							}
+						}
+						$search = array_keys($posts);
 					}
-
-					$search[$entry['post_id']] = (int) $entry['post_id'];
 				}
 			}
 
-			// please don't kill me for this, I have to do it because RedBean's tagging API just doesn't have the balls for what we're trying to do ;_;
-			$wheres = '(';
-			$wheres .= (!empty($search)) ? implode(' OR ', array_fill(0, count($search), 'id = ?')) : '';
-
-			if(!empty($param_tags) || !empty($exclude_param_tags))
+			if(!empty($search) || !empty($param_tags))
 			{
-				if(!empty($search))
-				{
-					$wheres = '(' . $wheres . ') AND (';
-				}
-				if($param_tags)
-				{
-					$_param_tags = $param_tags;
-					array_walk($_param_tags, function(&$value, $key) {
-						$value = sprintf('%s = ?', $key);
-					});
-					$wheres .= implode(' AND ', $_param_tags);
-				}
-				if($exclude_param_tags)
-				{
-					$_exclude_param_tags = $exclude_param_tags;
-					array_walk($_exclude_param_tags, function(&$value, $key) {
-						$value = sprintf('%s <> ?', $key);
-					});
-					$wheres .= implode(' AND ', $_exclude_param_tags);
-				}
-				$wheres .= (!empty($search)) ? ')' : '';
-			}
-			$wheres .= ')';
+				// please don't kill me for this, I have to do it because RedBean's tagging API just doesn't have the balls for what we're trying to do ;_;
+				$wheres = '(status = ' . BooruPostModel::ENTRY_ACCEPT;
+				$wheres .= (!empty($search)) ? ' AND (' . implode(' OR ', array_fill(0, count($search), 'id = ?')) . ')' : '';
 
-			if(strlen($wheres) > 2)
-			{
+				if(!empty($param_tags) || !empty($exclude_param_tags))
+				{
+					$wheres .= ' AND (';
+					if($param_tags)
+					{
+						$_param_tags = $param_tags;
+						array_walk($_param_tags, function(&$value, $key) {
+							$value = sprintf('%s = ?', $key);
+						});
+						$wheres .= implode(' AND ', $_param_tags);
+					}
+					if($exclude_param_tags)
+					{
+						$_exclude_param_tags = $exclude_param_tags;
+						array_walk($_exclude_param_tags, function(&$value, $key) {
+							$value = sprintf('%s <> ?', $key);
+						});
+						$wheres .= implode(' AND ', $_exclude_param_tags);
+					}
+					$wheres .= ')';
+				}
+				$wheres .= ')';
+
 				$beans = R::find('post', $wheres, array_merge($search, array_values($param_tags), array_values($exclude_param_tags)));
 			}
 		}
