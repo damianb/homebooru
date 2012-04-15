@@ -38,7 +38,8 @@ class PostAddController
 
 				preg_match_all('#\w+[\w\(\)]*#i', $tags, $_tags);
 				$tags = array_unique(array_shift($_tags));
-				// run tags through alias resolver
+
+				// @todo run tags through alias resolver
 
 				$bean = R::dispense('post');
 
