@@ -58,6 +58,10 @@
 		},
 
 		"tags_list":{
+			"path":"/tags/",
+			"callback":"site.controller.tags"
+		},
+		"tags_list":{
 			"path":"/tags/list/",
 			"callback":"site.controller.tags"
 		},
