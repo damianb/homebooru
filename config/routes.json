@@ -57,7 +57,7 @@
 			"callback":"site.controller.pool.append"
 		},
 
-		"tags_list":{
+		"tags":{
 			"path":"/tags/",
 			"callback":"site.controller.tags"
 		},
