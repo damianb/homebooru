@@ -1,10 +1,4 @@
-Sigma Bulletin Board is DUAL Licensed under the MIT and GPLv2 licenses.
-You, the user, have the right to choose the license that fits best for
-your project.
-
--------------------------------------------------------------------------------
-
-Copyright (c) 2012 @copy@
+Copyright (c) 2012 Damian Bushong
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

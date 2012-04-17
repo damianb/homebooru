@@ -7,6 +7,7 @@
 		"navigation",
 		"database"
 	],
+
 	#"admin.message":"Notice: This is a Homebooru development installation. :v",
 	"admin.email":"katana@codebite.net",
 	"admin.name":"Katana",
@@ -17,11 +18,5 @@
 
 	"site.thumburl":"/hb-images/thumb/",
 	"site.smallurl":"/hb-images/small/",
-	"site.imageurl":"/hb-images/full/",
-
-	"site.small_size":650,
-	"site.thumbnail_size":150,
-
-	"gravatar.disable":false,
-	"gravatar.size":32
+	"site.imageurl":"/hb-images/full/"
 }

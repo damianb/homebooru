@@ -28,7 +28,7 @@ $injector->setInjector('gravatar', function() {
 		$gravatar->enableSecureImages();
 	}
 	$gravatar->setMaxRating($app['gravatar.rating'] ?: 'g');
-	$gravatar->setAvatarSize($app['gravatar.size'] ?: 150);
+	$gravatar->setAvatarSize($app['gravatar.size'] ?: 32);
 	$gravatar->setDefaultImage($app['gravatar.default'] ?: 'mm');
 
 	return $gravatar;

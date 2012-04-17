@@ -77,6 +77,7 @@ class PostAddController
 				// small version, only if needed
 				if($bean->full_height > $this->app['site.small_size'] || $bean->full_width > $this->app['site.small_size'])
 				{
+					$_size = $this->app['site.small_size'] ?: 650;
 					$resize_small = new \Imagine\Image\Box($this->app['site.small_size'], $this->app['site.small_size']);
 					$small = $image->thumbnail($resize_small);
 
@@ -96,6 +97,7 @@ class PostAddController
 				}
 
 				// thumbnail
+				$_size = $this->app['site.thumbnail_size'] ?: 150;
 				$resize_thumb = new \Imagine\Image\Box($this->app['site.thumbnail_size'], $this->app['site.thumbnail_size']);
 				$thumb = $image->thumbnail($resize_thumb);
 
