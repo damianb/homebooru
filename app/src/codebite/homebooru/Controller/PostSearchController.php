@@ -240,7 +240,7 @@ class PostSearchController
 							->from('post_tag pt')
 							->inner_join('tag t on pt.tag_id = t.id')
 							->where('t.title in(' . implode(',', array_fill(0, count($exclude_normal_tags), '?')) . ')')
-						->addSQL('(')
+						->addSQL(')')
 						->addSQL('notag on p.id = notag.post_id');
 				}
 				$state->inner_join()
