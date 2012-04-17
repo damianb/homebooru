@@ -16,3 +16,6 @@
 [submodule "app/vendor/Imagine"]
 	path = app/vendor/Imagine
 	url = git://github.com/avalanche123/Imagine.git
+[submodule "app/vendor/lessphp"]
+	path = app/vendor/lessphp
+	url = git://github.com/leafo/lessphp.git
