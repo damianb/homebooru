@@ -223,87 +223,76 @@ class PostSearchController
 		};
 
 		// at this point we should have four possible arrays of search parameters. now we need to grab their tag data...
-		$where_array = array_merge($normal_tags, $exclude_normal_tags);
-		if(!empty($where_array) || !empty($param_tags))
+		if(!empty($normal_tags) || !empty($param_tags))
 		{
-			if(!empty($where_array))
+			// start building query
+			$state = R::$f->begin()
+				->select('p.*')->from('post p');
+
+			// add tag search stuff
+			if(!empty($normal_tags))
 			{
-				$state = R::$f->begin()
-					->select('post_id')->from('post_tag')
-					->left_join('tag')->on('post_tag.tag_id = tag.id')
-					->where('tag.title in(' . implode(',', array_fill(0, count($normal_tags), '?')) . ')');
-				array_walk($normal_tags, $fn_put, $state);
-				$post_ids = $state->get();
-
-				$posts = array();
-				foreach($post_ids as $entry)
+				if(!empty($exclude_normal_tags))
 				{
-					$posts[$entry['post_id']] = (isset($posts[$entry['post_id']])) ? $posts[$entry['post_id']] + 1 : 1;
+					$state->left_outer_join()
+						->addSQL('(')
+							->select('pt.post_id')
+							->from('post_tag pt')
+							->inner_join('tag t on pt.tag_id = t.id')
+							->where('t.title in(' . implode(',', array_fill(0, count($exclude_normal_tags), '?')) . ')')
+						->addSQL('(')
+						->addSQL('notag on p.id = notag.post_id');
 				}
-				foreach($posts as $key => $entry)
-				{
-					if($entry !== count($normal_tags))
-					{
-						unset($posts[$key]);
-					}
-				}
-				$search = array_keys($posts);
-
-				if(!empty($posts))
-				{
-					// check for anything to exclude
-					if(!empty($exclude_normal_tags))
-					{
-						$state = R::$f->begin()
-							->select('post_id')->from('post_tag')
-							->left_join('tag')->on('post_tag.tag_id = tag.id')
-							->where('(post_tag.post_id in(' . implode(',', array_fill(0, count($search), '?')) . ') AND tag.title in(' . implode(',', array_fill(0, count($exclude_normal_tags), '?')) . '))');
-						array_walk(array_merge($search, $exclude_normal_tags), $fn_put, $state);
-						$exclude_ids = $state->get();
-
-						foreach($exclude_ids as $entry)
-						{
-							if(isset($posts[$entry['post_id']]))
-							{
-								unset($posts[$entry['post_id']]);
-							}
-						}
-						$search = array_keys($posts);
-					}
-				}
+				$state->inner_join()
+					->addSQL('(')
+						->select('pt.post_id')
+						->from('post_tag pt')
+						->inner_join('tag t on pt.tag_id = t.id')
+						->where('t.title in(' . implode(',', array_fill(0, count($normal_tags), '?')) . ')')
+						->group_by('pt.post_id')
+						->having('count(distinct t.title) = ' . (int) count($normal_tags))
+					->addSQL(')')
+					->addSQL('yestag on p.id = yestag.post_id');
 			}
 
-			if(!empty($search) || !empty($param_tags))
+			// build where conditions
+			$wheres = '(';
+			if(!empty($exclude_normal_tags))
 			{
-				// please don't kill me for this, I have to do it because RedBean's tagging API just doesn't have the balls for what we're trying to do ;_;
-				$wheres = '(status = ' . BooruPostModel::ENTRY_ACCEPT;
-				$wheres .= (!empty($search)) ? ' AND (' . implode(' OR ', array_fill(0, count($search), 'id = ?')) . ')' : '';
+				$wheres .= 'notag.post_id is null AND ';
+			}
 
-				if(!empty($param_tags) || !empty($exclude_param_tags))
+			$wheres .= 'status = ' . BooruPostModel::ENTRY_ACCEPT;
+
+			// build extra param conditions
+			if(!empty($param_tags) || (!empty($normal_tags) && !empty($exclude_param_tags)))
+			{
+				$wheres .= ' AND (';
+				if($param_tags)
 				{
-					$wheres .= ' AND (';
-					if($param_tags)
-					{
-						$_param_tags = $param_tags;
-						array_walk($_param_tags, function(&$value, $key) {
-							$value = sprintf('%s = ?', $key);
-						});
-						$wheres .= implode(' AND ', $_param_tags);
-					}
-					if($exclude_param_tags)
-					{
-						$_exclude_param_tags = $exclude_param_tags;
-						array_walk($_exclude_param_tags, function(&$value, $key) {
-							$value = sprintf('%s <> ?', $key);
-						});
-						$wheres .= implode(' AND ', $_exclude_param_tags);
-					}
-					$wheres .= ')';
+					$_param_tags = $param_tags;
+					array_walk($_param_tags, function(&$value, $key) {
+						$value = sprintf('%s = ?', $key);
+					});
+					$wheres .= implode(' AND ', $_param_tags);
+				}
+				if($exclude_param_tags)
+				{
+					$_exclude_param_tags = $exclude_param_tags;
+					array_walk($_exclude_param_tags, function(&$value, $key) {
+						$value = sprintf('%s <> ?', $key);
+					});
+					$wheres .= implode(' AND ', $_exclude_param_tags);
 				}
 				$wheres .= ')';
-
-				$beans = R::find('post', $wheres, array_merge($search, array_values($param_tags), array_values($exclude_param_tags)));
 			}
+			$wheres .= ')';
+
+			$state->where($wheres);
+			$where_array = array_merge($exclude_normal_tags, $normal_tags, array_values($param_tags), array_values($exclude_param_tags));
+			array_walk($where_array, $fn_put, $state);
+
+			$beans = R::convertToBeans('post', $state->get());
 		}
 
 		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
