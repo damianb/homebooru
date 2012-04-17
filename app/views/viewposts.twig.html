@@ -10,7 +10,7 @@
 			<a href="{{ url.archive_id(post.id) }}" class="thumbnail" style="width:{{ post.thumb_width + 2 }}px; height:{{ post.thumb_height + 2 }}px">
 				<img src="{{ site.thumburl ~ post.thumb_file }}" alt="{{ post.getTags()|join(' ') }}" title="{{ post.getTags()|join(' ') }}" style="height: {{ post.thumb_height }}px; width: {{ post.thumb_width }}px">
 			</a>
-			<div class="size" style="width:{{ post.thumb_width + 22}}px"><div class="pull-left">rating: <span class="rating rating-{{ post.getRating() }}" title="{{ post.getRating() }}">{% if post.getRating() == 'unknown' %}?{% else %}{{ post.getRating()|slice(0, 1)|capitalize }}{% endif %}</span></div><div class="pull-right">{{ post.full_width }}<span class="small">px</span> &times; {{ post.full_height }}<span class="small">px</span></div></div>
+			<div class="size" style="width:{{ post.thumb_width + 42}}px"><div class="pull-left">rating: <span class="rating rating-{{ post.getRating() }}" title="{{ post.getRating() }}">{% if post.getRating() == 'unknown' %}?{% else %}{{ post.getRating()|slice(0, 1)|capitalize }}{% endif %}</span></div><div class="pull-right">{{ post.full_width }}<span class="small">px</span> &times; {{ post.full_height }}<span class="small">px</span></div></div>
 		</li>
 	{% endfor -%}
 	</ul>
