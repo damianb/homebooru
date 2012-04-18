@@ -9,11 +9,16 @@ if(!defined('SHOT_ROOT')) exit;
 class PostSearchController
 	extends ObjectController
 {
-	const SEARCH_MAX = 20;
+	const SEARCH_MAX = 40;
 
 	public function runController()
 	{
-		$max = self::SEARCH_MAX;
+		$page = $this->request->getInput('REQUEST::page', 1);
+		if($page === 0)
+		{
+			$page = 1;
+		}
+		$offset = self::SEARCH_MAX * ($page - 1);
 
 		$_search = $tags = $this->request->getInput('REQUEST::q', '');
 		$tags = explode(' ', $tags);
@@ -42,7 +47,7 @@ class PostSearchController
 		);
 
 		// mass-define a bunch of array vars
-		$beans = $search = $exclude_normal_tags = $normal_tags = $param_tags = $exclude_param_tags = array();
+		$beans = $pagination = $search = $exclude_normal_tags = $normal_tags = $param_tags = $exclude_param_tags = array();
 		if(!empty($_param_tags))
 		{
 			foreach($_param_tags as $tag)
@@ -69,122 +74,8 @@ class PostSearchController
 			}
 
 			// post-processing of param tags, for validation and stuff
-			foreach($param_tags as $param => $value)
-			{
-				switch($param)
-				{
-					case 'rating':
-						switch($value)
-						{
-							case 'u':
-							case 'unknown':
-								$param_tags['rating'] = BooruPostModel::RATING_UNKNOWN;
-							break;
-
-							case 'e':
-							case 'explicit':
-								$param_tags['rating'] = BooruPostModel::RATING_EXPLICIT;
-							break;
-
-							case 'q':
-							case 'questionable':
-								$param_tags['rating'] = BooruPostModel::RATING_QUESTIONABLE;
-							break;
-
-							case 's':
-							case 'safe':
-								$param_tags['rating'] = BooruPostModel::RATING_SAFE;
-							break;
-
-							default:
-								unset($param_tags['rating']);
-							break;
-						}
-					break;
-
-					case 'md5':
-					case 'sha1':
-						if(!ctype_xdigit($value))
-						{
-							unset($param_tags[$param]);
-						}
-						else
-						{
-							$param_tags['full_' . $param] = $value;
-							unset($param_tags[$param]);
-						}
-					break;
-
-					case 'id':
-						if(!ctype_digit($value))
-						{
-							unset($param_tags['id']);
-						}
-						else
-						{
-							$param_tags['id'] = (int) $param_tags['id'];
-						}
-					break;
-				}
-			}
-			foreach($exclude_param_tags as $param => $value)
-			{
-				switch($param)
-				{
-					case 'rating':
-						switch($value)
-						{
-							case 'u':
-							case 'unknown':
-								$exclude_param_tags['rating'] = BooruPostModel::RATING_UNKNOWN;
-							break;
-
-							case 'e':
-							case 'explicit':
-								$exclude_param_tags['rating'] = BooruPostModel::RATING_EXPLICIT;
-							break;
-
-							case 'q':
-							case 'questionable':
-								$exclude_param_tags['rating'] = BooruPostModel::RATING_QUESTIONABLE;
-							break;
-
-							case 's':
-							case 'safe':
-								$exclude_param_tags['rating'] = BooruPostModel::RATING_SAFE;
-							break;
-
-							default:
-								unset($exclude_param_tags['rating']);
-							break;
-						}
-					break;
-
-					case 'md5':
-					case 'sha1':
-						if(!ctype_xdigit($value))
-						{
-							unset($exclude_param_tags[$param]);
-						}
-						else
-						{
-							$exclude_param_tags['full_' . $param] = $value;
-							unset($exclude_param_tags[$param]);
-						}
-					break;
-
-					case 'id':
-						if(!ctype_digit($value))
-						{
-							unset($exclude_param_tags['id']);
-						}
-						else
-						{
-							$exclude_param_tags['id'] = (int) $exclude_param_tags['id'];
-						}
-					break;
-				}
-			}
+			$this->validateParamTags($param_tags);
+			$this->validateParamTags($exclude_param_tags);
 		}
 		// parse through the normal tags and find any exclusions specified
 		if(!empty($_normal_tags))
@@ -288,11 +179,61 @@ class PostSearchController
 			}
 			$wheres .= ')';
 
-			$state->where($wheres);
+			$state->where($wheres)
+				->order_by('id desc');
+
 			$where_array = array_merge($exclude_normal_tags, $normal_tags, array_values($param_tags), array_values($exclude_param_tags));
 			array_walk($where_array, $fn_put, $state);
 
+			// Duplicate this query so we can get a total result count (for pagination) and a query set
+			list($query, $params) = $state->getQuery();
+
+			$state = R::$f->begin()
+				->addSQL(str_replace('p.*', 'count(p.id) as total_results', $query));
+			foreach($params as $param)
+			{
+				$state->put($param);
+			}
+			$total = $state->get('cell');
+
+			$state = R::$f->begin()
+				->addSQL($query);
+			foreach($params as $param)
+			{
+				$state->put($param);
+			}
+			$state->limit(self::SEARCH_MAX)
+				->offset($offset);
+
 			$beans = R::convertToBeans('post', $state->get());
+
+			$total_pages = floor((($total % self::SEARCH_MAX) != 0) ? ($total / self::SEARCH_MAX) + 1 : $total / self::SEARCH_MAX);
+
+			// Run through and generate a number of page links...
+			$p = array();
+			for($i = -3; $i <= 3; $i++)
+			{
+				// "before" first page?
+				if($page + $i < 1)
+				{
+					continue;
+				}
+				elseif($page + $i > $total_pages)
+				{
+					continue;
+				}
+
+				$p[] = $page + $i;
+			}
+			$pagination = array(
+				'first'		=> 1,
+				'prev'		=> ($page != 1) ? $page - 1 : false,
+				'current'	=> $page,
+				'next'		=> (($page + self::SEARCH_MAX) > $total) ? $page + 1 : false,
+				'pages'		=> $p,
+				'last'		=> $total_pages,
+				'total'		=> $total,
+			);
 		}
 
 		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
@@ -303,9 +244,72 @@ class PostSearchController
 				'search'			=> true,
 			),
 			'posts'				=> $beans,
+			'pagination'		=> $pagination,
 			'search_tags'		=> $_search,
 		));
 
 		return $this->response;
+	}
+
+	protected function validateParamTags(array &$param_tags)
+	{
+		foreach($param_tags as $param => $value)
+		{
+			switch($param)
+			{
+				case 'rating':
+					switch($value)
+					{
+						case 'u':
+						case 'unknown':
+							$param_tags['rating'] = BooruPostModel::RATING_UNKNOWN;
+						break;
+
+						case 'e':
+						case 'explicit':
+							$param_tags['rating'] = BooruPostModel::RATING_EXPLICIT;
+						break;
+
+						case 'q':
+						case 'questionable':
+							$param_tags['rating'] = BooruPostModel::RATING_QUESTIONABLE;
+						break;
+
+						case 's':
+						case 'safe':
+							$param_tags['rating'] = BooruPostModel::RATING_SAFE;
+						break;
+
+						default:
+							unset($param_tags['rating']);
+						break;
+					}
+				break;
+
+				case 'md5':
+				case 'sha1':
+					if(!ctype_xdigit($value))
+					{
+						unset($param_tags[$param]);
+					}
+					else
+					{
+						$param_tags['full_' . $param] = $value;
+						unset($param_tags[$param]);
+					}
+				break;
+
+				case 'id':
+					if(!ctype_digit($value))
+					{
+						unset($param_tags['id']);
+					}
+					else
+					{
+						$param_tags['id'] = (int) $param_tags['id'];
+					}
+				break;
+			}
+		}
 	}
 }

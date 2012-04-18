@@ -9,6 +9,8 @@ if(!defined('SHOT_ROOT')) exit;
 class ArchiveController
 	extends ObjectController
 {
+	const SEARCH_MAX = 40;
+
 	public function runController()
 	{
 		$page = (int) $this->request->getRoute()->get('page');
@@ -17,9 +19,8 @@ class ArchiveController
 			$page = 1;
 		}
 
-		$max = 50;
-		$offset = $max * ($page - 1);
-		$beans = R::find('post', 'status = ? ORDER BY id desc LIMIT ? OFFSET ?', array(BooruPostModel::ENTRY_ACCEPT, $max, $offset));
+		$offset = self::SEARCH_MAX * ($page - 1);
+		$beans = R::find('post', 'status = ? ORDER BY id desc LIMIT ? OFFSET ?', array(BooruPostModel::ENTRY_ACCEPT, self::SEARCH_MAX, $offset));
 
 		$pagination = array();
 		if(!empty($beans))
@@ -30,7 +31,7 @@ class ArchiveController
 				->order('BY id')
 				->get('cell');
 
-			$total_pages = floor((($total % $max) != 0) ? ($total / $max) + 1 : $total / $max);
+			$total_pages = floor((($total % self::SEARCH_MAX) != 0) ? ($total / self::SEARCH_MAX) + 1 : $total / self::SEARCH_MAX);
 
 			// Run through and generate a number of page links...
 			$p = array();
@@ -52,7 +53,7 @@ class ArchiveController
 				'first'		=> 1,
 				'prev'		=> ($page != 1) ? $page - 1 : false,
 				'current'	=> $page,
-				'next'		=> (($page + $max) > $total) ? $page + 1 : false,
+				'next'		=> (($page + self::SEARCH_MAX) > $total) ? $page + 1 : false,
 				'pages'		=> $p,
 				'last'		=> $total_pages,
 				'total'		=> $total,
