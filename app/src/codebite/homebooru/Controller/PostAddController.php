@@ -24,6 +24,8 @@ class PostAddController
 
 			$data = $this->request->getInput('POST::file', '');
 
+			$source = $this->request->getInput('POST::source', '');
+			$rating = $this->request->getInput('POST::rating', '');
 			$tags = $this->request->getInput('POST::tags', '');
 
 			$ip = $this->request->getIP();
@@ -117,9 +119,23 @@ class PostAddController
 				unset($thumb);
 
 				// special metadata
-				$bean->source = ''; // unknown, default
-				$bean->author = ''; // unknown, default
-				$bean->rating = BooruPostModel::RATING_UNKNOWN;
+				switch($rating)
+				{
+					case 'safe':
+						$rating = BooruPostModel::RATING_SAFE;
+					break;
+					case 'questionable':
+						$rating = BooruPostModel::RATING_QUESTIONABLE;
+					break;
+					case 'explicit':
+						$rating = BooruPostModel::RATING_EXPLICIT;
+					break;
+					default:
+						$rating = BooruPostModel::RATING_UNKNOWN;
+				}
+
+				$bean->source = $source;
+				$bean->rating = $rating;
 
 				$bean->submit_time = $now;
 

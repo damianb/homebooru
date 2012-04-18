@@ -1,6 +1,6 @@
 {% extends "layout.twig.html" %}
 {% block content %}
-<form action="{{ url.submit() }}" name="entry" method="post" class="well">
+<form action="{{ url.submit() }}" id="addentry" name="addentry" method="post" class="well">
 	{% if form.submit -%}
 	<div class="alert alert-{% if not form.success %}error{% else %}success{% endif %}">
 		<a class="close" data-dismiss="alert">&#215;</a>
@@ -16,20 +16,18 @@
 	<fieldset>
 		<legend>submit new entry</legend>
 
-		<br>
-		<input class="large" id="file" name="file" size="30" type="text" placeholder="filename">
-		{#
-		<input class="large" id="email" name="email" size="30" type="email" placeholder="email@email.com" value="{{ form.prev.email }}">
-		<br>
-		<span class="help-block">by submitting your entry, you agree to our <a href="#" id="toslink">submission terms and conditions</a></span>
-		<br>
-		<div id="tos">
-			<h3>Terms and Conditions</h3>
-			By submitting your content to this site (hereinafter “we”, “us”, “our”), you agree to be legally bound by the following terms. If you do not agree to be legally bound by all of the following terms then please do not submit any content to this site in any way. We may change these at any time and we’ll do our utmost in informing you, though it would be prudent to review this regularly yourself as your continued usage of this site after changes mean you agree to be legally bound by these terms as they are updated and/or amended.
-			<br><br>
-			You agree not to post any abusive, obscene, vulgar, slanderous, hateful, threatening, sexually-orientated or any other material that may violate any laws be it of your country, the country where this site is hosted or International Law. Doing so may lead to you being immediately and permanently banned, with notification of your Internet Service Provider and/or third-party spam-tracking databases if deemed required by us. The IP address of all submissions are recorded to aid in enforcing these conditions. You agree that we have the right to remove, edit, move or close any topic at any time should we see fit. As a user you agree to any information you have entered to being stored in a database. While this information will not be disclosed to any third party without your consent, we shall be held responsible for any hacking attempt that may lead to the data being compromised.
+		<label class="control-label" for="rating">content rating</label>
+		<div class="controls rating-group btn-group" data-toggle="buttons-radio" id="rating">
+			<button id="rating-safe" name="rating-safe" class="btn btn-success btn-small{% if post.rating == constant('codebite\\homebooru\\Model\\BooruPostModel::RATING_SAFE') %} active{% endif %}" data-toggle="button">safe</button>
+			<button id="rating-questionable" name="rating-questionable" class="btn btn-warning btn-small{% if post.rating == constant('codebite\\homebooru\\Model\\BooruPostModel::RATING_QUESTIONABLE') %} active{% endif %}" data-toggle="button">questionable</button>
+			<button id="rating-explicit" name="rating-explicit" class="btn btn-danger btn-small{% if post.rating == constant('codebite\\homebooru\\Model\\BooruPostModel::RATING_EXPLICIT') %} active{% endif%}" data-toggle="button">explicit</button>
 		</div>
-		#}
+
+		<br>
+		<input class="span5" id="file" name="file" size="30" type="text" placeholder="filename">
+		<br>
+
+		<input class="span5" id="source" name="source" size="30" type="text" placeholder="source (optional)">
 
 		<br>
 		<textarea class="input-xxlarge" id="tags" name="tags" rows="3" placeholder="tags">{{ form.prev.tags }}</textarea>

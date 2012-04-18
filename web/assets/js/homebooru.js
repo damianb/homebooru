@@ -9,10 +9,10 @@ $(document).ready(function() {
 	setInterval("$('.js-relative-date').relatizeDateTime()", 60)
 
 	// Disable pagination dummy links
-    $('div.pagination li.disabled [href^=#], div.pagination li.active [href^=#], .editpost .rating-group button').on('click', function (e) {
+    $('div.pagination li.disabled [href^=#], div.pagination li.active [href^=#], .rating-group button').on('click', function (e) {
 		e.preventDefault()
     })
-	$('form#editpost').on('submit', function() {
+	$('form#editpost, form#addentry').on('submit', function() {
 		var input = $('<input>').attr('type', 'hidden').attr('name', 'rating');
 		if($('#rating-safe').hasClass('active')) {
 			$(input).val('safe');
