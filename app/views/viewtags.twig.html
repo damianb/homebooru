@@ -5,7 +5,7 @@
 {% if tags -%}
 	<div class="tag-list">
 	{%- for tag in tags %}
-	<div class="btn-group tag-set"><a class="btn btn-mini" href="{{ url.tag_edit(tag.id) }}">edit</a><a class="btn disabled btn-mini tag tag-{{ tag.getType() }}" href="{{ url.search_tag(tag.title|urlencode) }}" title="{{ tag.getDescription() }}">{{ tag.title }}</a><a class="btn btn-mini" href="{{ url.tag_alias(tag.id) }}">alias</a></div>
+	<div class="btn-group tag-set"><a class="btn btn-mini" href="{{ url.tag_edit(tag.id) }}">edit</a><a class="btn disabled btn-mini tag tag-{{ tag.getType() }}" href="{{ url.search_tag(tag.title|url_encode) }}" title="{{ tag.getDescription() }}">{{ tag.title }}</a><a class="btn btn-mini" href="{{ url.tag_alias(tag.id) }}">alias</a></div>
 	{% endfor -%}
 	</div>
 {% else %}
