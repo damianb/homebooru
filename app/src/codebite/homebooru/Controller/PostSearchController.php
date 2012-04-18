@@ -131,8 +131,7 @@ class PostSearchController
 							->from('post_tag pt')
 							->inner_join('tag t on pt.tag_id = t.id')
 							->where('t.title in(' . implode(',', array_fill(0, count($exclude_normal_tags), '?')) . ')')
-						->addSQL(')')
-						->addSQL('notag on p.id = notag.post_id');
+						->addSQL(') notag on p.id = notag.post_id'); // part of the left_outer_join
 				}
 				$state->inner_join()
 					->addSQL('(')
@@ -142,8 +141,7 @@ class PostSearchController
 						->where('t.title in(' . implode(',', array_fill(0, count($normal_tags), '?')) . ')')
 						->group_by('pt.post_id')
 						->having('count(distinct t.title) = ' . (int) count($normal_tags))
-					->addSQL(')')
-					->addSQL('yestag on p.id = yestag.post_id');
+					->addSQL(') yestag on p.id = yestag.post_id'); // part of the inner_join
 			}
 
 			// build where conditions
