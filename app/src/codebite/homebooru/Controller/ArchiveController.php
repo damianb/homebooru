@@ -9,7 +9,7 @@ if(!defined('SHOT_ROOT')) exit;
 class ArchiveController
 	extends ObjectController
 {
-	const SEARCH_MAX = 40;
+	const SEARCH_MAX = 24;
 
 	public function runController()
 	{

@@ -9,7 +9,7 @@
 			{{ form.error }}
 		{%- else -%}
 			<h4 class="alert-heading">Form submitted successfully</h4>
-			Your entry (id: en#{{ form.new_id }}) has been submitted for moderator review.
+			Your entry was been submitted successfully and can be viewed <a href="{{ url.archive_id(form.new_id) }}">here</a>.
 		{%- endif %}
 	</div>
 	{%- endif %}
