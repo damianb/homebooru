@@ -48,7 +48,7 @@ class PostEditController
 					throw new SubmitFailException('Invalid form key submitted');
 				}
 
-				preg_match_all('#\w+[\w\(\)]*#i', $tags, $_tags);
+				preg_match_all('#\w+[\w\-\(\)]*#i', $tags, $_tags);
 				$tags = array_unique(array_shift($_tags));
 
 				switch($rating)

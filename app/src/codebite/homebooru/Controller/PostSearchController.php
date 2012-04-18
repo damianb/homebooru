@@ -26,11 +26,11 @@ class PostSearchController
 		// tag search, now with only TWO DAMN PCRE'S! LIKE A BAWSS
 
 		// sort out "normal" tags
-		$normal_tags = preg_grep('#^\-?[\w]+[\w\(\)]*$#i', $tags);
+		$normal_tags = preg_grep('#^\-?[\w]+[\w\-\(\)]*$#i', $tags);
 		$_normal_tags = array_unique($normal_tags);
 
 		// sort out magical "parameter" tags
-		$param_tags = preg_grep('#^\-?[\w]+[\w\(\)]+\:[\w\.\(\)]*$#i', $tags);
+		$param_tags = preg_grep('#^\-?[\w]+[\w\-\(\)]+\:[\w\-\.\(\)]*$#i', $tags);
 		$_param_tags = array_unique($param_tags);
 
 		// nuke out the old variables for resorting in a bit
