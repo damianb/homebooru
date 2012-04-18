@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <!--
-	Copyright (c) 2012 Damian Bushong
-	All rights reserved
+	Copyright (c) 2012 codebite.net
+
+	Open-sourced and available under the MIT license
+	http://www.opensource.org/licenses/MIT
+
+	https://github.com/damianb/homebooru
 -->
 <html lang="en-us" dir="ltr">
 <head>
@@ -47,11 +51,11 @@
 	<div class="container">
 		<footer>
 			<div>
-				<div class="l">&copy; 2012 <a href="http://codebite.net/">codebite.net</a> - All Rights Reserved</div>
+				<div class="l">powered by <a href="https://github.com/damianb/homebooru"><strong>codebite\homebooru</strong></a> &copy; 2012 <a href="http://codebite.net/">codebite.net</a>{# - available under the <a href="http://www.opensource.org/licenses/MIT">MIT license</a>#}</div>
 				<div class="r"><span id="touch">&gt;<span class="b">//</span>&lt;</span></div>
 			</div>
 			<div>
-				<div id="poweredby" style="display:none">running <strong>codebite\homebooru</strong> {% if stat.commit() %}(git: {{ stat.commit}}) {% endif %}on "{{ stat.server() }}" | memory usage: {{ stat.mem() }} (peak: {{ stat.memPeak() }}) | page gen: {{ stat.time() }} s</div>
+				<div id="poweredby" style="display:none">running <a href="https://github.com/damianb/homebooru"><strong>codebite\homebooru</strong></a> {% if stat.commit() %}(git: {{ stat.commit}}) {% endif %}on "{{ stat.server() }}" | memory usage: {{ stat.mem() }} (peak: {{ stat.memPeak() }}) | page gen: {{ stat.time() }} s</div>
 			</div>
 
 			<script src="{{ asset.js.jquery }}"></script>

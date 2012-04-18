@@ -9,6 +9,7 @@
 
 		"search":"/search/",
 		"search_tag":"/search/?q=%s",
+		"search_tag_page":"/search/?q=%s&page=%d",
 
 		"tags":"/tags/",
 		"tag_alias":"/tags/alias/?id=%d",
