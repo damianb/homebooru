@@ -14,7 +14,7 @@ class TagArchiveController
 	{
 		$max = 100;
 		$page = $this->request->getRoute()->get('page') ?: 1;
-		$beans = R::findAll('tag', 'ORDER BY title ASC LIMIT ?', array($max));
+		$beans = R::findAll('tag', 'ORDER BY title ASC');
 
 		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
 		$this->response->setBody('viewtags.twig.html');

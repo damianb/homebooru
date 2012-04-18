@@ -134,7 +134,7 @@ class PostAddController
 						$rating = BooruPostModel::RATING_UNKNOWN;
 				}
 
-				$bean->source = $source;
+				$bean->source = htmlspecialchars_decode($source, ENT_QUOTES);
 				$bean->rating = $rating;
 
 				$bean->submit_time = $now;
