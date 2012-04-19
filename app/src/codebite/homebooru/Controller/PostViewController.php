@@ -15,11 +15,6 @@ class PostViewController
 
 		$bean = R::findOne('post', '(status = ? AND id = ?)', array(BooruPostModel::ENTRY_ACCEPT, $id));
 
-		//$tag = R::findOne('tag', 'title = ?', array('shakugan_no_shana'));
-		//$tag->type = \codebite\homebooru\Model\BooruTagModel::TAG_PLANE;
-		//R::store($tag);
-		//R::addTags($bean, 'shakugan_no_shana');
-
 		if(empty($bean))
 		{
 			$this->response->setResponseCode(404);
