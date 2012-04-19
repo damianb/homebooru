@@ -109,15 +109,15 @@ class PostSearchController
 			$exclude_normal_tags = array_diff($exclude_normal_tags, $drop);
 		}
 
-		$fn_put = function($value, $key, $state) {
-			$state->put($value);
+		$fn_put = function($value, $key) {
+			R::$f->put($value);
 		};
 
 		// at this point we should have four possible arrays of search parameters. now we need to grab their tag data...
 		if(!empty($normal_tags) || !empty($param_tags))
 		{
 			// start building query
-			$state = R::$f->begin()
+			R::$f->begin()
 				->select('p.*')->from('post p');
 
 			// add tag search stuff
@@ -125,7 +125,7 @@ class PostSearchController
 			{
 				if(!empty($exclude_normal_tags))
 				{
-					$state->left_outer_join()
+					R::$f->left_outer_join()
 						->addSQL('(')
 							->select('pt.post_id')
 							->from('post_tag pt')
@@ -133,7 +133,7 @@ class PostSearchController
 							->where('t.title in(' . implode(',', array_fill(0, count($exclude_normal_tags), '?')) . ')')
 						->addSQL(') notag on p.id = notag.post_id'); // part of the left_outer_join
 				}
-				$state->inner_join()
+				R::$f->inner_join()
 					->addSQL('(')
 						->select('pt.post_id')
 						->from('post_tag pt')
@@ -177,33 +177,33 @@ class PostSearchController
 			}
 			$wheres .= ')';
 
-			$state->where($wheres)
+			R::$f->where($wheres)
 				->order_by('id desc');
 
 			$where_array = array_merge($exclude_normal_tags, $normal_tags, array_values($param_tags), array_values($exclude_param_tags));
-			array_walk($where_array, $fn_put, $state);
+			array_walk($where_array, $fn_put);
 
 			// Duplicate this query so we can get a total result count (for pagination) and a query set
-			list($query, $params) = $state->getQuery();
+			list($query, $params) = R::$f->getQuery();
 
-			$state = R::$f->begin()
+			R::$f->begin()
 				->addSQL(str_replace('p.*', 'count(p.id) as total_results', $query));
 			foreach($params as $param)
 			{
-				$state->put($param);
+				R::$f->put($param);
 			}
-			$total = $state->get('cell');
+			$total = R::$f->get('cell');
 
-			$state = R::$f->begin()
+			R::$f->begin()
 				->addSQL($query);
 			foreach($params as $param)
 			{
-				$state->put($param);
+				R::$f->put($param);
 			}
-			$state->limit(self::SEARCH_MAX)
+			R::$f->limit(self::SEARCH_MAX)
 				->offset($offset);
 
-			$beans = R::convertToBeans('post', $state->get());
+			$beans = R::convertToBeans('post', R::$f->get());
 
 			$total_pages = floor((($total % self::SEARCH_MAX) != 0) ? ($total / self::SEARCH_MAX) + 1 : $total / self::SEARCH_MAX);
 
