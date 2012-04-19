@@ -5,11 +5,6 @@
 			"callback":"site.controller.home"
 		},
 
-		"latest":{
-			"path":"/latest/",
-			"callback":"site.controller.latest"
-		},
-
 		"archive":{
 			"path":"/archive/",
 			"callback":"site.controller.archive"
