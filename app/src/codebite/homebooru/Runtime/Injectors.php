@@ -11,13 +11,6 @@ if(!defined('SHOT_ROOT')) exit;
 
 $injector = DependencyInjector::getInstance();
 
-$injector->setInjector('config', function() {
-	$app = App::getInstance();
-	$config = new Configuration($app);
-
-	return $config;
-});
-
 // define gravatar injector
 $injector->setInjector('gravatar', function() {
 	$app = App::getInstance();
@@ -57,8 +50,14 @@ $injector->setInjector('imagine', function() {
 	$loader = Autoloader::getInstance();
 	$loader->setPath(SHOT_VENDOR_ROOT . '/Imagine/lib');
 
+	return DependencyInjector::grab('imagine_lib');
+});
+
+$injector->setInjector('imagine_lib', function() {
 	return new \Imagine\Gd\Imagine;
 });
+
+$injector->setInjector('tagger', '\\codebite\\homebooru\\Tag\\Handler');
 
 $injector->setInjector('stat', '\\codebite\\homebooru\\Stat');
 
