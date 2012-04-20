@@ -10,15 +10,11 @@ class ErrorController
 {
 	public function runController()
 	{
-		$this->response->setResponseCode(404);
-		$this->response->setBody('error.twig.html');
-		$this->response->setTemplateVars(array(
+		return $this->respond('error.twig.html', 404, array(
 			'error'	=> array(
 				'message'		=> 'Not found',
 				'code'			=> 404,
 			),
 		));
-
-		return $this->response;
 	}
 }

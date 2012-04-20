@@ -9,17 +9,17 @@ if(!defined('SHOT_ROOT')) exit;
 class HomeController
 	extends ObjectController
 {
-	public function runController()
+	public function before()
 	{
 		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
+	}
 
-		$this->response->setBody('home.twig.html');
-		$this->response->setTemplateVars(array(
+	public function runController()
+	{
+		return $this->respond('home.twig.html', 200, array(
 			'page'				=> array(
 				'home'				=> true,
 			),
 		));
-
-		return $this->response;
 	}
 }

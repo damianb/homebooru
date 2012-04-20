@@ -12,19 +12,13 @@ class TagArchiveController
 {
 	public function runController()
 	{
-		$max = 100;
-		$page = $this->request->getRoute()->get('page') ?: 1;
 		$beans = R::findAll('tag', 'ORDER BY title ASC');
 
-		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
-		$this->response->setBody('viewtags.twig.html');
-		$this->response->setTemplateVars(array(
+		return $this->respond('viewtags.twig.html', 200, array(
 			'page'				=> array(
 				'tags'				=> true,
 			),
 			'tags'				=> $beans,
 		));
-
-		return $this->response;
 	}
 }

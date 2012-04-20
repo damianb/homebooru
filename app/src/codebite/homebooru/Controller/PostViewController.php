@@ -9,35 +9,32 @@ if(!defined('SHOT_ROOT')) exit;
 class PostViewController
 	extends ObjectController
 {
+	public function before()
+	{
+		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
+	}
+
 	public function runController()
 	{
-		$id = $this->request->getRoute()->get('id');
+		$id = $this->getRouteInput('id');
 
 		$bean = R::findOne('post', '(status = ? AND id = ?)', array(BooruPostModel::ENTRY_ACCEPT, $id));
 
 		if(empty($bean))
 		{
-			$this->response->setResponseCode(404);
-			$this->response->setBody('error.twig.html');
-			$this->response->setTemplateVars(array(
+			return $this->respond('error.twig.html', 404, array(
 				'error'	=> array(
 					'message'		=> 'Not found',
 					'code'			=> 404,
 				),
 			));
-
-			return $this->response;
 		}
 
-		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
-		$this->response->setBody('viewsingle.twig.html');
-		$this->response->setTemplateVars(array(
+		return $this->respond('viewsingle.twig.html', 200, array(
 			'page'				=> array(
 				'single'			=> true,
 			),
 			'post'				=> $bean,
 		));
-
-		return $this->response;
 	}
 }

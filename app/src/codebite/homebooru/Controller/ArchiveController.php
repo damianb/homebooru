@@ -13,7 +13,7 @@ class ArchiveController
 
 	public function runController()
 	{
-		$page = (int) $this->request->getRoute()->get('page');
+		$page = (int) $this->getRouteInput('page');
 		if($page === 0)
 		{
 			$page = 1;
@@ -60,16 +60,12 @@ class ArchiveController
 			);
 		}
 
-		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
-		$this->response->setBody('viewposts.twig.html');
-		$this->response->setTemplateVars(array(
+		return $this->respond('viewposts.twig.html', 200, array(
 			'page'				=> array(
 				'archive'			=> true,
 			),
 			'pagination'		=> $pagination,
 			'posts'				=> $beans,
 		));
-
-		return $this->response;
 	}
 }

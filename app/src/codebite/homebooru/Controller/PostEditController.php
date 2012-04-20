@@ -11,45 +11,44 @@ if(!defined('SHOT_ROOT')) exit;
 class PostEditController
 	extends ObjectController
 {
+	public function before()
+	{
+		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
+	}
+
 	public function runController()
 	{
-		$success = false;
-		$id = $this->request->getInput('GET::id', 0);
-		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
+		$success = $submit = false;
+		$id = $this->getInput('GET::id', 0);
 
 		$bean = R::findOne('post', 'status = ? AND id = ?', array(BooruPostModel::ENTRY_ACCEPT, $id));
 
 		if(empty($bean->id))
 		{
-			$this->response->setResponseCode(404);
-			$this->response->setBody('error.twig.html');
-			$this->response->setTemplateVars(array(
+			return $this->respond('error.twig.html', 404, array(
 				'error'	=> array(
 					'message'		=> 'Not found',
 					'code'			=> 404,
 				),
 			));
-
-			return $this->response;
 		}
 
-		$submit = $this->app->input->getInput('POST::submit', false);
-		if($submit->getWasSet())
+		if($this->wasInputSet('POST::submit'))
 		{
+			$submit = true;
 			try {
-				$form_key = $this->request->getInput('POST::formkey', '');
-				$form_time = $this->request->getInput('POST::formtime', 0);
-				$tags = $this->request->getInput('POST::tags', '');
-				$source = $this->request->getInput('POST::source', '');
-				$rating = $this->request->getInput('POST::rating', '');
+				$form_key = $this->getInput('POST::formkey', '');
+				$form_time = $this->getInput('POST::formtime', 0);
+				$tags = $this->getInput('POST::tags', '');
+				$source = $this->getInput('POST::source', '');
+				$rating = $this->getInput('POST::rating', '');
 
 				if(!$this->app->form->checkFormKey($form_key, $form_time, 'editpost'))
 				{
 					throw new SubmitFailException('Invalid form key submitted');
 				}
 
-				preg_match_all('#\w+[\w\-\(\)]*#i', $tags, $_tags);
-				$tags = array_unique(array_shift($_tags));
+				$tags = $this->app->tagger->extractTags($tags);
 
 				switch($rating)
 				{
@@ -77,41 +76,24 @@ class PostEditController
 			}
 			catch(SubmitFailException $e)
 			{
-				$this->response->setBody('editpost.twig.html');
-				$this->response->setTemplateVars(array(
-					'page'		=> array(
-						'edit'			=> true,
-					),
-					'post'		=> $bean,
-					'form'		=> array(
-						'submit'		=> true,
-						'success'		=> false,
-						'error'			=> $e->getMessage(),
-						'time'			=> $this->app->form->getFormTime(),
-						'key'			=> $this->app->form->buildFormKey('editpost')
-					),
-				));
-
-				return $this->response;
+				$success = false;
 			}
 			$success = true;
 		}
 
-		$this->response->setBody('editpost.twig.html');
-		$this->response->setTemplateVars(array(
+		return $this->respond('editpost.twig.html', 200, array(
 			'page'				=> array(
 				'edit'				=> true,
 			),
 			'post'				=> $bean,
 
 			'form'				=> array(
-				'submit'			=> $submit->getWasSet(),
+				'submit'			=> $submit,
 				'success'			=> $success,
+				'error'				=> ($submit && !$success) ? $e->getMessage() : false,
 				'time'				=> $this->app->form->getFormTime(),
 				'key'				=> $this->app->form->buildFormKey('editpost')
 			),
 		));
-
-		return $this->response;
 	}
 }

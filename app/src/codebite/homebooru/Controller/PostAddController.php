@@ -10,27 +10,29 @@ if(!defined('SHOT_ROOT')) exit;
 class PostAddController
 	extends ObjectController
 {
+	public function before()
+	{
+		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
+	}
+
 	public function runController()
 	{
-		$submit = $this->app->input->getInput('POST::submit', false);
-		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
-
-		if($submit->getWasSet())
+		if($this->wasInputSet('POST::submit'))
 		{
 			$now = time();
 
-			$form_key = $this->request->getInput('POST::formkey', '');
-			$form_time = $this->request->getInput('POST::formtime', 0);
+			$form_key = $this->getInput('POST::formkey', '');
+			$form_time = $this->getInput('POST::formtime', 0);
 
-			$data = $this->request->getInput('POST::file', '');
+			$data = $this->getInput('POST::file', '');
 
-			$source = $this->request->getInput('POST::source', '');
-			$rating = $this->request->getInput('POST::rating', '');
-			$tags = $this->request->getInput('POST::tags', '');
+			$source = $this->getInput('POST::source', '');
+			$rating = $this->getInput('POST::rating', '');
+			$tags = $this->getInput('POST::tags', '');
 
 			$ip = $this->request->getIP();
 
-			$success = false;
+			$success = $e = false;
 			$id = 0;
 			try {
 				if(!$this->app->form->checkFormKey($form_key, $form_time, 'submit'))
@@ -154,33 +156,19 @@ class PostAddController
 			}
 			catch(SubmitFailException $e)
 			{
-				$this->response->setBody('addentry.twig.html');
-				$this->response->setTemplateVars(array(
-					'page'	=> array(
-						'submit'			=> true,
-					),
-					'form'	=> array(
-						'submit'		=> true,
-						'success'		=> false,
-						'error'			=> $e->getMessage(),
-						'time'			=> $this->app->form->getFormTime(),
-						'key'			=> $this->app->form->buildFormKey('submit')
-					),
-				));
-
-				return $this->response;
+				$success = false;
 			}
 
 			// post-submit stuff.
-			$this->response->setBody('addentry.twig.html');
-			$this->response->setTemplateVars(array(
+			return $this->respond('addentry.twig.html', 200, array(
 				'page'				=> array(
 					'submit'			=> true,
 				),
 				'form'				=> array(
 					'submit'			=> true,
-					'success'			=> true,
-					'new_id'			=> $id,
+					'success'			=> $success,
+					'new_id'			=> ($success) ? $id : false,
+					'error'				=> (!$success) ? $e->getMessage() : false,
 					'time'				=> $this->app->form->getFormTime(),
 					'key'				=> $this->app->form->buildFormKey('submit')
 				),
@@ -189,8 +177,7 @@ class PostAddController
 		else
 		{
 			// display normal form
-			$this->response->setBody('addentry.twig.html');
-			$this->response->setTemplateVars(array(
+			return $this->respond('addentry.twig.html', 200, array(
 				'page'				=> array(
 					'submit'			=> true,
 				),
@@ -201,7 +188,5 @@ class PostAddController
 				),
 			));
 		}
-
-		return $this->response;
 	}
 }

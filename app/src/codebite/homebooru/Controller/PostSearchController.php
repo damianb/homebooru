@@ -11,6 +11,11 @@ class PostSearchController
 {
 	const SEARCH_MAX = 24;
 
+	public function before()
+	{
+		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
+	}
+
 	public function runController()
 	{
 		$page = $this->request->getInput('REQUEST::page', 1);
@@ -21,20 +26,12 @@ class PostSearchController
 		$offset = self::SEARCH_MAX * ($page - 1);
 
 		$_search = $tags = $this->request->getInput('REQUEST::q', '');
-		$tags = explode(' ', $tags);
 
 		// tag search, now with only TWO DAMN PCRE'S! LIKE A BAWSS
 
-		// sort out "normal" tags
-		$normal_tags = preg_grep('#^\-?[\w]+[\w\-\(\)]*$#i', $tags);
-		$_normal_tags = array_unique($normal_tags);
-
-		// sort out magical "parameter" tags
-		$param_tags = preg_grep('#^\-?[\w]+[\w\-\(\)]+\:[\w\-\.\(\)]*$#i', $tags);
-		$_param_tags = array_unique($param_tags);
-
-		// nuke out the old variables for resorting in a bit
-		unset($normal_tags, $param_tags);
+		// sort out "normal" tags and search parameters
+		$_normal_tags = $this->app->tagger->extractSearchTags($tags);
+		$_param_tags = $this->app->tagger->extractSearchParams($tags);
 
 		// these params are handled special, so that we can do things like "md5:somemd5here" and search the posts themselves instead of searching for an md5 tag
 		// also allows us to exclude/look for "rating:safe", "id:5", etc...
@@ -118,7 +115,8 @@ class PostSearchController
 		{
 			// start building query
 			R::$f->begin()
-				->select('p.*')->from('post p');
+				//->select('p.*')
+				->from('post p');
 
 			// add tag search stuff
 			if(!empty($normal_tags))
@@ -181,25 +179,25 @@ class PostSearchController
 				->order_by('id desc');
 
 			$where_array = array_merge($exclude_normal_tags, $normal_tags, array_values($param_tags), array_values($exclude_param_tags));
-			array_walk($where_array, $fn_put);
+			//array_walk($where_array, $fn_put);
 
 			// Duplicate this query so we can get a total result count (for pagination) and a query set
-			list($query, $params) = R::$f->getQuery();
+			list($query, ) = R::$f->getQuery();
 
 			R::$f->begin()
-				->addSQL(str_replace('p.*', 'count(p.id) as total_results', $query));
-			foreach($params as $param)
-			{
-				R::$f->put($param);
-			}
+				->select('count(p.id) as total_results')
+				->addSQL($query);
+
+			array_walk($where_array, $fn_put);
+
 			$total = R::$f->get('cell');
 
 			R::$f->begin()
+				->select('p.*')
 				->addSQL($query);
-			foreach($params as $param)
-			{
-				R::$f->put($param);
-			}
+
+			array_walk($where_array, $fn_put);
+
 			R::$f->limit(self::SEARCH_MAX)
 				->offset($offset);
 
@@ -233,8 +231,6 @@ class PostSearchController
 				'total'		=> $total,
 			);
 		}
-
-		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
 
 		$this->response->setBody('viewposts.twig.html');
 		$this->response->setTemplateVars(array(
