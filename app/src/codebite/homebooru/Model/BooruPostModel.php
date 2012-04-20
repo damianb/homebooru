@@ -39,12 +39,6 @@ class BooruPostModel
 		}
 
 		$this->tags = NULL;
-
-		// NUL-byte check.
-		//if(strpos($this->text, chr(0)) !== false || strpos($this->submitter_name, chr(0)) !== false || strpos($this->submitter_email, chr(0)) !== false)
-		//{
-		//	throw new SubmitFailException('Take your NUL bytes elsewhere kthxbai');
-		//}
 	}
 
 	public function getTags()
