@@ -24,7 +24,7 @@
 						<div class="rating">rating: <span class="rating rating-{{ post.getRating() }}" title="{{ post.getRating() }}">{{ post.getRating() }}</span></div>
 						<div class="size">
 							<div class="pull-left">
-								<div class="filesize">filesize: {{ post.getFullSize }}</div>
+								<div class="filesize">filesize: {{ post.getFullSize() }}</div>
 							</div>
 							<div class="pull-right">
 								<div class="dimensions">{{ post.full_width }}<span class="small">px</span> &times; {{ post.full_height }}<span class="small">px</span></div>
@@ -42,14 +42,17 @@
 						{% if post.source %}<br><div class="source">source: {% if post.sourceLinkable() %}<a href="{{ post.source }}" title="{{ post.source }}">{% if post.source|length > 25 %}<em>{{ post.source|slice(0, 25) ~ '...' }}</em>{% else %}{{ post.source }}{% endif %}</a>{% else %}{% if post.source|length > 15 %}<span title="{{ post.source }}">{{ '<em>' ~ post.source|slice(0, 15) ~ '...</em>' }}</span>{% else %}{{ post.source }}{% endif %}{% endif %}</div>{% endif %}
 					</div>
 
+					{% if post.getTags() %}
 					<div class="tags">
 						<h3>tags</h3>
 						{% for tag in post.getFullTags() %}<span class="label tag tag-{{ tag.getType() }}" title="{{ tag.getDescription() }}"><a href="{{ url.search_tag(tag.title|url_encode) }}">{{ tag.title }}</a></span> {% endfor %}
 					</div>
+					{% endif %}
 
 					{% if post.pools %}
 					<div class="pools">
 						<h3>pools</h3>
+						{% for pool in post.getPools() %}<!--!-->{% endfor %}
 					</div>
 					{% endif %}
 
