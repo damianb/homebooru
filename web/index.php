@@ -28,11 +28,6 @@ define('SHOT_INCLUDE_ROOT', SHOT_ROOT . '/app/src');
 define('SHOT_VENDOR_ROOT', SHOT_ROOT . '/app/vendor');
 define('SHOT_VIEW_ROOT', SHOT_ROOT . '/app/views');
 
-define('HOMEBOORU_IMAGE_IMPORT_ROOT', SHOT_ROOT . '/import');
-define('HOMEBOORU_IMAGE_FULL_ROOT', SHOT_ROOT . '/upload/full');
-define('HOMEBOORU_IMAGE_SMALL_ROOT', SHOT_ROOT . '/upload/small');
-define('HOMEBOORU_IMAGE_THUMB_ROOT', SHOT_ROOT . '/upload/thumb');
-
 define('SHOT_DEBUG', true);
 
 define('SHOT_IN_PHAR', false);

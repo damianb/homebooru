@@ -10,6 +10,23 @@ if(!defined('SHOT_ROOT')) exit;
 // load up shot
 require _SHOT_MAGIC_LOAD_DIR . '/emberlabs/shot/Runtime/Bootstrap.php';
 
+// defaults
+$_defaults = array(
+	'HOMEBOORU_EXHANDLER_UNWRAP'	=> false,
+
+	'HOMEBOORU_IMAGE_IMPORT_ROOT'	=> SHOT_ROOT . '/import',
+	'HOMEBOORU_IMAGE_FULL_ROOT'		=> SHOT_ROOT  . '/upload/full',
+	'HOMEBOORU_IMAGE_SMALL_ROOT'	=> SHOT_ROOT . '/upload/small',
+	'HOMEBOORU_IMAGE_THUMB_ROOT'	=> SHOT_ROOT . '/upload/thumb',
+);
+foreach($_defaults as $_const => $_default)
+{
+	if(!defined($_const))
+	{
+		define($_const, $_default);
+	}
+}
+
 // load our own functions
 require _HOMEBOORU_MAGIC_LOAD_DIR . '/codebite/homebooru/Runtime/Functions.php';
 require _HOMEBOORU_MAGIC_LOAD_DIR . '/codebite/homebooru/Runtime/Injectors.php';

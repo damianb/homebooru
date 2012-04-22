@@ -20,6 +20,14 @@ class WebKernel
 {
 	const HOMEBOORU_VERSION = '1.0.0dev';
 
+	public function blindHook($name)
+	{
+		$hook = Event::newEvent($name)
+			->setSource($this);
+
+		$this->dispatcher->trigger($hook, Dispatcher::TRIGGER_MIXEDBREAK);
+	}
+
 	public function hook($name, array &$data)
 	{
 		$hook = Event::newEvent($name)
@@ -82,43 +90,43 @@ class WebKernel
 
 		// load specified addons
 
-		$null = array();
 		/**
 		 * @hook hook.runtime.boot.post
 		 *  - post application "boot" hook point
 		 */
-		$this->hook('hook.runtime.boot.post', $null);
+		$this->blindHook('hook.runtime.boot.post');
 	}
 
 	public function run()
 	{
-		$null = array();
 		/**
 		 * @hook hook.runtime.run.pre
 		 *  - pre-run application hook point, executed before controller route is loaded, controller run
 		 */
-		$this->hook('hook.runtime.run.pre', $null);
+		$this->blindHook('hook.runtime.run.pre');
 
-		// handle session stuff here
+		try {
+			parent::run();
+		}
+		catch(\Exception $e)
+		{
+			throw $e;
+		}
 
-		parent::run();
-
-		$null = array();
 		/**
 		 * @hook hook.runtime.run.post
 		 *  - post-run application hook point, executed after controller route is loaded, controller run
 		 */
-		$this->hook('hook.runtime.run.post', $null);
+		$this->blindHook('hook.runtime.run.post');
 	}
 
 	public function display()
 	{
-		$null = array();
 		/**
 		 * @hook hook.runtime.display.pre
 		 *  - pre-display application hook point, executed before view is rendered and page output
 		 */
-		$this->hook('hook.runtime.display.pre', $null);
+		$this->blindHook('hook.runtime.display.pre');
 
 		if($this->response->isUsingTemplating())
 		{
@@ -152,6 +160,9 @@ class WebKernel
 			 */
 			$this->hook('hook.template.globalvars', $global_template_vars);
 			$this->response->setTemplateVars(array_merge($global_template_vars, $this->response->getTemplateVars()));
+
+			$twig = $this->twig->getTwigEnvironment();
+			$twig->addGlobal('stat', $this->stat);
 		}
 
 		// app-wide headers to send...
@@ -182,39 +193,30 @@ class WebKernel
 		$this->hook('hook.header.globalheaders', $global_headers);
 		$this->response->setHeaders(array_merge($global_headers, $this->response->getHeaders() ?: array()));
 
-		$twig = $this->twig->getTwigEnvironment();
-		$twig->addGlobal('stat', $this->stat);
+		try {
+			parent::display();
+		}
+		catch(\Exception $e)
+		{
+			throw $e;
+		}
 
-		parent::display();
-
-		$null = array();
 		/**
 		 * @hook hook.runtime.display.post
 		 *  - post-display application hook point, executed after view is rendered and page output
 		 */
-		$this->hook('hook.runtime.display.post', $null);
+		$this->blindHook('hook.runtime.display.post');
 	}
 
 	public function shutdown()
 	{
-		$null = array();
 		/**
-		 * @hook hook.runtime.shutdown.pre
-		 *  - pre-shutdown application hook point, executed before database connection is closed
+		 * @hook hook.runtime.shutdown
+		 *  - application shutdown hook point, executed before exit is called and script terminated.
 		 */
-		$this->hook('hook.runtime.shutdown.pre', $null);
+		$this->blindHook('hook.runtime.shutdown');
 
 		parent::shutdown();
-
-		// close database connection
-		//R::close();
-
-		$null = array();
-		/**
-		 * @hook hook.runtime.shutdown.post
-		 *  - post-shutdown application hook point, executed after database connection is closed
-		 */
-		$this->hook('hook.runtime.shutdown.post', $null);
 
 		exit;
 	}
