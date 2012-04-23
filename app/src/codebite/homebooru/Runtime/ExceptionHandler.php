@@ -29,7 +29,7 @@ final class ExceptionHandler
 
 		$this->exception = $e;
 
-		$page = $this->getTemplate('layout_header');
+		$page = $this->getTemplate('exception_header.twig.html');
 		if(SHOT_DEBUG)
 		{
 			$search = array(
@@ -41,30 +41,38 @@ final class ExceptionHandler
 				'{{ error_file }}',
 				'{{ error_line }}',
 				'{{ error_context }}',
+				SHOT_ROOT,
+				ucfirst(SHOT_ROOT),
 			);
 			$replace = array(
-				get_class($e) . ($e->getCode() ?: ''),
-				$e->getMessage() ?: 'NULL',
-				$e->getCode() ?: 0,
-				get_class($e),
-				nl2br(str_replace(array(SHOT_ROOT, '):'), array('', "):\n&nbsp;&nbsp;&nbsp;&nbsp;"), $e->getTraceAsString())),
-				$e->getFile(),
-				$e->getLine(),
-				$this->highlightCode($this->getCodeContext($e->getFile(), $e->getLine(), 6)),
+				htmlentities(get_class($e), ENT_QUOTES, 'UTF-8') . ($e->getCode() ?: ''),
+				htmlspecialchars($e->getMessage() ?: 'NULL', ENT_QUOTES, 'UTF-8'),
+				(int) ($e->getCode() ?: 0),
+				htmlspecialchars(get_class($e), ENT_QUOTES, 'UTF-8'),
+				nl2br(str_replace('):', "):\n&nbsp;&nbsp;&nbsp;&nbsp;", htmlspecialchars($e->getTraceAsString(), ENT_QUOTES, 'UTF-8'))),
+				htmlspecialchars($e->getFile(), ENT_QUOTES, 'UTF-8'),
+				(int) $e->getLine(),
+				$this->highlightCode($this->getCodeContext($e->getFile(), $e->getLine(), 8)),
+				'',
+				'',
 			);
-			$page .= str_replace($search, $replace, $this->getTemplate('dump'));
+			$page .= str_replace($search, $replace, $this->getTemplate('exception_dump.twig.html'));
 		}
 		else
 		{
 			$search = array(
 				'{{ error_string }}',
+				SHOT_ROOT,
+				ucfirst(SHOT_ROOT),
 			);
 			$replace = array(
-				get_class($e) . ($e->getCode() ?: ''),
+				htmlspecialchars(get_class($e), ENT_QUOTES, 'UTF-8') . ($e->getCode() ?: ''),
+				'',
+				'',
 			);
-			$page .= str_replace($search, $replace, $this->getTemplate('error'));
+			$page .= str_replace($search, $replace, $this->getTemplate('exception_brief.twig.html'));
 		}
-		$page .= $this->getTemplate('layout_footer');
+		$page .= $this->getTemplate('exception_footer.twig.html');
 
 		// Dump page back to user.
 		echo $page;
@@ -81,7 +89,7 @@ final class ExceptionHandler
 		$tpl = array();
 		switch($template)
 		{
-			case 'layout_header':
+			case 'exception_header.twig.html':
 				$tpl[] = 'PCFET0NUWVBFIGh0bWw+CjwhLS0KCUNvcHlyaWdodCAoYykgMjAxMiBjb2RlYml0ZS5uZXQKCglPcGVu';
 				$tpl[] = 'LXNvdXJjZWQgYW5kIGF2YWlsYWJsZSB1bmRlciB0aGUgTUlUIGxpY2Vuc2UKCWh0dHA6Ly93d3cub3Bl';
 				$tpl[] = 'bnNvdXJjZS5vcmcvbGljZW5zZXMvTUlUCgoJaHR0cHM6Ly9naXRodWIuY29tL2RhbWlhbmIvaG9tZWJv';
@@ -93,42 +101,46 @@ final class ExceptionHandler
 				$tpl[] = 'czogMTRweDsgcGFkZGluZzogMCAyMHB4OyBiYWNrZ3JvdW5kLWNvbG9yOiAjRkZGOyB9CgkJLmVycm9y';
 				$tpl[] = 'IHsgbGluZS1oZWlnaHQ6IDI0cHg7IHBhZGRpbmc6IDE1cHggMDsgfSAuZXJyb3IgaDIgeyBtYXJnaW46';
 				$tpl[] = 'IDAgMCAxMHB4IDA7IHBhZGRpbmc6IDAgMCA1cHggMDsgY29sb3I6ICNiMDA7IGJvcmRlci1ib3R0b206';
-				$tpl[] = 'IDFweCBzb2xpZCAjRDNBOUE5OyB9CgkJLmNvZGUgeyBmb250LWZhbWlseTogIkRyb2lkIFNhbnMgTW9u';
-				$tpl[] = 'byIsIG1vbm9zcGFjZTsgYm9yZGVyOiAxcHggc29saWQgI0Q2MDAwMDsgYmFja2dyb3VuZC1jb2xvcjog';
-				$tpl[] = 'I0ZGRjJGMjsgZm9udC1zaXplOiAxMXB4OyBtYXJnaW46IDEwcHg7IHBhZGRpbmc6IDVweDsgbGluZS1o';
-				$tpl[] = 'ZWlnaHQ6IDE4cHg7IH0KCQkudHJhY2UgeyBwYWRkaW5nOiA1cHggMTBweDsgfQoJCS5zeW50YXhiZyB7';
-				$tpl[] = 'IGNvbG9yOiAjRkZGRkZGOyB9IC5zeW50YXhjb21tZW50IHsgY29sb3I6ICNGRjgwMDA7IH0gLnN5bnRh';
-				$tpl[] = 'eGRlZmF1bHQgeyBjb2xvcjogIzAwMDBCQjsgfSAuc3ludGF4aHRtbCB7IGNvbG9yOiAjMDAwMDAwOyB9';
-				$tpl[] = 'IC5zeW50YXhrZXl3b3JkIHsgY29sb3I6ICMwMDc3MDA7IH0gLnN5bnRheHN0cmluZyB7IGNvbG9yOiAj';
-				$tpl[] = 'REQwMDAwOyB9CgkJZm9vdGVyIHsgYm9yZGVyLXRvcDogMXB4IHNvbGlkICNlMWUxZTE7IGZvbnQtc2l6';
-				$tpl[] = 'ZTogMTFweDsgcGFkZGluZzogMTBweDsgbWFyZ2luLXRvcDogMjBweDsgfSBmb290ZXIgPiBhIHsgY29s';
-				$tpl[] = 'b3I6ICNCMDA7IH0gZm9vdGVyID4gYTpob3ZlciwgZm9vdGVyID4gYTphY3RpdmUsIGZvb3RlciA+IGE6';
-				$tpl[] = 'Zm9jdXMgeyBjb2xvcjogIzgwMDsgfQoJPC9zdHlsZT4KPC9oZWFkPgo8Ym9keT4KCTxkaXYgY2xhc3M9';
-				$tpl[] = 'IndyYXAiPgoJCTxkaXYgY2xhc3M9ImNvbnRhaW5lciI+CgkJCTxkaXYgY2xhc3M9ImVycm9yIj4=';
+				$tpl[] = 'IDFweCBzb2xpZCAjRDNBOUE5OyB9IC5lcnJvcnN0cmluZyB7IGZvbnQtZmFtaWx5OiAiRHJvaWQgU2Fu';
+				$tpl[] = 'cyBNb25vIiwgbW9ub3NwYWNlOyBmb250LXNpemU6IDE0cHg7IH0KCQkuY29kZSB7IGZvbnQtZmFtaWx5';
+				$tpl[] = 'OiAiRHJvaWQgU2FucyBNb25vIiwgbW9ub3NwYWNlOyBib3JkZXI6IDFweCBzb2xpZCAjRDYwMDAwOyBi';
+				$tpl[] = 'YWNrZ3JvdW5kLWNvbG9yOiAjRkZGMkYyOyBmb250LXNpemU6IDExcHg7IG1hcmdpbjogMTBweDsgcGFk';
+				$tpl[] = 'ZGluZzogNXB4OyBsaW5lLWhlaWdodDogMThweDsgfQoJCS50cmFjZSB7IHBhZGRpbmc6IDVweCAxMHB4';
+				$tpl[] = 'OyB9CgkJLnN5bnRheGJnIHsgY29sb3I6ICNGRkZGRkY7IH0gLnN5bnRheGNvbW1lbnQgeyBjb2xvcjog';
+				$tpl[] = 'I0ZGODAwMDsgfSAuc3ludGF4ZGVmYXVsdCB7IGNvbG9yOiAjMDAwMEJCOyB9IC5zeW50YXhodG1sIHsg';
+				$tpl[] = 'Y29sb3I6ICMwMDAwMDA7IH0gLnN5bnRheGtleXdvcmQgeyBjb2xvcjogIzAwNzcwMDsgfSAuc3ludGF4';
+				$tpl[] = 'c3RyaW5nIHsgY29sb3I6ICNERDAwMDA7IH0KCQlmb290ZXIgeyBib3JkZXItdG9wOiAxcHggc29saWQg';
+				$tpl[] = 'I2UxZTFlMTsgZm9udC1zaXplOiAxMXB4OyBwYWRkaW5nOiAxMHB4OyBtYXJnaW4tdG9wOiAyMHB4OyB9';
+				$tpl[] = 'IGZvb3RlciA+IGEgeyBjb2xvcjogI0IwMDsgfSBmb290ZXIgPiBhOmhvdmVyLCBmb290ZXIgPiBhOmFj';
+				$tpl[] = 'dGl2ZSwgZm9vdGVyID4gYTpmb2N1cyB7IGNvbG9yOiAjODAwOyB9Cgk8L3N0eWxlPgo8L2hlYWQ+Cjxi';
+				$tpl[] = 'b2R5PgoJPGRpdiBjbGFzcz0id3JhcCI+CgkJPGRpdiBjbGFzcz0iY29udGFpbmVyIj4KCQkJPGRpdiBj';
+				$tpl[] = 'bGFzcz0iZXJyb3IiPg==';
 			break;
 
-			case 'layout_footer':
+			case 'exception_footer.twig.html':
 				$tpl[] = 'CQkJPC9kaXY+CgkJCTxmb290ZXI+CgkJCQlwb3dlcmVkIGJ5IDxhIGhyZWY9Imh0dHBzOi8vZ2l0aHVi';
 				$tpl[] = 'LmNvbS9kYW1pYW5iL2hvbWVib29ydSI+PHN0cm9uZz5jb2RlYml0ZVxob21lYm9vcnU8L3N0cm9uZz48';
 				$tpl[] = 'L2E+ICZjb3B5OyAyMDEyIDxhIGhyZWY9Imh0dHA6Ly9jb2RlYml0ZS5uZXQvIj5jb2RlYml0ZS5uZXQ8';
 				$tpl[] = 'L2E+CgkJCTwvZm9vdGVyPgoJCTwvZGl2PgoJPC9kaXY+CjwvYm9keT4KPC9odG1sPg==';
 			break;
 
-			case 'dump':
+			case 'exception_dump.twig.html':
 				$tpl[] = 'CQkJCTxoMj5HZW5lcmFsIEVycm9yPC9oMj4KCQkJCTxkaXY+VW5oYW5kbGVkIGV4Y2VwdGlvbjogJnF1';
-				$tpl[] = 'b3Q7e3sgZXJyb3JfdHlwZSB9fSh7eyBlcnJvcl9jb2RlIH19KSZxdW90OzwvZGl2PgoJCQkJPGRpdj5F';
-				$tpl[] = 'eGNlcHRpb24gbWVzc2FnZTogJnF1b3Q7PGVtPnt7IGVycm9yX21lc3NhZ2UgfX08L2VtPiZxdW90Ozwv';
-				$tpl[] = 'ZGl2PgoJCQkJPGJyPgoJCQkJPGRpdj5FeGNlcHRpb24gdHJhY2U6IDxicj4KCQkJCQk8ZGl2IGNsYXNz';
-				$tpl[] = 'PSJjb2RlIHRyYWNlIj57eyBlcnJvcl90cmFjZSB9fTwvZGl2PgoJCQkJPC9kaXY+CgkJCQk8YnI+CgkJ';
-				$tpl[] = 'CQk8ZGl2PkNvbnRleHQ6IDxicj4KCQkJCQk8ZGl2IGNsYXNzPSJjb2RlIGNvbnRleHQiPnt7IGVycm9y';
-				$tpl[] = 'X2NvbnRleHQgfX08L2Rpdj4KCQkJCTwvZGl2Pg==';
+				$tpl[] = 'b3Q7PHNwYW4gY2xhc3M9ImVycm9yc3RyaW5nIj57eyBlcnJvcl90eXBlIH19KHt7IGVycm9yX2NvZGUg';
+				$tpl[] = 'fX0pPC9zcGFuPiZxdW90OzwvZGl2PgoJCQkJPGRpdj5FeGNlcHRpb24gbWVzc2FnZTogJnF1b3Q7PGVt';
+				$tpl[] = 'Pnt7IGVycm9yX21lc3NhZ2UgfX08L2VtPiZxdW90OzwvZGl2PgoJCQkJPGJyPgoJCQkJPGRpdj5FeGNl';
+				$tpl[] = 'cHRpb24gdHJhY2U6IDxicj4KCQkJCQk8ZGl2IGNsYXNzPSJjb2RlIHRyYWNlIj57eyBlcnJvcl90cmFj';
+				$tpl[] = 'ZSB9fTwvZGl2PgoJCQkJPC9kaXY+CgkJCQk8YnI+CgkJCQk8ZGl2PkNvbnRleHQ6IDxicj4KCQkJCQk8';
+				$tpl[] = 'ZGl2IGNsYXNzPSJjb2RlIGNvbnRleHQiPnt7IGVycm9yX2NvbnRleHQgfX08L2Rpdj4KCQkJCTwvZGl2';
+				$tpl[] = 'Pg==';
 			break;
 
-			case 'error':
+			case 'exception_brief.twig.html':
 				$tpl[] = 'CQkJCTxoMj5HZW5lcmFsIEVycm9yPC9oMj4KCQkJCTxkaXY+VW5oYW5kbGVkIGV4Y2VwdGlvbjogJnF1';
-				$tpl[] = 'b3Q7e3sgZXJyb3Jfc3RyaW5nIH19JnF1b3Q7PC9kaXY+CgkJCQk8ZGl2Pk1vcmUgaW5mb3JtYXRpb24g';
-				$tpl[] = 'cmVnYXJkaW5nIHRoaXMgZXJyb3IgY2FuIGJlIG9idGFpbmVkIGJ5IGVuYWJsaW5nIHRoZSBhcHBsaWNh';
-				$tpl[] = 'dGlvbiZhcG9zO3MgZGVidWcgbW9kZS48L2Rpdj4=';
+				$tpl[] = 'b3Q7PHNwYW4gY2xhc3M9ImVycm9yc3RyaW5nIj57eyBlcnJvcl9zdHJpbmcgfX08L3NwYW4+JnF1b3Q7';
+				$tpl[] = 'PC9kaXY+CgkJCQk8ZGl2Pk1vcmUgaW5mb3JtYXRpb24gcmVnYXJkaW5nIHRoaXMgZXJyb3IgY2FuIGJl';
+				$tpl[] = 'IG9idGFpbmVkIGJ5IGVuYWJsaW5nIHRoZSBhcHBsaWNhdGlvbiZhcG9zO3MgZGVidWcgbW9kZS48L2Rp';
+				$tpl[] = 'dj4=';
 			break;
 		}
 
@@ -199,5 +211,24 @@ final class ExceptionHandler
 	protected function buildTemplate($tpl)
 	{
 		return str_split(base64_encode($tpl), 80);
+
+		/**
+		 * possibly useful:
+		 *
+
+		$files = array(
+			'exception_header',
+			'exception_footer',
+			'exception_dump',
+			'exception_brief',
+		);
+
+		foreach($files as $file){
+			printf('<br>%s.twig.html<br><br>', $file);
+			foreach(str_split(base64_encode(trim(file_get_contents(SHOT_ROOT . '/develop/exception/' . $file . '.twig.html'), "\n")), 80) as $line)
+				printf('$tpl[] = \'%s\';<br>', $line);
+		}
+
+		*/
 	}
 }

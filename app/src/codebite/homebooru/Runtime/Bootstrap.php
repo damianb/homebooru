@@ -15,7 +15,7 @@ $_defaults = array(
 	'HOMEBOORU_EXHANDLER_UNWRAP'	=> false,
 
 	'HOMEBOORU_IMAGE_IMPORT_ROOT'	=> SHOT_ROOT . '/import',
-	'HOMEBOORU_IMAGE_FULL_ROOT'		=> SHOT_ROOT  . '/upload/full',
+	'HOMEBOORU_IMAGE_FULL_ROOT'		=> SHOT_ROOT . '/upload/full',
 	'HOMEBOORU_IMAGE_SMALL_ROOT'	=> SHOT_ROOT . '/upload/small',
 	'HOMEBOORU_IMAGE_THUMB_ROOT'	=> SHOT_ROOT . '/upload/thumb',
 );
@@ -33,11 +33,12 @@ require _HOMEBOORU_MAGIC_LOAD_DIR . '/codebite/homebooru/Runtime/Injectors.php';
 
 $app = App::getInstance();
 
+// Set our exception handler to be THE exception handler
 set_exception_handler('\\codebite\\homebooru\\Runtime\\ExceptionHandler::invoke');
 
 // prepare the cache
 $app['cache.path'] = SHOT_ROOT . '/cache/';
-if(function_exists('apc_cache_info'))
+if(function_exists('apc_cache_info') && !SHOT_DEBUG)
 {
 	$app['cache.engine'] = 'apc';
 }

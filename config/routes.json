@@ -30,6 +30,11 @@
 			"callback":"site.controller.add"
 		},
 
+		"status":{
+			"path":"/status/",
+			"callback":"site.controller.status"
+		},
+
 		"edit":{
 			"path":"/edit/",
 			"callback":"site.controller.edit"

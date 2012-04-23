@@ -2,6 +2,8 @@
 	"shot.controllers.entries":{
 		"site.controller.home":"codebite\\homebooru\\Controller\\HomeController",
 
+		"site.controller.status":"codebite\\homebooru\\Controller\\StatusController",
+
 		"site.controller.archive":"codebite\\homebooru\\Controller\\ArchiveController",
 
 		"site.controller.add":"codebite\\homebooru\\Controller\\PostAddController",
