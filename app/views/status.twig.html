@@ -1,0 +1,99 @@
+{% extends "layout.twig.html" %}
+{% block content %}
+<div class="status">
+	<h2>installation details</h2>
+
+
+	<h3>php details</h3>
+	<table class="table table-bordered table-striped table-condensed">
+		<tbody>
+			<tr>
+				<td>php version</td>
+				<td><strong>{{ status.php.version }}</strong></td>
+			</tr>
+
+			<tr>
+				<td>pdo::mysql supported</td>
+				<td><button class="btn disabled btn-mini btn-{% if status.php.supports.mysql %}success{% else %}danger{% endif %}">{% if not status.php.supports.mysql %}un{% endif %}available</button></td>
+			</tr>
+			<tr>
+				<td>pdo::pqsql supported</td>
+				<td><button class="btn disabled btn-mini btn-{% if status.php.supports.pgsql %}success{% else %}danger{% endif %}">{% if not status.php.supports.pgsql %}un{% endif %}available</button></td>
+			</tr>
+			<tr>
+				<td>pdo::sqlite supported</td>
+				<td><button class="btn disabled btn-mini btn-{% if status.php.supports.sqlite %}success{% else %}danger{% endif %}">{% if not status.php.supports.sqlite %}un{% endif %}available</button></td>
+			</tr>
+
+			<tr>
+				<td><strong>safe_mode</strong> directive</td>
+				<td><button class="btn disabled btn-mini btn-{% if not status.php.safe_mode %}success{% else %}danger{% endif %}">{% if not status.php.safe_mode %}not {% endif %}enabled</button></td>
+			</tr>
+			<tr>
+				<td><strong>allow_url_open</strong> directive</td>
+				<td><button class="btn disabled btn-mini btn-{% if status.php.url_fopen %}success{% else %}danger{% endif %}">{% if not status.php.url_fopen %}not {% endif %}enabled</button></td>
+			</tr>
+			<tr>
+				<td><strong>file_uploads</strong> directive</td>
+				<td><button class="btn disabled btn-mini btn-{% if status.php.uploads %}success{% else %}danger{% endif %}">{% if not status.php.uploads %}not {% endif %}enabled</button></td>
+			</tr>
+			<tr>
+				<td><strong>upload_max_filesize</strong> directive</td>
+				<td>{{ status.php.upload_max }}</td>
+			</tr>
+			<tr>
+				<td><strong>max_execution_time</strong> directive</td>
+				<td>{{ status.php.exec_time }}s</td>
+			</tr>
+			<tr>
+				<td><strong>memory_limit</strong> directive</td>
+				<td>{{ status.php.memlimit }}</td>
+			</tr>
+			<tr>
+				<td><strong>max_input_vars</strong> directive</td>
+				<td>{{ status.php.max_inputs }}</td>
+			</tr>
+			<tr>
+				<td>curl available</td>
+				<td><button class="btn disabled btn-mini btn-{% if status.php.curl %}success{% else %}danger{% endif %}">{% if not status.php.curl %}un{% endif %}available</button></td>
+			</tr>
+		</tbody>
+	</table>
+
+
+
+	<h3>dependency details</h3>
+	<table class="table table-bordered table-striped table-condensed">
+		<tbody>
+			<tr>
+				<td><a href="https://github.com/damianb/openflame"><strong>emberlabs\openflame</strong></a> version</td>
+				<td>{{ status.library.openflame.version }}</td>
+			</tr>
+			<tr>
+				<td><a href="https://github.com/damianb/shot"><strong>emberlabs\shot</strong></a> version</td>
+				<td>{{ status.library.shot.version }}</td>
+			</tr>
+			<tr>
+				<td><a href="https://github.com/fabpot/Twig"><strong>Twig</strong></a> version</td>
+				<td>{{ status.library.twig.version }}</td>
+			</tr>
+			<tr>
+				<td><a href="https://github.com/avalanche123/Imagine"><strong>Imagine</strong></a> version</td>
+				<td>{{ status.library.imagine.version }}</td>
+			</tr>
+			<tr>
+				<td>Current Imagine image driver</td>
+				<td>{{ status.library.imagine.driver }}</td>
+			</tr>
+			<tr>
+				<td><a href="http://www.redbeanphp.com/"><strong>RedBean</strong></a> version</td>
+				<td>{{ status.library.redbean.version }}</td>
+			</tr>
+			<tr>
+				<td>Current RedBean database driver</td>
+				<td>{{ status.library.redbean.driver }}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+{% endblock %}
