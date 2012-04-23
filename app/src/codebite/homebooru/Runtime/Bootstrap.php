@@ -33,8 +33,7 @@ require _HOMEBOORU_MAGIC_LOAD_DIR . '/codebite/homebooru/Runtime/Injectors.php';
 
 $app = App::getInstance();
 
-// feature detection stuff
-define('SIGMA_USE_OPENSSL', (defined('OPENSSL_VERSION_NUMBER') && !$app['disable.openssl']) ? true : false);
+set_exception_handler('\\codebite\\homebooru\\Runtime\\ExceptionHandler::invoke');
 
 // prepare the cache
 $app['cache.path'] = SHOT_ROOT . '/cache/';
