@@ -11,10 +11,10 @@ class TagLatestController
 	extends ObjectController
 {
 	const SEARCH_MAX = 50;
-	
+
 	public function runController()
 	{
-		$beans = R::findAll('tag', 'ORDER BY title ASC LIMIT ', array(self::SEARCH_MAX));
+		$beans = R::findAll('tag', 'ORDER BY title ASC LIMIT ?', array(self::SEARCH_MAX));
 
 		return $this->respond('viewtags.twig.html', 200, array(
 			'page'				=> array(
