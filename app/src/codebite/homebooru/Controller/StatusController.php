@@ -9,13 +9,6 @@ if(!defined('SHOT_ROOT')) exit;
 class StatusController
 	extends ObjectController
 {
-	/*
-	public function before()
-	{
-		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
-	}
-	*/
-
 	public function runController()
 	{
 		$pdo_drivers = \PDO::getAvailableDrivers();
