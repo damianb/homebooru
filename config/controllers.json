@@ -17,6 +17,8 @@
 		"site.controller.pool.append":"codebite\\homebooru\\Controller\\PoolAppendController",
 
 		"site.controller.tags":"codebite\\homebooru\\Controller\\TagArchiveController",
+		"site.controller.tags.orphan":"codebite\\homebooru\\Controller\\TagOrphanController",
+		"site.controller.tags.latest":"codebite\\homebooru\\Controller\\TagLatestController",
 		"site.controller.tags.alias":"codebite\\homebooru\\Controller\\TagAliasController",
 		"site.controller.tags.edit":"codebite\\homebooru\\Controller\\TagEditController",
 

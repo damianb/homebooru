@@ -7,12 +7,14 @@ use \R;
 
 if(!defined('SHOT_ROOT')) exit;
 
-class TagArchiveController
+class TagLatestController
 	extends ObjectController
 {
+	const SEARCH_MAX = 50;
+	
 	public function runController()
 	{
-		$beans = R::findAll('tag', 'ORDER BY title ASC');
+		$beans = R::findAll('tag', 'ORDER BY title ASC LIMIT ', array(self::SEARCH_MAX));
 
 		return $this->respond('viewtags.twig.html', 200, array(
 			'page'				=> array(

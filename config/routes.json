@@ -59,7 +59,7 @@
 
 		"tags":{
 			"path":"/tags/",
-			"callback":"site.controller.tags"
+			"callback":"site.controller.tags.latest"
 		},
 		"tags_list":{
 			"path":"/tags/list/",
@@ -68,6 +68,10 @@
 		"tags_list_page":{
 			"path":"/tags/list/$page:int/",
 			"callback":"site.controller.tags"
+		},
+		"tags_orphan":{
+			"path":"/tags/orphan/",
+			"callback":"site.controller.tags.orphan"
 		},
 		"tags_alias":{
 			"path":"/tags/alias/",
