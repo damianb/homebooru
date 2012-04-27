@@ -23,7 +23,7 @@ class Handler
 	public function resolveTags(array &$tags)
 	{
 		R::$f->begin()
-			->select('t.*, a.title')->from('tag t')
+			->select('t.*, a.title as old_tag')->from('tag t')
 			->inner_join('tag_alias a on t.id = a.tag_id')
 			->where('a.title in('  . implode(',', array_fill(0, count($tags), '?')) . ')');
 		foreach($tags as $tag)
@@ -34,10 +34,19 @@ class Handler
 		$replace_tags = $remove_tags = array();
 		foreach(R::$f->get() as $result)
 		{
-			$remove_tags[] = $result['title'];
+			$remove_tags[] = $result['old_tag'];
 			$replace_tags[] = $result['replacement'];
 		}
 
 		$tags = array_merge(array_diff($tags, $remove_tags), $replace_tags);
+	}
+
+	public function addAlias($alias, \RedBean_OODBBean $target_bean)
+	{
+		$bean = R::dispense('tag_alias');
+		$bean->title = $alias;
+		$bean->tag = $target_bean;
+
+		R::store($bean);
 	}
 }
