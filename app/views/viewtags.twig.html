@@ -22,7 +22,7 @@
 			<tr>
 				<td class="span4"><a class="tag-text tag-text-{{ tag.getType() }}" href="{{ url.search_tag(tag.title|url_encode) }}" title="{{ tag.getDescription() }}">{{ tag.title }}</a></td>
 				<td>{{ tag.tag_count }} entr{% if tag.tag_count != 1 %}ies{% else %}y{% endif %}</td>
-				<td><a href="btn btn-mini" href="{{ url.tag_edit(tag.id) }}">Edit</a></td>
+				<td><a class="btn btn-mini" href="{{ url.tag_edit(tag.id) }}">Edit</a></td>
 			</tr>
 			{% endif %}
 		{% endfor %}
@@ -35,7 +35,7 @@
 			<tr>
 				<td class="span4"><a class="tag-text tag-text-{{ tag.getType() }}" href="{{ url.search_tag(tag.title|url_encode) }}" title="{{ tag.getDescription() }}">{{ tag.title }}</a></td>
 				<td>{{ tag.tag_count }} entr{% if tag.tag_count != 1 %}ies{% else %}y{% endif %}</td>
-				<td><a href="btn btn-mini" href="{{ url.tag_edit(tag.id) }}">Edit</a></td>
+				<td><a class="btn btn-mini" href="{{ url.tag_edit(tag.id) }}">Edit</a></td>
 			</tr>
 			{% endif %}
 		{% endfor %}
