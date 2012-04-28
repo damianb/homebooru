@@ -1,6 +1,6 @@
 {% extends "layout.twig.html" %}
 {% block content %}
-	<h2>view tags</h2>
+	<h2>view {% if page.tag_latest %}recently added {% endif %}tags</h2>
 
 {% if tags -%}
 	<div class="tag-list">
