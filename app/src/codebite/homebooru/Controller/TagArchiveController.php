@@ -7,7 +7,7 @@ use \R;
 
 if(!defined('SHOT_ROOT')) exit;
 
-class TagLatestController
+class TagArchiveController
 	extends ObjectController
 {
 	const SEARCH_MAX = 20;
@@ -27,7 +27,7 @@ class TagLatestController
 			->inner_join('post_tag pt')
 				->on('pt.tag_id = t.id')
 			->group_by('t.id')
-			->order_by('t.id DESC')
+			->order_by('t.title ASC')
 			->limit(self::SEARCH_MAX)
 			->offset((int) $offset);
 		$beans = R::convertToBeans('tag', R::$f->get());
@@ -35,7 +35,7 @@ class TagLatestController
 		return $this->respond('viewtags.twig.html', 200, array(
 			'page'				=> array(
 				'tags'				=> true,
-				'tag_latest'		=> true,
+				'tag_archive'		=> true,
 			),
 			'tags'				=> $beans,
 		));
