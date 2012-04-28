@@ -208,7 +208,14 @@ class PostSearchController
 			foreach($beans as $bean)
 			{
 				$tags = $bean->getFullTags();
-				$post_tags_used = array_diff_key($post_tags_used, $tags) + $tags;
+				foreach($tags as $id => $tag)
+				{
+					if(empty($post_tags_used[$id]))
+					{
+						$post_tags_used[$id] = $tag;
+					}
+					$post_tags_used[$id]->encounter();
+				}
 			}
 
 			$total_pages = floor((($total % self::SEARCH_MAX) != 0) ? ($total / self::SEARCH_MAX) + 1 : $total / self::SEARCH_MAX);

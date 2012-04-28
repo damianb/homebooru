@@ -15,6 +15,8 @@ class BooruTagModel
 	const TAG_MEDIUM = 6;
 	const TAG_ALIAS = 7;
 
+	protected $encounters = 0;
+
 	public function getType()
 	{
 		switch($this->bean->type)
@@ -53,5 +55,15 @@ class BooruTagModel
 			default:
 				return 'general use tag';
 		}
+	}
+
+	public function encounter()
+	{
+		$this->encounters++;
+	}
+
+	public function getEncounters()
+	{
+		return $this->encounters;
 	}
 }

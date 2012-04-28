@@ -36,7 +36,14 @@ class ArchiveController
 			foreach($beans as $bean)
 			{
 				$tags = $bean->getFullTags();
-				$post_tags_used = array_diff_key($post_tags_used, $tags) + $tags;
+				foreach($tags as $id => $tag)
+				{
+					if(empty($post_tags_used[$id]))
+					{
+						$post_tags_used[$id] = $tag;
+					}
+					$post_tags_used[$id]->encounter();
+				}
 			}
 
 			// Run through and generate a number of page links...

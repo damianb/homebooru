@@ -8,7 +8,9 @@
 		<div class="pull-left span2 posts-adjust-left">
 			<ul class="side-tags">
 			{% for tag in post_tags %}
+				{% if tag.getEncounters() > 1 %}
 				<li>{% if page.search %}<a href="#">+</a> <a href="#">-</a> {% endif %}<a class="tag-text tag-text-{{ tag.getType() }}" href="{{ url.search_tag(tag.title|url_encode) }}" title="{{ tag.getDescription() }}">{{ tag.title }}</a> <span class="tag-count">{{ tag.tag_count }}</span></li>
+				{% endif %}
 			{% endfor %}
 			</ul>
 		</div>
