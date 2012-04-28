@@ -22,7 +22,7 @@ class ArchiveController
 		$offset = self::SEARCH_MAX * ($page - 1);
 		$beans = R::find('post', 'status = ? ORDER BY id desc LIMIT ? OFFSET ?', array(BooruPostModel::ENTRY_ACCEPT, self::SEARCH_MAX, $offset));
 
-		$pagination = array();
+		$post_tags_used = $pagination = array();
 		if(!empty($beans))
 		{
 			$total = (int) R::$f->begin()
@@ -32,6 +32,12 @@ class ArchiveController
 				->get('cell');
 
 			$total_pages = floor((($total % self::SEARCH_MAX) != 0) ? ($total / self::SEARCH_MAX) + 1 : $total / self::SEARCH_MAX);
+
+			foreach($beans as $bean)
+			{
+				$tags = $bean->getFullTags();
+				$post_tags_used = array_diff_key($post_tags_used, $tags) + $tags;
+			}
 
 			// Run through and generate a number of page links...
 			$p = array();
@@ -66,6 +72,7 @@ class ArchiveController
 			),
 			'pagination'		=> $pagination,
 			'posts'				=> $beans,
+			'post_tags'			=> $post_tags_used,
 		));
 	}
 }

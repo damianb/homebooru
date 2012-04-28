@@ -46,7 +46,7 @@ class PostSearchController
 		);
 
 		// mass-define a bunch of array vars
-		$beans = $pagination = $search = $exclude_normal_tags = $normal_tags = $param_tags = $exclude_param_tags = array();
+		$beans = $post_tags_used = $pagination = $search = $exclude_normal_tags = $normal_tags = $param_tags = $exclude_param_tags = array();
 		if(!empty($_param_tags))
 		{
 			foreach($_param_tags as $tag)
@@ -205,6 +205,12 @@ class PostSearchController
 
 			$beans = R::convertToBeans('post', R::$f->get());
 
+			foreach($beans as $bean)
+			{
+				$tags = $bean->getFullTags();
+				$post_tags_used = array_diff_key($post_tags_used, $tags) + $tags;
+			}
+
 			$total_pages = floor((($total % self::SEARCH_MAX) != 0) ? ($total / self::SEARCH_MAX) + 1 : $total / self::SEARCH_MAX);
 
 			// Run through and generate a number of page links...
@@ -240,6 +246,7 @@ class PostSearchController
 				'search'			=> true,
 			),
 			'posts'				=> $beans,
+			'post_tags'			=> $post_tags_used,
 			'pagination'		=> $pagination,
 			'search_tags'		=> $_search,
 		));

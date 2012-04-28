@@ -10,7 +10,7 @@ if(!defined('SHOT_ROOT')) exit;
 class BooruPostModel
 	extends RedBean_SimpleModel
 {
-	protected $_app, $tags;
+	protected $_app, $tags, $tag_beans;
 
 	const ENTRY_QUEUE = 2;
 	const ENTRY_DENY = 3;
@@ -62,7 +62,25 @@ class BooruPostModel
 
 		if(!$this->tag_beans)
 		{
-			$this->tag_beans = R::find('tag', implode(' OR ', array_fill(0, count($this->tags), 'title = ?')) . ' ORDER BY title ASC', $this->tags);
+			$fn_put = function($value, $key) {
+				R::$f->put($value);
+			};
+
+			R::$f->begin()
+				->select('t.*, COUNT(pt.tag_id) as tag_count')
+				->from('tag t')
+				->inner_join('post_tag pt')
+					->on('pt.tag_id = t.id')
+				->where('t.title in(' . implode(',', array_fill(0, count($this->tags), '?')) . ')')
+				->group_by('t.id')
+				->order_by('t.title ASC');
+			array_walk($this->tags, $fn_put);
+			$beans = R::convertToBeans('tag', R::$f->get());
+
+			foreach($beans as $bean)
+			{
+				$this->tag_beans[$bean->id] = $bean;
+			}
 		}
 
 		return $this->tag_beans;

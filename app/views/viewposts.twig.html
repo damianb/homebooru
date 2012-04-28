@@ -4,16 +4,28 @@
 
 
 {% if posts %}
-	<ul class="thumbnails posts">
-	{%- for post in posts %}
-		<li class="img span3" id="post{{ post.id }}">
-			<a href="{{ url.archive_id(post.id) }}" class="thumbnail" style="width:{{ post.thumb_width + 2 }}px; height:{{ post.thumb_height + 2 }}px">
-				<img src="{{ site.thumburl ~ post.thumb_file }}" alt="{{ post.getTags()|join(' ') }}" title="{{ post.getTags()|join(' ') }}" style="height: {{ post.thumb_height }}px; width: {{ post.thumb_width }}px">
-			</a>
-			<div class="size" style="width:{{ post.thumb_width + 62}}px"><div class="pull-left">rating: <span class="rating rating-{{ post.getRating() }}" title="{{ post.getRating() }}">{% if post.getRating() == 'unknown' %}?{% else %}{{ post.getRating()|slice(0, 1)|capitalize }}{% endif %}</span></div><div class="pull-right">{{ post.full_width }}<span class="small">px</span> &times; {{ post.full_height }}<span class="small">px</span></div></div>
-		</li>
-	{% endfor -%}
-	</ul>
+	<div class="buff">
+		<div class="pull-left span2 posts-adjust-left">
+			<ul class="side-tags">
+			{% for tag in post_tags %}
+				<li>{% if page.search %}<a href="#">+</a> <a href="#">-</a> {% endif %}<a class="tag-text tag-text-{{ tag.getType() }}" href="{{ url.search_tag(tag.title|url_encode) }}" title="{{ tag.getDescription() }}">{{ tag.title }}</a> <span class="tag-count">{{ tag.tag_count }}</span></li>
+			{% endfor %}
+			</ul>
+		</div>
+		<div class="pull-right span9 posts-adjust-right">
+			<ul class="thumbnails posts">
+			{%- for post in posts %}
+				<li class="img span3" id="post{{ post.id }}">
+					<a href="{{ url.archive_id(post.id) }}" class="thumbnail" style="width:{{ post.thumb_width + 2 }}px; height:{{ post.thumb_height + 2 }}px">
+						<img src="{{ site.thumburl ~ post.thumb_file }}" alt="{{ post.getTags()|join(' ') }}" title="{{ post.getTags()|join(' ') }}" style="height: {{ post.thumb_height }}px; width: {{ post.thumb_width }}px">
+					</a>
+					<div class="size"><div class="pull-left">rating: <span class="rating rating-{{ post.getRating() }}" title="{{ post.getRating() }}">{% if post.getRating() == 'unknown' %}?{% else %}{{ post.getRating()|slice(0, 1)|capitalize }}{% endif %}</span></div><div class="pull-right">{{ post.full_width }}<span class="small">px</span> &times; {{ post.full_height }}<span class="small">px</span></div></div>
+				</li>
+			{% endfor -%}
+			</ul>
+		</div>
+		<div class="clear"></div>
+	</div>
 {% else %}
 	<div class="shana"><img src="{{ asset.image.shana_hmph }}" alt="hmph!"></div>
 	<h3 class="caption">Nothing to see here yet.<br>  Move along or <a href="{{ url.submit() }}">submit something</a>.</h3>
