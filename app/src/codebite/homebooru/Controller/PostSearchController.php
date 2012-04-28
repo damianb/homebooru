@@ -11,21 +11,23 @@ class PostSearchController
 {
 	const SEARCH_MAX = 24;
 
+	/*
 	public function before()
 	{
 		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
 	}
+	*/
 
 	public function runController()
 	{
-		$page = $this->request->getInput('REQUEST::page', 1);
+		$page = $this->getInput('REQUEST::page', 1);
 		if($page === 0)
 		{
 			$page = 1;
 		}
 		$offset = self::SEARCH_MAX * ($page - 1);
 
-		$_search = $tags = $this->request->getInput('REQUEST::q', '');
+		$_search = $tags = $this->getInput('REQUEST::q', '');
 
 		// tag search, now with only TWO DAMN PCRE'S! LIKE A BAWSS
 
