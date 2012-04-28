@@ -15,13 +15,13 @@
 	{% if pagination -%}
 	<div class="pagination pagination-right">
 		<ul>
-			<li{% if pagination.current == pagination.first %} class="disabled"{% endif %}><a href="{% if pagination.current == pagination.first %}#{% else %}{{ url.archive_page(pagination.first) }}{% endif %}">&laquo;</a></li>
+			<li{% if pagination.current == pagination.first %} class="disabled"{% endif %}><a href="{% if pagination.current == pagination.first %}#{% else %}{{ url.tag_archive_page(pagination.first) }}{% endif %}">&laquo;</a></li>
 			{% for page in pagination.pages -%}
-			<li{% if pagination.current == page %} class="active"{% endif %}><a href="{% if pagination.current == page %}#{% else %}{{ url.archive_page(page) }}{% endif %}">{{ page }}</a></li>
+			<li{% if pagination.current == page %} class="active"{% endif %}><a href="{% if pagination.current == page %}#{% else %}{{ url.tag_archive_page(page) }}{% endif %}">{{ page }}</a></li>
 			{%- endfor %}
-			<li{% if pagination.current == pagination.last %} class="disabled"{% endif %}><a href="{% if pagination.current == pagination.last %}#{% else %}{{ url.archive_page(pagination.last) }}{% endif %}">&raquo;</a></li>
+			<li{% if pagination.current == pagination.last %} class="disabled"{% endif %}><a href="{% if pagination.current == pagination.last %}#{% else %}{{ url.tag_archive_page(pagination.last) }}{% endif %}">&raquo;</a></li>
 		</ul>
-		<!-- f:{{ pagination.first }} p:{{ pagination.prev }} c:{{ pagination.current }} n:{{ pagination.next }} l:{{ pagination.last }} t:{{ pagination.total }} -->
+		<!-- f:{{ pagination.first }} p:{{ pagination.prev }} c:{{ pagination.current }} n:{{ pagination.next }} l:{{ pagination.last }} t:{{ pagination.total }} ex uri: {{ url.tag_archive_page(1) }} -->
 	</div>
 	{% endif %}
 {% endblock %}

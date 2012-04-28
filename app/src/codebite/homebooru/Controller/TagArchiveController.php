@@ -10,7 +10,7 @@ if(!defined('SHOT_ROOT')) exit;
 class TagArchiveController
 	extends ObjectController
 {
-	const SEARCH_MAX = 20;
+	const SEARCH_MAX = 50;
 
 	public function runController()
 	{
@@ -32,12 +32,43 @@ class TagArchiveController
 			->offset((int) $offset);
 		$beans = R::convertToBeans('tag', R::$f->get());
 
+		$total = R::count('tag');
+
+		$total_pages = floor((($total % self::SEARCH_MAX) != 0) ? ($total / self::SEARCH_MAX) + 1 : $total / self::SEARCH_MAX);
+
+		// Run through and generate a number of page links...
+		$p = array();
+		for($i = -3; $i <= 3; $i++)
+		{
+			// "before" first page?
+			if($page + $i < 1)
+			{
+				continue;
+			}
+			elseif($page + $i > $total_pages)
+			{
+				continue;
+			}
+
+			$p[] = $page + $i;
+		}
+		$pagination = array(
+			'first'		=> 1,
+			'prev'		=> ($page != 1) ? $page - 1 : false,
+			'current'	=> $page,
+			'next'		=> (($page + self::SEARCH_MAX) > $total) ? $page + 1 : false,
+			'pages'		=> $p,
+			'last'		=> $total_pages,
+			'total'		=> $total,
+		);
+
 		return $this->respond('viewtags.twig.html', 200, array(
 			'page'				=> array(
 				'tags'				=> true,
 				'tag_archive'		=> true,
 			),
 			'tags'				=> $beans,
+			'pagination'		=> $pagination,
 		));
 	}
 }
