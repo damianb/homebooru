@@ -11,10 +11,10 @@
 		"site.controller.edit":"codebite\\homebooru\\Controller\\PostEditController",
 		"site.controller.single":"codebite\\homebooru\\Controller\\PostViewController",
 
-		"site.controller.pool":"codebite\\homebooru\\Controller\\PoolArchiveController",
-		"site.controller.pool.create":"codebite\\homebooru\\Controller\\PoolCreateController",
-		"site.controller.pool.view":"codebite\\homebooru\\Controller\\PoolViewController",
-		"site.controller.pool.append":"codebite\\homebooru\\Controller\\PoolAppendController",
+		#"site.controller.pool":"codebite\\homebooru\\Controller\\PoolArchiveController",
+		#"site.controller.pool.create":"codebite\\homebooru\\Controller\\PoolCreateController",
+		#"site.controller.pool.view":"codebite\\homebooru\\Controller\\PoolViewController",
+		#"site.controller.pool.append":"codebite\\homebooru\\Controller\\PoolAppendController",
 
 		"site.controller.tags":"codebite\\homebooru\\Controller\\TagArchiveController",
 		"site.controller.tags.orphan":"codebite\\homebooru\\Controller\\TagOrphanController",
