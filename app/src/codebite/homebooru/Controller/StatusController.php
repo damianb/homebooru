@@ -38,7 +38,7 @@ class StatusController
 					),
 					'imagine'			=> array(
 						'version'			=> 'unknown',
-						'driver'			=> strtolower(trim(str_replace('Imagine', '', get_class($this->app->imagine)), '\\'))
+						'driver'			=> $this->app['imagine.driver'] ?: 'gd',
 					),
 				),
 				'php'				=> array(

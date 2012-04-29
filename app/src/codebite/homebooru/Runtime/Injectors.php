@@ -50,15 +50,19 @@ $injector->setInjector('imagine', function() {
 	$loader = Autoloader::getInstance();
 	$loader->setPath(SHOT_VENDOR_ROOT . '/Imagine/lib');
 
-	return DependencyInjector::grab('imagine_lib');
+	return DependencyInjector::grab('imagine.driver.' . ($app['imagine.driver'] ?: 'gd'));
 });
 
-$injector->setInjector('imagine_lib', function() {
+$injector->setInjector('imagine.driver.gd', function() {
 	return new \Imagine\Gd\Imagine;
+});
+$injector->setInjector('imagine.driver.imagick', function() {
+	return new \Imagine\Imagick\Imagine;
+});
+$injector->setInjector('imagine.driver.gmagick', function() {
+	return new \Imagine\Gmagick\Imagine;
 });
 
 $injector->setInjector('tagger', '\\codebite\\homebooru\\Tag\\Handler');
-
 $injector->setInjector('stat', '\\codebite\\homebooru\\Stat');
-
 $injector->setInjector('session', '\\codebite\\homebooru\\Session\\Session');

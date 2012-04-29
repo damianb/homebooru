@@ -45,7 +45,7 @@ final class ExceptionHandler
 				ucfirst(SHOT_ROOT),
 			);
 			$replace = array(
-				htmlentities(get_class($e), ENT_QUOTES, 'UTF-8') . ($e->getCode() ?: ''),
+				htmlspecialchars(get_class($e), ENT_QUOTES, 'UTF-8') . ($e->getCode() ?: ''),
 				htmlspecialchars($e->getMessage() ?: 'NULL', ENT_QUOTES, 'UTF-8'),
 				(int) ($e->getCode() ?: 0),
 				htmlspecialchars(get_class($e), ENT_QUOTES, 'UTF-8'),
