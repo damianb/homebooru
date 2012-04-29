@@ -52,6 +52,8 @@ class StatusController
 					'memlimit'			=> ini_get('memory_limit'),
 					'safe_mode'			=> ini_get('safe_mode'),
 					'curl'				=> function_exists('curl_init'),
+					'gd'				=> function_exists('imagecreate'),
+					'imagick'			=> class_exists('Imagick'),
 				),
 				'configuration'		=> array(
 					'debug'				=> SHOT_DEBUG,

@@ -57,6 +57,14 @@
 				<td>curl available</td>
 				<td><button class="btn disabled btn-mini btn-{% if status.php.curl %}success{% else %}danger{% endif %}">{% if not status.php.curl %}un{% endif %}available</button></td>
 			</tr>
+			<tr>
+				<td>GD available</td>
+				<td><button class="btn disabled btn-mini btn-{% if status.php.gd %}success{% else %}danger{% endif %}">{% if not status.php.gd %}un{% endif %}available</button></td>
+			</tr>
+			<tr>
+				<td>Imagick available</td>
+				<td><button class="btn disabled btn-mini btn-{% if status.php.imagick %}success{% else %}danger{% endif %}">{% if not status.php.imagick %}un{% endif %}available</button></td>
+			</tr>
 		</tbody>
 	</table>
 
