@@ -20,7 +20,7 @@ class ArchiveController
 		}
 
 		$offset = self::SEARCH_MAX * ($page - 1);
-		$beans = R::find('post', 'status = ? ORDER BY id desc LIMIT ? OFFSET ?', array(BooruPostModel::ENTRY_ACCEPT, self::SEARCH_MAX, $offset));
+		$beans = R::find('post', 'status = ? ORDER BY id DESC LIMIT ? OFFSET ?', array(BooruPostModel::ENTRY_ACCEPT, self::SEARCH_MAX, $offset));
 
 		$_beans = $bean_ids = $tags = $pagination = array();
 		if(!empty($beans))
