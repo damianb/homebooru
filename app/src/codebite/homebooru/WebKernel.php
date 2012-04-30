@@ -7,14 +7,6 @@ use \R;
 
 if(!defined('SHOT_ROOT')) exit;
 
-/**
- * SigmaBB - Web Kernel
- * 	     Extended version of the shot WebKernel, provides hooking and other functionality specific to Sigma's needs.
- *
- * @package     sigmabb
- * @license     Dual licensed (MIT and GPLv2)
- * @link        @link@
- */
 class WebKernel
 	extends ShotKernel
 {
