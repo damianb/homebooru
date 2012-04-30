@@ -34,14 +34,14 @@ class PostAddController
 
 			$success = $e = false;
 			$id = 0;
+			R::begin();
 			try {
 				if(!$this->app->form->checkFormKey($form_key, $form_time, 'submit'))
 				{
 					throw new SubmitFailException('Invalid form key submitted');
 				}
 
-				preg_match_all('#\w+[\w\-\(\)]*#i', $tags, $_tags);
-				$tags = array_unique(array_shift($_tags));
+				$tags = $this->app->tagger->extractTags($tags);
 
 				// @todo run tags through alias resolver
 
@@ -152,10 +152,12 @@ class PostAddController
 				$id = R::store($bean);
 				R::tag($bean, $tags);
 
+				R::commit();
 				$success = true;
 			}
 			catch(SubmitFailException $e)
 			{
+				R::rollback();
 				$success = false;
 			}
 

@@ -36,6 +36,7 @@ class PostEditController
 		if($this->wasInputSet('POST::submit'))
 		{
 			$submit = true;
+			R::begin();
 			try {
 				$form_key = $this->getInput('POST::formkey', '');
 				$form_time = $this->getInput('POST::formtime', 0);
@@ -73,12 +74,20 @@ class PostEditController
 				$bean->rating = $rating;
 
 				R::store($bean);
+				R::commit();
+
+				$success = true;
 			}
 			catch(SubmitFailException $e)
 			{
+				R::rollback();
 				$success = false;
 			}
-			$success = true;
+			catch(\Exception $e)
+			{
+				R::rollback();
+				$success = false;
+			}
 		}
 
 		return $this->respond('editpost.twig.html', 200, array(
