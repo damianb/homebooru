@@ -4,27 +4,31 @@ use \R;
 
 class Handler
 {
+	const TAG_INSERT_REGEXP = '#\w+[\w\-\(\)]*#i';
+	const TAG_EXTRACT_REGEXP = '#^\-?[\w]+[\w\-\(\)]*$#i';
+	const TAG_EXTRACTPARAM_REGEXP = '#^\-?[\w]+[\w\-\(\)]+(\:|\=)[\w\-\.\(\)]*$#i';
+
 	public function extractTags($tag_string)
 	{
-		preg_match_all('#\w+[\w\-\(\)]*#i', $tag_string, $tags);
+		preg_match_all(self::TAG_INSERT_REGEXP, $tag_string, $tags);
 		return array_unique(array_shift($tags));
 	}
 
 	public function extractSearchTags($search_string)
 	{
-		return array_unique(preg_grep('#^\-?[\w]+[\w\-\(\)]*$#i', explode(' ', $search_string)));
+		return array_unique(preg_grep(self::TAG_EXTRACT_REGEXP, explode(' ', $search_string)));
 	}
 
 	public function extractSearchParams($search_string)
 	{
-		return array_unique(preg_grep('#^\-?[\w]+[\w\-\(\)]+(\:|\=)[\w\-\.\(\)]*$#i', explode(' ', $search_string)));
+		return array_unique(preg_grep(self::TAG_EXTRACTPARAM_REGEXP, explode(' ', $search_string)));
 	}
 
 	public function resolveTags(array &$tags)
 	{
 		R::$f->begin()
 			->select('t.*, a.title as old_tag')->from('tag t')
-			->inner_join('tag_alias a on t.id = a.tag_id')
+			->left_join('tag_alias a on t.id = a.tag_id')
 			->where('a.title in('  . implode(',', array_fill(0, count($tags), '?')) . ')');
 		foreach($tags as $tag)
 		{
