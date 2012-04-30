@@ -41,11 +41,6 @@ class BooruPostModel
 		$this->tags = NULL;
 	}
 
-	public function liveAppendTag(\RedBean_OODBBean $tag)
-	{
-		$this->tags[$tag->id] = $tag;
-	}
-
 	private function initTags()
 	{
 		R::$f->begin()
@@ -64,6 +59,11 @@ class BooruPostModel
 		{
 			$this->tags[$bean->id] = $bean;
 		}
+	}
+
+	public function liveAppendTag(\RedBean_OODBBean $tag)
+	{
+		$this->tags[$tag->id] = $tag;
 	}
 
 	public function getTags()
