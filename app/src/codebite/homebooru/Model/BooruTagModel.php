@@ -15,7 +15,7 @@ class BooruTagModel
 	const TAG_MEDIUM = 6;
 	const TAG_ALIAS = 7;
 
-	protected $encounters = 0;
+	private $encounters = array();
 
 	public function getType()
 	{
@@ -57,9 +57,9 @@ class BooruTagModel
 		}
 	}
 
-	public function encounter()
+	public function encounter($post_id)
 	{
-		$this->encounters++;
+		$this->encounters[(int) $post_id] = $post_id;
 	}
 
 	public function getEncounters()

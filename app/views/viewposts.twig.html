@@ -8,7 +8,7 @@
 		<div class="pull-left span2 posts-adjust-left">
 			<ul class="side-tags">
 			{% for tag in post_tags %}
-				{% if tag.getEncounters() > 1 %}
+				{% if tag.getEncounters()|length > 1 %}
 				<li>{% if page.search %}<a href="#">+</a> <a href="#">-</a> {% endif %}<a class="tag-text tag-text-{{ tag.getType() }}" href="{{ url.search_tag(tag.title|url_encode) }}" title="{{ tag.getDescription() }}">{{ tag.title }}</a> <span class="tag-count">{{ tag.tag_count }}</span></li>
 				{% endif %}
 			{% endfor %}
@@ -19,7 +19,7 @@
 			{%- for post in posts %}
 				<li class="img span3" id="post{{ post.id }}">
 					<a href="{{ url.archive_id(post.id) }}" class="thumbnail" style="width:{{ post.thumb_width + 2 }}px; height:{{ post.thumb_height + 2 }}px">
-						<img src="{{ site.thumburl ~ post.thumb_file }}" alt="{{ post.getTags()|join(' ') }}" title="{{ post.getTags()|join(' ') }}" style="height: {{ post.thumb_height }}px; width: {{ post.thumb_width }}px">
+						<img src="{{ site.thumburl ~ post.thumb_file }}" alt="" title="{% for tag in post.getTags() %}{{ tag.title }} {%- endfor %}" style="height: {{ post.thumb_height }}px; width: {{ post.thumb_width }}px">
 					</a>
 					<div class="size"><div class="pull-left">rating: <span class="rating rating-{{ post.getRating() }}" title="{{ post.getRating() }}">{% if post.getRating() == 'unknown' %}?{% else %}{{ post.getRating()|slice(0, 1)|capitalize }}{% endif %}</span></div><div class="pull-right">{{ post.full_width }}<span class="small">px</span> &times; {{ post.full_height }}<span class="small">px</span></div></div>
 				</li>

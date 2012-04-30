@@ -46,7 +46,7 @@ class PostSearchController
 		);
 
 		// mass-define a bunch of array vars
-		$beans = $post_tags_used = $pagination = $search = $exclude_normal_tags = $normal_tags = $param_tags = $exclude_param_tags = array();
+		$beans = $tags = $pagination = $search = $exclude_normal_tags = $normal_tags = $param_tags = $exclude_param_tags = array();
 		if(!empty($_param_tags))
 		{
 			foreach($_param_tags as $tag)
@@ -207,15 +207,41 @@ class PostSearchController
 
 			foreach($beans as $bean)
 			{
-				$tags = $bean->getFullTags();
-				foreach($tags as $id => $tag)
+				if($bean->id)
 				{
-					if(empty($post_tags_used[$id]))
-					{
-						$post_tags_used[$id] = $tag;
-					}
-					$post_tags_used[$id]->encounter();
+					$bean_ids[] = $bean->id;
+					$_beans[$bean->id] = $bean;
 				}
+			}
+			$beans = $_beans;
+
+			// get all tags, their metadata, and combine them into one
+			R::$f->begin()
+				->select('pt.post_id, t.*,')
+					->addSQL('(')
+					->select('count(tag_id)')
+						->from('post_tag')
+						->where('tag_id = pt.tag_id')
+					->addSQL(')')
+					->as('tag_count')
+				->from('tag t')
+				->left_join('post_tag pt')
+					->on('pt.tag_id = t.id')
+				->where('pt.post_id in(' . implode(',', array_fill(0, count($bean_ids), '?')) . ')')
+				->group_by('pt.post_id, pt.tag_id')
+				->order_by('t.title ASC, pt.post_id ASC');
+			array_walk($bean_ids, function($value, $key) { R::$f->put($value); });
+
+			foreach(R::$f->get() as $entry)
+			{
+				$id = $entry['id'];
+				if(!isset($tags[$id]))
+				{
+					// No such thing as R::convertToBean() :C
+					$tags[$id] = reset(R::convertToBeans('tag', array($entry)));
+				}
+				$tags[$id]->encounter($entry['post_id']);
+				$beans[$entry['post_id']]->liveAppendTag($tags[$id]);
 			}
 
 			$total_pages = floor((($total % self::SEARCH_MAX) != 0) ? ($total / self::SEARCH_MAX) + 1 : $total / self::SEARCH_MAX);
@@ -253,7 +279,7 @@ class PostSearchController
 				'search'			=> true,
 			),
 			'posts'				=> $beans,
-			'post_tags'			=> $post_tags_used,
+			'post_tags'			=> $tags,
 			'pagination'		=> $pagination,
 			'search_tags'		=> $_search,
 		));
