@@ -34,7 +34,6 @@ class PostAddController
 
 			$success = $e = false;
 			$id = 0;
-			R::begin();
 			try {
 				if(!$this->app->form->checkFormKey($form_key, $form_time, 'submit'))
 				{
@@ -42,8 +41,9 @@ class PostAddController
 				}
 
 				$tags = $this->app->tagger->extractTags($tags);
-
 				// @todo run tags through alias resolver
+
+				R::begin();
 
 				$bean = R::dispense('post');
 

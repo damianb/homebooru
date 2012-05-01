@@ -250,12 +250,8 @@ class PostSearchController
 			$p = array();
 			for($i = -3; $i <= 3; $i++)
 			{
-				// "before" first page?
-				if($page + $i < 1)
-				{
-					continue;
-				}
-				elseif($page + $i > $total_pages)
+				// outside of page range? SKIP IT!
+				if(($page + $i < 1) || ($page + $i > $total_pages))
 				{
 					continue;
 				}
