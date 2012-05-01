@@ -1,11 +1,10 @@
 <?php
 namespace codebite\homebooru\Runtime;
+use \codebite\homebooru\WebKernel as App;
 use \emberlabs\GravatarLib\Gravatar;
 use \emberlabs\openflame\Core\Autoloader;
 use \emberlabs\openflame\Core\DependencyInjector;
 use \R;
-use \codebite\homebooru\Configuration;
-use \codebite\homebooru\WebKernel as App;
 
 if(!defined('SHOT_ROOT')) exit;
 

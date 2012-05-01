@@ -12,25 +12,6 @@ class WebKernel
 {
 	const HOMEBOORU_VERSION = '1.0.0dev';
 
-	public function blindHook($name)
-	{
-		$hook = Event::newEvent($name)
-			->setSource($this);
-
-		$this->dispatcher->trigger($hook, Dispatcher::TRIGGER_MIXEDBREAK);
-	}
-
-	public function hook($name, array &$data)
-	{
-		$hook = Event::newEvent($name)
-			->setSource($this)
-			->setData($data);
-
-		$this->dispatcher->trigger($hook, Dispatcher::TRIGGER_MIXEDBREAK);
-
-		$data = $hook->getData();
-	}
-
 	public function boot()
 	{
 		parent::boot();
@@ -83,42 +64,30 @@ class WebKernel
 		// load specified addons
 
 		/**
-		 * @hook hook.runtime.boot.post
+		 * @hook app.hook.runtime.boot.post
 		 *  - post application "boot" hook point
 		 */
-		$this->blindHook('hook.runtime.boot.post');
+		$this->blindHook('app.hook.runtime.boot.post');
 	}
 
 	public function run()
 	{
-		/**
-		 * @hook hook.runtime.run.pre
-		 *  - pre-run application hook point, executed before controller route is loaded, controller run
-		 */
-		$this->blindHook('hook.runtime.run.pre');
-
 		try {
 			parent::run();
 		}
 		catch(\Exception $e)
 		{
-			throw $e;
+			\codebite\homebooru\Runtime\ExceptionHandler::invoke($e);
 		}
-
-		/**
-		 * @hook hook.runtime.run.post
-		 *  - post-run application hook point, executed after controller route is loaded, controller run
-		 */
-		$this->blindHook('hook.runtime.run.post');
 	}
 
 	public function display()
 	{
 		/**
-		 * @hook hook.runtime.display.pre
+		 * @hook app.hook.runtime.display.pre
 		 *  - pre-display application hook point, executed before view is rendered and page output
 		 */
-		$this->blindHook('hook.runtime.display.pre');
+		$this->blindHook('app.hook.runtime.display.pre');
 
 		if($this->response->isUsingTemplating())
 		{
@@ -147,10 +116,10 @@ class WebKernel
 			);
 
 			/**
-			 * @hook hook.template.globalvars
+			 * @hook app.hook.template.globalvars
 			 *  - used to modify application-wide template variables
 			 */
-			$this->hook('hook.template.globalvars', $global_template_vars);
+			$this->hook('app.hook.template.globalvars', $global_template_vars);
 			$this->response->setTemplateVars(array_merge($global_template_vars, $this->response->getTemplateVars()));
 
 			$twig = $this->twig->getTwigEnvironment();
@@ -179,10 +148,10 @@ class WebKernel
 		);
 
 		/**
-		 * @hook hook.header.globalheaders
+		 * @hook app.hook.header.globalheaders
 		 *  - used to modify application-wide headers to send
 		 */
-		$this->hook('hook.header.globalheaders', $global_headers);
+		$this->hook('app.hook.header.globalheaders', $global_headers);
 		$this->response->setHeaders(array_merge($global_headers, $this->response->getHeaders() ?: array()));
 
 		try {
@@ -190,26 +159,19 @@ class WebKernel
 		}
 		catch(\Exception $e)
 		{
-			throw $e;
+			\codebite\homebooru\Runtime\ExceptionHandler::invoke($e);
 		}
 
 		/**
-		 * @hook hook.runtime.display.post
+		 * @hook app.hook.runtime.display.post
 		 *  - post-display application hook point, executed after view is rendered and page output
 		 */
-		$this->blindHook('hook.runtime.display.post');
+		$this->blindHook('app.hook.runtime.display.post');
 	}
 
 	public function shutdown()
 	{
-		/**
-		 * @hook hook.runtime.shutdown
-		 *  - application shutdown hook point, executed before exit is called and script terminated.
-		 */
-		$this->blindHook('hook.runtime.shutdown');
-
 		parent::shutdown();
-
 		exit;
 	}
 }

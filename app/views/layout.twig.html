@@ -62,11 +62,11 @@
 	<div class="container">
 		<footer>
 			<div>
-				<div class="l">powered by <a href="https://github.com/damianb/homebooru"><strong>codebite\homebooru</strong></a> &copy; 2012 <a href="http://codebite.net/">codebite.net</a>{# - available under the <a href="http://www.opensource.org/licenses/MIT">MIT license</a>#}</div>
+				<div class="l">powered by <a href="https://github.com/damianb/homebooru"><strong>codebite\homebooru</strong></a> &copy; 2012 <a href="http://codebite.net/">codebite.net</a></div>
 				<div class="r"><span id="touch">&gt;<span class="b">//</span>&lt;</span></div>
 			</div>
 			<div>
-				<div id="poweredby" style="display:none">running <a href="https://github.com/damianb/homebooru"><strong>codebite\homebooru</strong></a> {% if stat.commit() %}(git: {{ stat.commit}}) {% endif %}on "{{ stat.server() }}" | memory usage: {{ stat.mem() }} (peak: {{ stat.memPeak() }}) | page gen: {{ stat.time() }} s</div>
+				<div id="poweredby" style="display:none">running <a href="https://github.com/damianb/homebooru"><strong>codebite\homebooru</strong></a> on "{{ stat.server() }}" | memory usage: {$mem} (peak: {$mempeak}) | page gen: {{ stat.time() }} s</div>
 			</div>
 
 			<script src="{{ asset.js.jquery }}"></script>

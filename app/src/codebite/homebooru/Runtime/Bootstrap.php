@@ -33,6 +33,9 @@ require _HOMEBOORU_MAGIC_LOAD_DIR . '/codebite/homebooru/Runtime/Injectors.php';
 
 $app = App::getInstance();
 
+// Load up listeners afterwards
+require _HOMEBOORU_MAGIC_LOAD_DIR . '/codebite/homebooru/Runtime/Listeners.php';
+
 // Set our exception handler to be THE exception handler
 set_exception_handler('\\codebite\\homebooru\\Runtime\\ExceptionHandler::invoke');
 
