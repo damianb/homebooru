@@ -47,7 +47,7 @@
 						<div class="control-group">
 							<label class="control-label" for="tags">tags</label>
 							<div class="controls">
-								<textarea class="input-xxlarge" id="tags" name="tags" rows="3" placeholder="tags">{{ post.getTags()|join(' ') }}</textarea>
+								<textarea class="input-xxlarge" id="tags" name="tags" rows="3" placeholder="tags">{% for tag in post.getTags() %}{{ tag.title }} {% endfor %}</textarea>
 							</div>
 						</div>
 
