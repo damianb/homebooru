@@ -6,7 +6,7 @@ use \R;
 if(!defined('SHOT_ROOT')) exit;
 
 class PostViewController
-	extends ObjectController
+	extends BaseController
 {
 	protected $cacheable = true, $cache_ttl = 60;
 	private $id;

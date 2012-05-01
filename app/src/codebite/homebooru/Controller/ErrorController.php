@@ -4,7 +4,7 @@ namespace codebite\homebooru\Controller;
 if(!defined('SHOT_ROOT')) exit;
 
 class ErrorController
-	extends ObjectController
+	extends BaseController
 {
 	protected $cacheable = true, $cache_ttl = 300;
 

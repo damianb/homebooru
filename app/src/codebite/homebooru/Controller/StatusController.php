@@ -1,13 +1,12 @@
 <?php
 namespace codebite\homebooru\Controller;
 use \codebite\homebooru\Model\BooruPostModel;
-use \emberlabs\shot\Controller\ObjectController;
 use \R;
 
 if(!defined('SHOT_ROOT')) exit;
 
 class StatusController
-	extends ObjectController
+	extends BaseController
 {
 	public function runController()
 	{
