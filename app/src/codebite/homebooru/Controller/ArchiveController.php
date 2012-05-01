@@ -1,25 +1,30 @@
 <?php
 namespace codebite\homebooru\Controller;
 use \codebite\homebooru\Model\BooruPostModel;
-use \emberlabs\shot\Controller\ObjectController;
 use \R;
 
 if(!defined('SHOT_ROOT')) exit;
 
 class ArchiveController
-	extends ObjectController
+	extends BaseController
 {
 	const SEARCH_MAX = 24;
 
+	protected $cacheable = false;
+	private $page;
+
+	public function init()
+	{
+		$this->page = (int) $this->getRouteInput('page');
+		if($this->page == 0)
+		{
+			$this->page = 1;
+		}
+	}
+
 	public function runController()
 	{
-		$page = (int) $this->getRouteInput('page');
-		if($page === 0)
-		{
-			$page = 1;
-		}
-
-		$offset = self::SEARCH_MAX * ($page - 1);
+		$offset = self::SEARCH_MAX * ($this->page - 1);
 		$beans = R::find('post', 'status = ? ORDER BY id DESC LIMIT ? OFFSET ?', array(BooruPostModel::ENTRY_ACCEPT, self::SEARCH_MAX, $offset));
 
 		$_beans = $bean_ids = $tags = $pagination = array();
@@ -30,8 +35,6 @@ class ArchiveController
 				->where('status = ?')->put(BooruPostModel::ENTRY_ACCEPT)
 				->order('BY id')
 				->get('cell');
-
-			$total_pages = floor((($total % self::SEARCH_MAX) != 0) ? ($total / self::SEARCH_MAX) + 1 : $total / self::SEARCH_MAX);
 
 			foreach($beans as $bean)
 			{
@@ -72,27 +75,7 @@ class ArchiveController
 				$beans[$entry['post_id']]->liveAppendTag($tags[$id]);
 			}
 
-			// Run through and generate a number of page links...
-			$p = array();
-			for($i = -3; $i <= 3; $i++)
-			{
-				// outside of page range? SKIP IT!
-				if(($page + $i < 1) || ($page + $i > $total_pages))
-				{
-					continue;
-				}
-
-				$p[] = $page + $i;
-			}
-			$pagination = array(
-				'first'		=> 1,
-				'prev'		=> ($page != 1) ? $page - 1 : false,
-				'current'	=> $page,
-				'next'		=> (($page + self::SEARCH_MAX) > $total) ? $page + 1 : false,
-				'pages'		=> $p,
-				'last'		=> $total_pages,
-				'total'		=> $total,
-			);
+			$pagination = $this->buildPagination($this->page, $total, self::SEARCH_MAX);
 		}
 
 		return $this->respond('viewposts.twig.html', 200, array(

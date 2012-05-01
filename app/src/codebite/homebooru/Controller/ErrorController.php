@@ -1,13 +1,13 @@
 <?php
 namespace codebite\homebooru\Controller;
-use \emberlabs\shot\Controller\ObjectController;
-use \R;
 
 if(!defined('SHOT_ROOT')) exit;
 
 class ErrorController
 	extends ObjectController
 {
+	protected $cacheable = true, $cache_ttl = 300;
+
 	public function runController()
 	{
 		return $this->respond('error.twig.html', 404, array(

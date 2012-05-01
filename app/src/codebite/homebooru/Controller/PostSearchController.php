@@ -1,39 +1,38 @@
 <?php
 namespace codebite\homebooru\Controller;
 use \codebite\homebooru\Model\BooruPostModel;
-use \emberlabs\shot\Controller\ObjectController;
 use \R;
 
 if(!defined('SHOT_ROOT')) exit;
 
 class PostSearchController
-	extends ObjectController
+	extends BaseController
 {
 	const SEARCH_MAX = 24;
 
-	/*
-	public function before()
+	protected $cacheable = false;
+	private $page, $tags, $search;
+
+	public function init()
 	{
-		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
+		$this->page = $this->getInput('REQUEST::page', 1);
+		if($this->page == 0)
+		{
+			$this->page = 1;
+		}
+
+		$this->search = $this->tags = $this->getInput('REQUEST::q', '');
 	}
-	*/
 
 	public function runController()
 	{
-		$page = $this->getInput('REQUEST::page', 1);
-		if($page === 0)
-		{
-			$page = 1;
-		}
-		$offset = self::SEARCH_MAX * ($page - 1);
-
-		$_search = $tags = $this->getInput('REQUEST::q', '');
+		$offset = self::SEARCH_MAX * ($this->page - 1);
 
 		// tag search, now with only TWO DAMN PCRE'S! LIKE A BAWSS
 
 		// sort out "normal" tags and search parameters
-		$_normal_tags = $this->app->tagger->extractSearchTags($tags);
-		$_param_tags = $this->app->tagger->extractSearchParams($tags);
+		$_normal_tags = $this->app->tagger->extractSearchTags($this->tags);
+		$_param_tags = $this->app->tagger->extractSearchParams($this->tags);
 
 		// these params are handled special, so that we can do things like "md5:somemd5here" and search the posts themselves instead of searching for an md5 tag
 		// also allows us to exclude/look for "rating:safe", "id:5", etc...
@@ -230,7 +229,7 @@ class PostSearchController
 				->where('pt.post_id in(' . implode(',', array_fill(0, count($bean_ids), '?')) . ')')
 				->group_by('pt.post_id, pt.tag_id')
 				->order_by('t.title ASC, pt.post_id ASC');
-			array_walk($bean_ids, function($value, $key) { R::$f->put($value); });
+			array_walk($bean_ids, $fn_put);
 
 			foreach(R::$f->get() as $entry)
 			{
@@ -244,29 +243,7 @@ class PostSearchController
 				$beans[$entry['post_id']]->liveAppendTag($tags[$id]);
 			}
 
-			$total_pages = floor((($total % self::SEARCH_MAX) != 0) ? ($total / self::SEARCH_MAX) + 1 : $total / self::SEARCH_MAX);
-
-			// Run through and generate a number of page links...
-			$p = array();
-			for($i = -3; $i <= 3; $i++)
-			{
-				// outside of page range? SKIP IT!
-				if(($page + $i < 1) || ($page + $i > $total_pages))
-				{
-					continue;
-				}
-
-				$p[] = $page + $i;
-			}
-			$pagination = array(
-				'first'		=> 1,
-				'prev'		=> ($page != 1) ? $page - 1 : false,
-				'current'	=> $page,
-				'next'		=> (($page + self::SEARCH_MAX) > $total) ? $page + 1 : false,
-				'pages'		=> $p,
-				'last'		=> $total_pages,
-				'total'		=> $total,
-			);
+			$pagination = $this->buildPagination($this->page, $total, self::SEARCH_MAX);
 		}
 
 		$this->response->setBody('viewposts.twig.html');
@@ -277,7 +254,7 @@ class PostSearchController
 			'posts'				=> $beans,
 			'post_tags'			=> $tags,
 			'pagination'		=> $pagination,
-			'search_tags'		=> $_search,
+			'search_tags'		=> $this->search,
 		));
 
 		return $this->response;

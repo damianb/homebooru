@@ -1,7 +1,6 @@
 <?php
 namespace codebite\homebooru\Controller;
 use \codebite\homebooru\Model\BooruPostModel;
-use \emberlabs\shot\Controller\ObjectController;
 use \R;
 
 if(!defined('SHOT_ROOT')) exit;
@@ -9,16 +8,24 @@ if(!defined('SHOT_ROOT')) exit;
 class PostViewController
 	extends ObjectController
 {
-	public function before()
+	protected $cacheable = true, $cache_ttl = 60;
+	private $id;
+
+	public function init()
 	{
-		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
+		$this->id = $this->getRouteInput('id');
+	}
+
+	protected function defineCacheBinds()
+	{
+		return array(
+			'id' => $id,
+		);
 	}
 
 	public function runController()
 	{
-		$id = $this->getRouteInput('id');
-
-		$bean = R::findOne('post', '(status = ? AND id = ?)', array(BooruPostModel::ENTRY_ACCEPT, $id));
+		$bean = R::findOne('post', '(status = ? AND id = ?)', array(BooruPostModel::ENTRY_ACCEPT, $this->id));
 
 		if(empty($bean))
 		{

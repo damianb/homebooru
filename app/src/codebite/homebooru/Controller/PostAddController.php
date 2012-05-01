@@ -2,14 +2,15 @@
 namespace codebite\homebooru\Controller;
 use \codebite\homebooru\Internal\SubmitFailException;
 use \codebite\homebooru\Model\BooruPostModel;
-use \emberlabs\shot\Controller\ObjectController;
 use \R;
 
 if(!defined('SHOT_ROOT')) exit;
 
 class PostAddController
-	extends ObjectController
+	extends BaseController
 {
+	protected $cacheable = false;
+
 	public function before()
 	{
 		$this->app->form->setFormSeed($this->app->session->getSessionSeed());
