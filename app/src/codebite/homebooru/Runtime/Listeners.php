@@ -31,16 +31,16 @@ $app->dispatcher->register('shot.hook.runtime.render.post', 15, function(Event $
  *
 $app->dispatcher->register('shot.hook.runtime.runcontroller', 0, function(Event $event) use ($app) {
 	// extract controller
-	$controller = reset($event->getData());
+	$controller = $app->controller;
 
-	if($controller->isCacheable())
+	if($app->controller->isCacheable())
 	{
 		if(false)
 		{
-			$cache_binds = $controller->getCacheBinds();
+			$cache_binds = $app->controller->getCacheBinds();
 
 			$controller = new CacheController($app, $app->request, $app->response);
-			$controller->setCacheBinds($cache_binds);
+			//$controller->setCacheBinds($cache_binds);
 		}
 	}
 });
@@ -50,4 +50,13 @@ $app->dispatcher->register('shot.hook.runtime.runcontroller', 0, function(Event 
  * caching integration
  *
  *  - check if cacheable, then cache if so.
+ *
+$app->dispatcher->register('shot.hook.runtime.render.post', 0, function(Event $event) use ($app) {
+	if($app->controller->isCacheable())
+	{
+		// asdf
+		$cache_binds = $app->controller->getCacheBinds();
+		$cache_ttl = $app->controller->getCacheTTL();
+	}
+});
  */
