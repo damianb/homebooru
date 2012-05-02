@@ -46,6 +46,7 @@ $injector->setInjector('cookie', function() {
 });
 
 $injector->setInjector('imagine', function() {
+	$app = App::getInstance();
 	$loader = Autoloader::getInstance();
 	$loader->setPath(SHOT_VENDOR_ROOT . '/Imagine/lib');
 
