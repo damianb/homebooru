@@ -48,7 +48,7 @@ $app->dispatcher->register('shot.hook.runtime.runcontroller', 0, function(Event 
 	}
 	else
 	{
-		$app->response->setHeader('X-App-Magic-Cache', 'NONE');
+		$app->response->setHeader('X-App-Magic-Cache', 'NOCACHE');
 	}
 });
 

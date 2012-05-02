@@ -41,10 +41,7 @@ set_exception_handler('\\codebite\\homebooru\\Runtime\\ExceptionHandler::invoke'
 
 // prepare the cache
 $app['cache.path'] = SHOT_ROOT . '/cache/';
-if(function_exists('apc_cache_info') && !SHOT_DEBUG)
-{
-	$app['cache.engine'] = 'apc';
-}
+$app['cache.engine'] = (function_exists('apc_cache_info') && !SHOT_DEBUG) ? 'apc' : 'json';
 
 // prepare twig
 $app['twig.lib_path'] = SHOT_VENDOR_ROOT . '/Twig/lib/Twig/';

@@ -10,7 +10,7 @@ class ArchiveController
 {
 	const SEARCH_MAX = 24;
 
-	protected $cacheable = false;
+	protected $cacheable = true, $cache_ttl = 60;
 	private $page;
 
 	public function init()
