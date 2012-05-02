@@ -1,7 +1,7 @@
 <?php
 namespace codebite\homebooru\Runtime;
 use \codebite\homebooru\WebKernel as App;
-use \codebite\homebooru\Controller\CacheController;
+use \codebite\homebooru\Controller\CachedController;
 use \emberlabs\openflame\Event\Dispatcher;
 use \emberlabs\openflame\Event\Instance as Event;
 use \R;
@@ -28,35 +28,42 @@ $app->dispatcher->register('shot.hook.runtime.render.post', 15, function(Event $
  * caching integration
  *
  *  - check if cacheable, then see if cached - if so, overload with CacheController and appropriate cache entry name
- *
+ */
 $app->dispatcher->register('shot.hook.runtime.runcontroller', 0, function(Event $event) use ($app) {
-	// extract controller
-	$controller = $app->controller;
+	$cache_bind = 'page_cache_' . hash('sha1', implode('&&', $app->controller->getCacheBinds()));
 
-	if($app->controller->isCacheable())
+	if($app['site.magic_cache'] == true && $app->controller->isCacheable())
 	{
-		if(false)
+		if($app->cache->dataCached($cache_bind))
 		{
-			$cache_binds = $app->controller->getCacheBinds();
+			$controller = new CachedController($app, $app->request, $app->response);
+			$controller->setOriginalController($app->controller)
+				->setCacheBind($cache_bind);
 
-			$controller = new CacheController($app, $app->request, $app->response);
-			//$controller->setCacheBinds($cache_binds);
+			$app->controller = $controller;
 		}
 	}
 });
- */
+ /**/
 
 /**
  * caching integration
  *
  *  - check if cacheable, then cache if so.
- *
+ */
 $app->dispatcher->register('shot.hook.runtime.render.post', 0, function(Event $event) use ($app) {
-	if($app->controller->isCacheable())
+	if($app['site.magic_cache'] == true && $app->controller->isCacheable())
 	{
-		// asdf
-		$cache_binds = $app->controller->getCacheBinds();
-		$cache_ttl = $app->controller->getCacheTTL();
+		$cache_bind = 'page_cache_' . hash('sha1', implode('&&', $app->controller->getCacheBinds()));
+		if($app->cache->loadData($cache_bind) === NULL)
+		{
+			$page = array(
+				'http_status'	=> $app->response->getResponseCode(),
+				'body'			=> reset($event->getData()),
+			);
+
+			$app->cache->storeData($cache_bind, $page, $app->controller->getCacheTTL());
+		}
 	}
 });
- */
+ /**/
