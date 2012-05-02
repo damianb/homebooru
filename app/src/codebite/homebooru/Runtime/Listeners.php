@@ -66,6 +66,7 @@ $app->dispatcher->register('shot.hook.runtime.render.post', 0, function(Event $e
 			$app->response->setHeader('X-App-Magic-Cache', 'MISS');
 			$page = array(
 				'http_status'	=> $app->response->getResponseCode(),
+				'content_type'	=> $app->response->getContentType(),
 				'body'			=> reset($event->getData()),
 			);
 

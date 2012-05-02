@@ -30,6 +30,7 @@ class CachedController
 
 		$this->response->disableTemplating()
 			->setHeader('X-App-Magic-Cache', 'HIT')
+			->setContentType($this->cache['content_type'])
 			->setResponseCode($this->cache['http_status'])
 			->setBody($this->cache['body']);
 
