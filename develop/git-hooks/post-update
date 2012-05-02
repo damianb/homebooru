@@ -1,6 +1,0 @@
-#!/bin/sh
-#
-# dumps the latest git commit sha1 to a file for homebooru to announce
-#
-
-git rev-parse HEAD > config/.commit
