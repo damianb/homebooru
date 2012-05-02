@@ -42,9 +42,11 @@ $app->dispatcher->register('shot.hook.runtime.runcontroller', 0, function(Event 
 
 			$app->controller = $controller;
 		}
+
+		$app->response->setHeader('Cache-Control', 'public, max-age=' . 3600 * 10)
+			->setHeader('Pragma', NULL);
 	}
 });
- /**/
 
 /**
  * caching integration
@@ -66,4 +68,3 @@ $app->dispatcher->register('shot.hook.runtime.render.post', 0, function(Event $e
 		}
 	}
 });
- /**/

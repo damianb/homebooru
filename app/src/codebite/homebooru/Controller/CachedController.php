@@ -31,7 +31,7 @@ class CachedController
 
 		$this->response->disableTemplating()
 			->setResponseCode($page['http_status'])
-			->setHeader('X-Magic-Cache', 'SERVE')
+			->setHeader('X-App-Magic-Cache', 'SERVE')
 			->setBody($page['body']);
 
 		return $this->response;
