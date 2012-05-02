@@ -19,7 +19,7 @@ class PostViewController
 	protected function defineCacheBinds()
 	{
 		return array(
-			'id' => $id,
+			'id' => $this->id,
 		);
 	}
 
