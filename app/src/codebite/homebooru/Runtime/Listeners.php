@@ -34,17 +34,21 @@ $app->dispatcher->register('shot.hook.runtime.runcontroller', 0, function(Event 
 
 	if($app['site.magic_cache'] == true && $app->controller->isCacheable())
 	{
-		if($app->cache->dataCached($cache_bind))
+		if(($page = $app->cache->loadData($cache_bind)) !== NULL)
 		{
 			$controller = new CachedController($app, $app->request, $app->response);
 			$controller->setOriginalController($app->controller)
-				->setCacheBind($cache_bind);
+				->loadCache($page);
 
 			$app->controller = $controller;
 		}
 
 		$app->response->setHeader('Cache-Control', 'public, max-age=' . 3600 * 10)
 			->setHeader('Pragma', NULL);
+	}
+	else
+	{
+		$app->response->setHeader('X-App-Magic-Cache', 'NONE');
 	}
 });
 
@@ -57,8 +61,9 @@ $app->dispatcher->register('shot.hook.runtime.render.post', 0, function(Event $e
 	if($app['site.magic_cache'] == true && $app->controller->isCacheable())
 	{
 		$cache_bind = 'page_cache_' . hash('sha1', implode('&&', $app->controller->getCacheBinds()));
-		if($app->cache->loadData($cache_bind) === NULL)
+		if(!$app->cache->loadData($cache_bind))
 		{
+			$app->response->setHeader('X-App-Magic-Cache', 'MISS');
 			$page = array(
 				'http_status'	=> $app->response->getResponseCode(),
 				'body'			=> reset($event->getData()),

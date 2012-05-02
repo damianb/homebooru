@@ -8,7 +8,7 @@ if(!defined('SHOT_ROOT')) exit;
 class CachedController
 	extends BaseController
 {
-	protected $cacheable = false, $bind = '';
+	protected $cacheable = false, $cache = '';
 	private $original_controller;
 
 	public function setOriginalController(BaseController $controller)
@@ -18,21 +18,20 @@ class CachedController
 		return $this;
 	}
 
-	public function setCacheBind($bind)
+	public function loadCache($cache)
 	{
-		$this->bind = $bind;
+		$this->cache = $cache;
 
 		return $this;
 	}
 
 	public function runController()
 	{
-		$page = $this->app->cache->loadData($this->bind);
 
 		$this->response->disableTemplating()
-			->setResponseCode($page['http_status'])
-			->setHeader('X-App-Magic-Cache', 'SERVE')
-			->setBody($page['body']);
+			->setHeader('X-App-Magic-Cache', 'HIT')
+			->setResponseCode($this->cache['http_status'])
+			->setBody($this->cache['body']);
 
 		return $this->response;
 	}
