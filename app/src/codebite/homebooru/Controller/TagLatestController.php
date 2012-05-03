@@ -9,7 +9,7 @@ if(!defined('SHOT_ROOT')) exit;
 class TagLatestController
 	extends BaseController
 {
-	const SEARCH_MAX = 20;
+	const SEARCH_MAX = 40;
 
 	protected $cacheable = false;
 

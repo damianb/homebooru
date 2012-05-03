@@ -42,10 +42,11 @@ class PostAddController
 				}
 
 				$tags = $this->app->tagger->extractTags($tags);
-				// @todo run tags through alias resolver
+
+				// Resolve tag aliases.
+				$this->app->tagger->resolveTags($tags);
 
 				R::begin();
-
 				$bean = R::dispense('post');
 
 				$bean->status = BooruPostModel::ENTRY_ACCEPT; // default status (change to config later)

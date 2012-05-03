@@ -8,6 +8,8 @@ if(!defined('SHOT_ROOT')) exit;
 class StatusController
 	extends BaseController
 {
+	protected $cacheable = false;
+
 	public function runController()
 	{
 		$pdo_drivers = \PDO::getAvailableDrivers();

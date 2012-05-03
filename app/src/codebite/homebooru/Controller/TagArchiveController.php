@@ -11,7 +11,7 @@ class TagArchiveController
 {
 	const SEARCH_MAX = 50;
 
-	protected $cacheable = true, $cache_ttl = 60;
+	protected $cacheable = true, $cache_ttl = 120;
 	private $page;
 
 	public function init()
