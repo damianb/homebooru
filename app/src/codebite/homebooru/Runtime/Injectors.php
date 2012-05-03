@@ -62,6 +62,7 @@ $injector->setInjector('imagine.driver.imagick', function() {
 $injector->setInjector('imagine.driver.gmagick', function() {
 	return new \Imagine\Gmagick\Imagine;
 });
+$injector->setInjector('importer.driver.gelbooru', '\\codebite\\homebooru\\Importer\\Gelbooru');
 
 $injector->setInjector('tagger', '\\codebite\\homebooru\\Tag\\Handler');
 $injector->setInjector('stat', '\\codebite\\homebooru\\Stat');

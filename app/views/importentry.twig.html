@@ -1,0 +1,49 @@
+{% extends "layout.twig.html" %}
+{% block content %}
+<form action="{{ url.import() }}" id="importentry" name="importentry" method="post" class="well">
+	{% if form.submit -%}
+	<div class="alert alert-{% if not form.success %}error{% else %}success{% endif %}">
+		<a class="close" data-dismiss="alert">&#215;</a>
+		{% if not form.success -%}
+			<h4 class="alert-heading">Error</h4>
+			{{ form.error }}
+		{%- else -%}
+			<h4 class="alert-heading">Form submitted successfully</h4>
+			Your entry was submitted successfully and can be viewed <a href="{{ url.archive_id(form.new_id) }}">here</a>.
+		{%- endif %}
+	</div>
+	{%- endif %}
+	<fieldset>
+		<legend>import new entry from remote service</legend>
+
+		<br>
+		<div class="span6">
+			<div class="pull-left">
+				<div class="control-group">
+					<label class="control-label" for="driver">Select service</label>
+					<div class="controls">
+						<select id="driver" name="driver">
+							{% for key,driver in form.drivers %}<option value="{{ key }}">{{ driver }}</option>{% endfor %}
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="pull-right">
+				<div class="control-group">
+					<label class="control-label" for="remote_id">Remote image ID</label>
+					<div class="controls">
+						<input type="text" class="input-medium" id="remote_id" name="remote_id">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="clear"></div>
+
+		<input type="hidden" name="formkey" value="{{ form.key }}">
+		<input type="hidden" name="formtime" value="{{ form.time }}">
+		<input type="hidden" name="submit" value="1">
+		<br><br><button type="submit" class="btn">Submit</button>&nbsp;<button type="reset" class="btn">Cancel</button>
+	</fieldset>
+</form>
+{% endblock %}

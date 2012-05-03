@@ -29,6 +29,10 @@
 			"path":"/submit/",
 			"callback":"site.controller.add"
 		},
+		"import":{
+			"path":"/submit/remote/",
+			"callback":"site.controller.import"
+		},
 
 		"status":{
 			"path":"/status/",

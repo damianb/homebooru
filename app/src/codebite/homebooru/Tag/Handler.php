@@ -4,8 +4,8 @@ use \R;
 
 class Handler
 {
-	const TAG_INSERT_REGEXP = '#\w+[\w\-\(\)]*#i';
-	const TAG_EXTRACT_REGEXP = '#^\-?[\w]+[\w\-\(\)]*$#i';
+	const TAG_INSERT_REGEXP = '#\w+[\w\-\(\)\!]*#i';
+	const TAG_EXTRACT_REGEXP = '#^\-?[\w]+[\w\-\(\)\!]*$#i';
 	const TAG_EXTRACTPARAM_REGEXP = '#^\-?[\w]+[\w\-\(\)]+(\:|\=)[\w\-\.\(\)]*$#i';
 
 	public function extractTags($tag_string)
@@ -26,23 +26,26 @@ class Handler
 
 	public function resolveTags(array &$tags)
 	{
-		R::$f->begin()
-			->select('t.*, a.title as old_tag')->from('tag t')
-			->left_join('tag_alias a on t.id = a.tag_id')
-			->where('a.title in('  . implode(',', array_fill(0, count($tags), '?')) . ')');
-		foreach($tags as $tag)
-		{
-			R::$f->put($tag);
-		}
+		try {
+			R::$f->begin()
+				->select('t.*, a.title as old_tag')->from('tag t')
+				->left_join('tag_alias a on t.id = a.tag_id')
+				->where('a.title in('  . implode(',', array_fill(0, count($tags), '?')) . ')');
+			array_walk($tags, function($value, $key) { R::$f->put($value); });
 
-		$replace_tags = $remove_tags = array();
-		foreach(R::$f->get() as $result)
-		{
-			$remove_tags[] = $result['old_tag'];
-			$replace_tags[] = $result['replacement'];
-		}
+			$replace_tags = $remove_tags = array();
+			foreach(R::$f->get() as $result)
+			{
+				$remove_tags[] = $result['old_tag'];
+				$replace_tags[] = $result['replacement'];
+			}
 
-		$tags = array_merge(array_diff($tags, $remove_tags), $replace_tags);
+			$tags = array_merge(array_diff($tags, $remove_tags), $replace_tags);
+		}
+		catch(\Exception $e)
+		{
+			return;
+		}
 	}
 
 	public function addAlias($alias, \RedBean_OODBBean $target_bean)
