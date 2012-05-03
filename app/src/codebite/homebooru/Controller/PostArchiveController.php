@@ -5,12 +5,12 @@ use \R;
 
 if(!defined('SHOT_ROOT')) exit;
 
-class ArchiveController
+class PostArchiveController
 	extends BaseController
 {
 	const SEARCH_MAX = 24;
 
-	protected $cacheable = true, $cache_ttl = 60;
+	protected $cacheable = true, $cache_ttl = 120;
 	private $page;
 
 	public function init()
