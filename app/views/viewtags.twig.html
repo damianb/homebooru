@@ -3,44 +3,25 @@
 	<h2>view {% if page.tag_latest %}recently added {% endif %}tags</h2>
 
 {% if tags -%}
-	{#
-	<div class="tag-list">
-	{%- for tag in tags %}
-	{% spaceless %}
-	<div class="btn-group tag-set">
-		<a class="btn btn-mini" href="{{ url.tag_edit(tag.id) }}">edit</a>
-		<a class="btn disabled btn-mini tag tag-{{ tag.getType() }}" href="{{ url.search_tag(tag.title|url_encode) }}" title="{{ tag.getDescription() }}">{{ tag.title }}</a>
-		<a class="btn btn-mini" href="{{ url.tag_alias(tag.id) }}">alias</a></div>
-	{% endspaceless %}
-	{% endfor -%}
-	</div>
-	#}
-	<div class="pull-left">
+	{% for i in 0..1 %}
+	{% set l = loop %}
+	<div class="pull-{% if loop.index is even %}left{% else %}right{% endif %}">
 		<table class="table table-condensed table-striped tag-list">
 		{% for tag in tags %}
-			{% if loop.index is odd %}
+			{% if (l.index is even and loop.index is odd) or (l.index is odd and loop.index is even) %}
 			<tr>
-				<td class="span4"><a class="tag-text tag-text-{{ tag.getType() }}" href="{{ url.search_tag(tag.title|url_encode) }}" title="{{ tag.getDescription() }}">{{ tag.title }}</a></td>
+				<td class="span3"><a class="tag-text tag-text-{{ tag.getType() }}" href="{{ url.search_tag(tag.title|url_encode) }}" title="{{ tag.getDescription() }}">{{ tag.title|replace({'_':' '}) }}</a></td>
 				<td>{{ tag.tag_count }} entr{% if tag.tag_count != 1 %}ies{% else %}y{% endif %}</td>
-				<td><a class="btn btn-mini" href="{{ url.tag_edit(tag.id) }}">Edit</a></td>
+				<td><span class="btn-group">
+					<a class="btn btn-mini" href="{{ url.tag_edit(tag.id) }}">Edit</a>
+					<a class="btn btn-mini" href="{{ url.tag_alias(tag.id) }}">Alias</a> <a class="btn btn-mini btn-danger" href="{{ url.tag_delete(tag.id) }}">Delete</a>
+				</span></td>
 			</tr>
 			{% endif %}
 		{% endfor %}
 		</table>
 	</div>
-	<div class="pull-right">
-		<table class="table table-condensed table-striped tag-list">
-		{% for tag in tags %}
-			{% if loop.index is even %}
-			<tr>
-				<td class="span4"><a class="tag-text tag-text-{{ tag.getType() }}" href="{{ url.search_tag(tag.title|url_encode) }}" title="{{ tag.getDescription() }}">{{ tag.title }}</a></td>
-				<td>{{ tag.tag_count }} entr{% if tag.tag_count != 1 %}ies{% else %}y{% endif %}</td>
-				<td><a class="btn btn-mini" href="{{ url.tag_edit(tag.id) }}">Edit</a></td>
-			</tr>
-			{% endif %}
-		{% endfor %}
-		</table>
-	</div>
+	{% endfor %}
 	<div class="clear"></div>
 {% else %}
 	<div class="shana"><img src="{{ asset.image.shana_hmph }}" alt="hmph!"></div>
