@@ -12,10 +12,12 @@
 		"search_tag_page":"/search/?q=%s&page=%d",
 
 		"tags":"/tags/",
+		"tag_orphans":"/tags/orphans/",
 		"tag_archive":"/tags/list/",
 		"tag_archive_page":"/tags/list/%d/",
 		"tag_alias":"/tags/alias/?id=%d",
 		"tag_edit":"/tags/edit/?id=%d",
+		"tag_delete":"/tags/edit/?id=%d",
 
 		"edit":"/edit/?id=%d",
 		"delete":"/delete/?id=%d",
@@ -24,8 +26,7 @@
 		"create_pool":"/pool/create/",
 		"add_to_pool":"/pool/add/?id=%d",
 
-		"vote_up":"/ajax/vu/%d/",
-		"vote_down":"/ajax/vd/%d/",
-		"submit":"/submit/"
+		"submit":"/submit/",
+		"import":"/submit/remote/"
 	}
 }

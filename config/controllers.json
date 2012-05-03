@@ -4,12 +4,14 @@
 
 		"site.controller.status":"codebite\\homebooru\\Controller\\StatusController",
 
-		"site.controller.archive":"codebite\\homebooru\\Controller\\ArchiveController",
-
+		"site.controller.archive":"codebite\\homebooru\\Controller\\PostArchiveController",
 		"site.controller.add":"codebite\\homebooru\\Controller\\PostAddController",
+		"site.controller.import":"codebite\\homebooru\\Controller\\PostImportController",
+
 		"site.controller.search":"codebite\\homebooru\\Controller\\PostSearchController",
 		"site.controller.edit":"codebite\\homebooru\\Controller\\PostEditController",
 		"site.controller.single":"codebite\\homebooru\\Controller\\PostViewController",
+		#"site.controller.delete":"codebite\\homebooru\\Controller\\PostDeleteController",
 
 		#"site.controller.pool":"codebite\\homebooru\\Controller\\PoolArchiveController",
 		#"site.controller.pool.create":"codebite\\homebooru\\Controller\\PoolCreateController",
@@ -17,12 +19,13 @@
 		#"site.controller.pool.append":"codebite\\homebooru\\Controller\\PoolAppendController",
 
 		"site.controller.tags":"codebite\\homebooru\\Controller\\TagArchiveController",
-		"site.controller.tags.orphan":"codebite\\homebooru\\Controller\\TagOrphanController",
+		#"site.controller.tags.orphan":"codebite\\homebooru\\Controller\\TagOrphanController",
 		"site.controller.tags.latest":"codebite\\homebooru\\Controller\\TagLatestController",
-		"site.controller.tags.alias":"codebite\\homebooru\\Controller\\TagAliasController",
-		"site.controller.tags.edit":"codebite\\homebooru\\Controller\\TagEditController",
+		#"site.controller.tags.alias":"codebite\\homebooru\\Controller\\TagAliasController",
+		#"site.controller.tags.edit":"codebite\\homebooru\\Controller\\TagEditController",
+		#"site.controller.tags.delete":"codebite\\homebooru\\Controller\\TagDeleteController",
 
-		"site.controller.ajax":"codebite\\homebooru\\Controller\\AjaxController",
+		#"site.controller.ajax":"codebite\\homebooru\\Controller\\AjaxController",
 
 		"site.controller.error":"codebite\\homebooru\\Controller\\ErrorController"
 	}

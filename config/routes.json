@@ -39,6 +39,10 @@
 			"path":"/edit/",
 			"callback":"site.controller.edit"
 		},
+		"delete":{
+			"path":"/delete/",
+			"callback":"site.controller.delete"
+		},
 
 		"pool_list":{
 			"path":"/pool/",
@@ -70,7 +74,7 @@
 			"callback":"site.controller.tags"
 		},
 		"tags_orphan":{
-			"path":"/tags/orphan/",
+			"path":"/tags/orphans/",
 			"callback":"site.controller.tags.orphan"
 		},
 		"tags_alias":{
@@ -80,6 +84,10 @@
 		"tags_edit":{
 			"path":"/tags/edit/",
 			"callback":"site.controller.tags.edit"
+		},
+		"tags_delete":{
+			"path":"/tags/delete/",
+			"callback":"site.controller.tags.delete"
 		},
 
 		"ajax":{
