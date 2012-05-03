@@ -23,6 +23,13 @@ class TagArchiveController
 		}
 	}
 
+	protected function defineCacheBinds()
+	{
+		return array(
+			'page' => $this->page,
+		);
+	}
+
 	public function runController()
 	{
 		$offset = self::SEARCH_MAX * ($this->page - 1);
