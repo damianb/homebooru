@@ -49,8 +49,6 @@ class Gelbooru
 			throw new RuntimeException('Invalid remote ID specified');
 		}
 
-		//var_dump($xml->post[0]);
-
 		$this->file_url = (string) $xml->post[0]['file_url'];
 		$this->md5 = (string) $xml->post[0]['md5'];
 		$this->source = (string) $xml->post[0]['source'] ?: sprintf(self::POST_URL, (int) $this->remote_id);
@@ -70,8 +68,5 @@ class Gelbooru
 			default:
 				$this->rating = self::RATING_UNKNOWN;
 		}
-
-		//var_dump($this);
-		//exit;
 	}
 }
