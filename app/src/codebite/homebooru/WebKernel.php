@@ -109,6 +109,7 @@ class WebKernel
 
 				'site'					=> array(
 					'nav'					=> $this['site.navigation'],
+					'use_less'				=> $this['site.use_less_stylesheet'],
 					'thumburl'				=> $this['site.thumburl'],
 					'smallurl'				=> $this['site.smallurl'],
 					'imageurl'				=> $this['site.imageurl'],

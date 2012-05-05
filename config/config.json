@@ -16,6 +16,7 @@
 	"cookie.path":"/homebooru/",
 	"site.urlbase":"/homebooru/",
 
+	"site.use_less_stylesheet":false,
 	"site.magic_cache":true,
 
 	"site.thumburl":"/hb-images/thumb/",
