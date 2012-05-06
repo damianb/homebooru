@@ -19,7 +19,7 @@
 				<ul class="thumbnails">
 					<li class="img span3">
 						<a href="{{ url.archive_id(post.id) }}" class="thumbnail" style="width:{{ post.thumb_width + 2 }}px; height:{{ post.thumb_height + 2 }}px">
-							<img src="{{ site.thumburl ~ post.thumb_file }}" alt="{{ post.getTags()|join(' ') }}" title="{{ post.getTags()|join(' ') }}" style="height: {{ post.thumb_height }}px; width: {{ post.thumb_width }}px">
+							<img src="{{ site.thumburl ~ post.thumb_file }}" alt="" title="{% for tag in post.getTags() %}{{ tag.title }} {% endfor %}" style="height: {{ post.thumb_height }}px; width: {{ post.thumb_width }}px">
 						</a>
 					</li>
 				</ul>

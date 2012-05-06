@@ -1,0 +1,51 @@
+{% extends "layout.twig.html" %}
+{% block content %}
+	{% if form.submit and not form.success -%}
+	<div class="alert alert-error">
+		<a class="close" data-dismiss="alert">&#215;</a>
+		<h4 class="alert-heading">Error</h4>
+		{{ form.error }}
+	</div>
+	{%- endif %}
+
+	{% if form.submit and form.success %}
+	<div class="alert alert-success">
+		<h4 class="alert-heading">Form submitted successfully</h4>
+		The entry was successfully deleted.
+	</div>
+	{% endif %}
+
+	{% if (form.submit and not form.success) or not form.submit %}
+	<h2>delete image</h2>
+	<div class="deletepost">
+		<div class="pull-left">
+			<ul class="thumbnails">
+				<li class="img span3">
+					<a href="{{ url.archive_id(post.id) }}" class="thumbnail" style="width:{{ post.thumb_width + 2 }}px; height:{{ post.thumb_height + 2 }}px">
+						<img src="{{ site.thumburl ~ post.thumb_file }}" alt="" title="{% for tag in post.getTags() %}{{ tag.title }} {% endfor %}" style="height: {{ post.thumb_height }}px; width: {{ post.thumb_width }}px">
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="pull-right span9">
+			<form class="form-horizontal" id="deletepost" action="{{ url.delete(post.id) }}" method="post">
+				<div class="well">
+					<fieldset>
+						<h3>Warning</h3>
+						<div>You are about to permanently delete this post and all associated data.</div><hr><br>
+
+						<input type="hidden" name="id" value="{{ post.id }}">
+						<input type="hidden" name="formkey" value="{{ form.key }}">
+						<input type="hidden" name="formtime" value="{{ form.time }}">
+						<input type="hidden" name="submit" value="1">
+						<button type="submit" class="btn btn-danger">Delete post</button>
+					</fieldset>
+				</div>
+			</form>
+		</div>
+		<div class="clear"></div>
+	</div>
+	{% endif %}
+
+{% endblock %}

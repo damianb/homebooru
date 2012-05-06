@@ -11,7 +11,7 @@
 		"site.controller.search":"codebite\\homebooru\\Controller\\PostSearchController",
 		"site.controller.edit":"codebite\\homebooru\\Controller\\PostEditController",
 		"site.controller.single":"codebite\\homebooru\\Controller\\PostViewController",
-		#"site.controller.delete":"codebite\\homebooru\\Controller\\PostDeleteController",
+		"site.controller.delete":"codebite\\homebooru\\Controller\\PostDeleteController",
 
 		#"site.controller.pool":"codebite\\homebooru\\Controller\\PoolArchiveController",
 		#"site.controller.pool.create":"codebite\\homebooru\\Controller\\PoolCreateController",
