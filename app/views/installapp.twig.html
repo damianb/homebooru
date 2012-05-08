@@ -1,0 +1,36 @@
+{% extends "layout.twig.html" %}
+{% block content %}
+<div class="status">
+	<h2>homebooru installation</h2>
+	<div>
+		greetings, newcomer. i see you've decided to install homebooru for one reason or another.
+		don't worry, this shouldn't get too technical; we'll get through this together.
+		installation is extremely straightforward and fairly simple, only requiring a little help from you to complete.
+	</div><br>
+
+	<div class="pull-left span3">
+		<table class="table table-bordered table-striped table-condensed">
+			<tbody>
+				<tr>
+					<td>pdo::mysql?</td>
+					<td><button class="btn disabled btn-mini btn-{% if status.php.supports.mysql %}success{% else %}danger{% endif %}">{% if not status.php.supports.mysql %}un{% endif %}available</button></td>
+				</tr>
+				<tr>
+					<td>pdo::pqsql?</td>
+					<td><button class="btn disabled btn-mini btn-{% if status.php.supports.pgsql %}success{% else %}danger{% endif %}">{% if not status.php.supports.pgsql %}un{% endif %}available</button></td>
+				</tr>
+				<tr>
+					<td>pdo::sqlite?</td>
+					<td><button class="btn disabled btn-mini btn-{% if status.php.supports.sqlite %}success{% else %}danger{% endif %}">{% if not status.php.supports.sqlite %}un{% endif %}available</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="pull-left span7"><h3>first things first</h3>i need to know what database i'll be connecting to, and how to get to it!<br>i did a little legwork, and found what database types this server supports to the left.<br><br></div>
+	<div class="clear"></div>
+
+	<div>okay, please enter the database connection details below so i can get started preparing the database</div>
+
+	<br><h3>lol nothing done beyond this point. zomgsolazy dev.</h3><br>
+</div>
+{% endblock %}
