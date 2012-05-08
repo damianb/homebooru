@@ -14,7 +14,7 @@ abstract class BaseController
 {
 	const SEARCH_MAX = 24;
 
-	protected $cacheable = false, $cache_ttl = 0;
+	protected $bypass_install_check = false, $cacheable = false, $cache_ttl = 0;
 
 	final public function __construct(WebKernel $app, RequestInterface $request, ResponseInterface $response)
 	{
@@ -27,6 +27,11 @@ abstract class BaseController
 	final public function isCacheable()
 	{
 		return $this->cacheable;
+	}
+
+	final public function canRunWithoutInstall()
+	{
+		return $this->bypass_install_check;
 	}
 
 	protected function defineCacheBinds()

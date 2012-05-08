@@ -16,49 +16,6 @@ class WebKernel
 	{
 		parent::boot();
 
-		// redbean setup
-		$_db_type = isset($this['db.type']) ? $this['db.type'] : 'sqlite';
-		switch($_db_type)
-		{
-			case 'sqlite':
-				R::setup(sprintf('sqlite:%s', $this['db.file'] ?: SHOT_ROOT . '/develop/db/red.db'));
-			break;
-
-			case 'mysql':
-			case 'mysqli': // in case someone doesn't know that pdo doesn't do mysqli
-				R::setup(sprintf('mysql:charset=utf8;host=%s;dbname=%s', ($this['db.host'] ?: 'localhost'), $this['db.name']), $this['db.user'], $this['db.password']);
-			break;
-
-			case 'pgsql':
-			case 'postgres':
-			case 'postgresql':
-				R::setup(sprintf('pgsql:host=%s;dbname=%s', ($this['db.host'] ?: 'localhost'), $this['db.name']), $this['db.user'], $this['db.password']);
-			break;
-		}
-
-		// freeze the database if not in debug mode
-		if(!SHOT_DEBUG)
-		{
-			R::freeze(true);
-		}
-
-		// get random application seed
-		$beans = R::findOrDispense('config', 'config_name = ?', array('app_seed'));
-		$bean = array_shift($beans);
-		if(!$bean->id)
-		{
-			$bean->config_name = 'app_seed';
-			$bean->config_type = 4;
-			$bean->config_str_value = $this->seeder->buildRandomString(14);
-			$bean->config_int_value = 0;
-			$bean->config_live = 0;
-
-			R::store($bean);
-		}
-
-		$this['app.seed'] = $bean->config_str_value;
-		$this->seeder->setApplicationSeed($this['app.seed']);
-
 		$this->setBasePath($this['site.urlbase'] ?: '/');
 
 		// load specified addons

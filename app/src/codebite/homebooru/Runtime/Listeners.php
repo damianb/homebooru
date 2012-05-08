@@ -1,6 +1,7 @@
 <?php
 namespace codebite\homebooru\Runtime;
 use \codebite\homebooru\WebKernel as App;
+use \codebite\homebooru\Controller\InstallerController;
 use \codebite\homebooru\Controller\CachedController;
 use \emberlabs\openflame\Event\Dispatcher;
 use \emberlabs\openflame\Event\Instance as Event;
@@ -22,6 +23,64 @@ $app->dispatcher->register('shot.hook.runtime.render.post', 15, function(Event $
 		$app->stat->time(),
 	);
 	$event->setData(array(str_replace($search, $replace, reset($event->getData()))));
+});
+
+/**
+ * Database connection
+ *
+ *  - connects to the database, prepares the connection, and
+ */
+$app->dispatcher->register('shot.hook.runtime.runcontroller', -10, function(Event $event) use ($app) {
+	// @todo refactor so that we will NOT die if the DB isn't installed yet...
+
+	// redbean setup
+	switch(($app['db.type'] ?: 'sqlite'))
+	{
+		case 'sqlite':
+			R::setup(sprintf('sqlite:%s', $app['db.file'] ?: SHOT_ROOT . '/develop/db/red.db'));
+		break;
+
+		case 'mysql':
+		case 'mysqli': // in case someone doesn't know that pdo doesn't do mysqli
+			R::setup(sprintf('mysql:charset=utf8;host=%s;dbname=%s', ($app['db.host'] ?: 'localhost'), $app['db.name']), $app['db.user'], $app['db.password']);
+		break;
+
+		case 'pgsql':
+		case 'postgres':
+		case 'postgresql':
+			R::setup(sprintf('pgsql:host=%s;dbname=%s', ($app['db.host'] ?: 'localhost'), $app['db.name']), $app['db.user'], $app['db.password']);
+		break;
+	}
+
+	// dump the p/w from memory
+	$app['db.password'] = NULL;
+
+	// freeze the database if not in debug mode
+	if(!SHOT_DEBUG)
+	{
+		R::freeze(true);
+	}
+
+	// get random application seed
+	$beans = R::findOrDispense('config', 'config_name = ?', array('app_seed'));
+	$bean = array_shift($beans);
+	if(!$bean->id)
+	{
+		// being careful here...we want some sort of bypass if there's no "install" present
+		if(!$app->controller->canRunWithoutInstall())
+		{
+			// pull up the installer controller, override the current controller.
+			$controller = new InstallerController($app, $app->request, $app->response);
+			$controller->setOriginalController($app->controller);
+
+			$app->controller = $controller;
+		}
+	}
+	else
+	{
+		$app['app.seed'] = $bean->config_str_value;
+		$app->seeder->setApplicationSeed($app['app.seed']);
+	}
 });
 
 /**
