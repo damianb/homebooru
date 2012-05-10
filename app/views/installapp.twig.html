@@ -1,6 +1,7 @@
 {% extends "layout.twig.html" %}
 {% block content %}
-<div class="status">
+<div class="install">
+{% if not page.submit %}
 	<h2>homebooru installation</h2>
 	<div>
 		greetings, newcomer. i see you've decided to install homebooru for one reason or another.
@@ -8,6 +9,7 @@
 		installation is extremely straightforward and fairly simple, only requiring a little help from you to complete.
 	</div><br>
 
+	<h3>first things first</h3><br>
 	<div class="pull-left span3">
 		<table class="table table-bordered table-striped table-condensed">
 			<tbody>
@@ -26,11 +28,74 @@
 			</tbody>
 		</table>
 	</div>
-	<div class="pull-left span7"><h3>first things first</h3>i need to know what database i'll be connecting to, and how to get to it!<br>i did a little legwork, and found what database types this server supports to the left.<br><br></div>
+	<div class="pull-left span7"><br>i need to know what database i'll be connecting to, and how to get to it!<br>
+	i did a little legwork, and found what database types this server supports to the left.<br>
+	make sure that the database type you want to connect to appears as "available" to the left.</div>
 	<div class="clear"></div>
 
-	<div>okay, please enter the database connection details below so i can get started preparing the database</div>
+	<div></div><br>
+
+	<h3>quick check</h3><br>
+	<div class="pull-left span3">
+		<table class="table table-bordered table-striped table-condensed">
+			<tbody>
+				<tr>
+					<td>config file writeable</td>
+					<td><button class="btn disabled btn-mini btn-{% if form.db_file_write %}success{% else %}danger{% endif %}">{% if not form.db_file_write %}un{% endif %}writeable</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="pull-left span7">
+		if it says to the left that the database file is not writeable, you'll need to chmod it so it is writeable
+		or you'll be given the contents of the file so you can create it manually.
+	</div>
+	<div class="clear"></div>
+
+
+	<br><h3>moving on</h3><br>
+
+	<div>please enter the database connection details below so i can get started with preparing the database.<br></div><br>
+
+	<div class="well">
+		<form action="" method="post" class="form-horizontal">
+			<div class="control-group">
+				<label class="control-label" for="db_type">Select database type</label>
+				<div class="controls">
+					<select id="db_type" name="db_type">
+						{% for key,driver in form.db_drivers %}{% if driver %}<option value="{{ key }}"{% if driver == form.db_prev.type %} selected="selected"{% endif %}>{{ driver }}</option>{% endif %}{% endfor %}
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="db_host">Database host</label>
+				<div class="controls">
+					<input type="text" class="input-large" id="db_host" name="db_host" value="{{ form.db_prev.host }}">
+					<span class="help-block">(defaults to localhost; for sqlite, this should be the path to the database file)</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="db_name">Database name</label>
+				<div class="controls">
+					<input type="text" class="input-xlarge" id="db_name" name="db_name">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="db_user">Database user</label>
+				<div class="controls">
+					<input type="text" class="input-xlarge" id="db_user" name="db_user">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="db_password">Database password</label>
+				<div class="controls">
+					<input type="text" class="input-xlarge" id="db_password" name="db_password">
+				</div>
+			</div>
+		</form>
+	</div>
 
 	<br><h3>lol nothing done beyond this point. zomgsolazy dev.</h3><br>
+{% endif %}
 </div>
 {% endblock %}

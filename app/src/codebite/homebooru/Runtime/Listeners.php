@@ -31,55 +31,63 @@ $app->dispatcher->register('shot.hook.runtime.render.post', 15, function(Event $
  *  - connects to the database, prepares the connection, and
  */
 $app->dispatcher->register('shot.hook.runtime.runcontroller', -10, function(Event $event) use ($app) {
-	// @todo refactor so that we will NOT die if the DB isn't installed yet...
-
 	// redbean setup
-	switch(($app['db.type'] ?: 'sqlite'))
+	$no_db = false;
+	if(isset($app['db.type']))
 	{
-		case 'sqlite':
-			R::setup(sprintf('sqlite:%s', $app['db.file'] ?: SHOT_ROOT . '/develop/db/red.db'));
-		break;
-
-		case 'mysql':
-		case 'mysqli': // in case someone doesn't know that pdo doesn't do mysqli
-			R::setup(sprintf('mysql:charset=utf8;host=%s;dbname=%s', ($app['db.host'] ?: 'localhost'), $app['db.name']), $app['db.user'], $app['db.password']);
-		break;
-
-		case 'pgsql':
-		case 'postgres':
-		case 'postgresql':
-			R::setup(sprintf('pgsql:host=%s;dbname=%s', ($app['db.host'] ?: 'localhost'), $app['db.name']), $app['db.user'], $app['db.password']);
-		break;
-	}
-
-	// dump the p/w from memory
-	$app['db.password'] = NULL;
-
-	// freeze the database if not in debug mode
-	if(!SHOT_DEBUG)
-	{
-		R::freeze(true);
-	}
-
-	// get random application seed
-	$beans = R::findOrDispense('config', 'config_name = ?', array('app_seed'));
-	$bean = array_shift($beans);
-	if(!$bean->id)
-	{
-		// being careful here...we want some sort of bypass if there's no "install" present
-		if(!$app->controller->canRunWithoutInstall())
+		switch($app['db.type'])
 		{
-			// pull up the installer controller, override the current controller.
-			$controller = new InstallerController($app, $app->request, $app->response);
-			$controller->setOriginalController($app->controller);
+			case 'sqlite':
+				R::setup(sprintf('sqlite:%s', $app['db.file'] ?: SHOT_ROOT . '/develop/db/red.db'));
+			break;
 
-			$app->controller = $controller;
+			case 'mysql':
+			case 'mysqli': // in case someone doesn't know that pdo doesn't do mysqli
+				R::setup(sprintf('mysql:charset=utf8;host=%s;dbname=%s', ($app['db.host'] ?: 'localhost'), $app['db.name']), $app['db.user'], $app['db.password']);
+			break;
+
+			case 'pgsql':
+			case 'postgres':
+			case 'postgresql':
+				R::setup(sprintf('pgsql:host=%s;dbname=%s', ($app['db.host'] ?: 'localhost'), $app['db.name']), $app['db.user'], $app['db.password']);
+			break;
+		}
+
+		// dump the p/w from memory
+		$app['db.password'] = NULL;
+
+		// freeze the database if not in debug mode
+		if(!SHOT_DEBUG)
+		{
+			R::freeze(true);
+		}
+
+		// get random application seed
+		$beans = R::findOrDispense('config', 'config_name = ?', array('app_seed'));
+		$bean = array_shift($beans);
+		if($bean->id)
+		{
+			$app['app.seed'] = $bean->config_str_value;
+			$app->seeder->setApplicationSeed($app['app.seed']);
+		}
+		else
+		{
+			$no_db = true;
 		}
 	}
 	else
 	{
-		$app['app.seed'] = $bean->config_str_value;
-		$app->seeder->setApplicationSeed($app['app.seed']);
+		$no_db = true;
+	}
+
+	// being careful here...we want some sort of bypass if there's no "install" present
+	if($no_db && !$app->controller->canRunWithoutInstall())
+	{
+		// pull up the installer controller, override the current controller.
+		$controller = new InstallerController($app, $app->request, $app->response);
+		$controller->setOriginalController($app->controller);
+
+		$app->controller = $controller;
 	}
 });
 
