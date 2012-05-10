@@ -1,6 +1,7 @@
 <?php
 namespace codebite\homebooru\Controller;
 use \codebite\homebooru\Model\BooruPostModel;
+use \codebite\homebooru\Model\BooruTagModel;
 use \R;
 
 if(!defined('SHOT_ROOT')) exit;
@@ -27,8 +28,11 @@ class InstallerController
 		 *  - Attempt to create database cred file
 		 *    - barring failure to write the file, provide it to the user and tell them to put it in place before continuing
 		 *  - Create app seed, insert into config
-		 *  - Create a sample image, add to the installation.
-		 *  - Add sample tags for new sample image
+		 *  - Add sample image entry
+		 *  - Add sample tag
+		 *  - Add sample tag alias
+		 *  - Add sample tag count
+		 *  - Add sample session
 		 *  - Add triggers for count tables
 		 *  - Drop sample data
 		 */
@@ -47,7 +51,8 @@ class InstallerController
 			3		=> $dbms_supports['pgsql'] ? 'pgsql' : false,
 		);
 
-		$steps = $db = array();
+		$success = $error = false;
+		$steps = $step_strings = $db = array();
 
 		// see if we can write the DB file...
 		$db_file_writeable = false;
@@ -68,9 +73,25 @@ class InstallerController
 				'db_connect'			=> false,
 				'gen_app_seed'			=> false,
 				'add_sample_image'		=> false,
-				'add_sample_tags'		=> false,
+				'add_sample_tag'		=> false,
+				'add_sample_alias'		=> false,
+				'add_sample_count'		=> false,
+				'add_sample_session'	=> false,
 				'add_triggers'			=> false,
 				'drop_sample_data'		=> false,
+				'write_db_config'		=> false,
+			);
+			$step_strings = array(
+				'db_connect'			=> 'Connect to database',
+				'gen_app_seed'			=> 'Generate random seed',
+				'add_sample_image'		=> 'Add test image data',
+				'add_sample_tag'		=> 'Add test tag data',
+				'add_sample_alias'		=> 'Add test tag alias',
+				'add_sample_count'		=> 'Add test tag count',
+				'add_sample_session'	=> 'Add test session',
+				'add_triggers'			=> 'Add database triggers',
+				'drop_sample_data'		=> 'Drop sample data',
+				'write_db_config'		=> 'Write database connection file',
 			);
 
 			switch($this->getInput('POST::db_type', 1))
@@ -96,41 +117,115 @@ class InstallerController
 				'password'	=> $this->getInput('POST::db_password', ''),
 			);
 
-			$error = false;
 			try {
 				// redbean setup
 				switch(($db['type'] ?: 'sqlite'))
 				{
 					case 'sqlite':
-						R::setup(sprintf('sqlite:%s', $db['file'] ?: SHOT_ROOT . '/develop/db/red.db'));
+						R::addDatabase('init', sprintf('sqlite:%s', $db['file'] ?: SHOT_ROOT . '/develop/db/red.db'));
 					break;
 
 					case 'mysql':
-						R::setup(sprintf('mysql:charset=utf8;host=%s;dbname=%s', ($db['host'] ?: 'localhost'), $db['name']), $db['user'], $db['password']);
+						R::addDatabase('init', sprintf('mysql:charset=utf8;host=%s;dbname=%s', ($db['host'] ?: 'localhost'), $db['name']), $db['user'], $db['password']);
 					break;
 
 					case 'pgsql':
-						R::setup(sprintf('pgsql:host=%s;dbname=%s', ($db['host'] ?: 'localhost'), $db['name']), $db['user'], $db['password']);
+						R::addDatabase('init', sprintf('pgsql:host=%s;dbname=%s', ($db['host'] ?: 'localhost'), $db['name']), $db['user'], $db['password']);
 					break;
 				}
-
-				// dump the p/w from memory
-				$app['password'] = NULL;
+				R::selectDatabase('init');
+				R::exec('SELECT date("now")');
 
 				// mark this step as completed! (DB CONNECTION SUCCESSFUL!)
 				$steps['db_connect'] = true;
+
+				// dump the p/w from memory
+				$this->app['password'] = NULL;
 
 				// add our config entry, our app seed
 				$bean = R::dispense('config');
 				$bean->config_name = 'app_seed';
 				$bean->config_type = 4;
-				$bean->config_str_value = $this->seeder->buildRandomString(14);
+				$bean->config_str_value = $this->app->seeder->buildRandomString(14);
 				$bean->config_int_value = 0;
 				$bean->config_live = 0;
 				R::store($bean);
 
 				// mark this step as completed.
 				$steps['gen_app_seed'] = true;
+
+				// add sample image data
+				$post = R::dispense('post');
+				$post->status = BooruPostModel::ENTRY_ACCEPT;
+
+				$hash = hash('sha1', 'sample');
+				$post->full_file = $hash . '.txt';
+				$post->full_height = 10000;
+				$post->full_width = 10000;
+				$post->full_md5 = hash('md5', 'sample');
+				$post->full_sha1 = $hash;
+				$post->full_size = pow(2, 31);
+
+				$small_hash = hash('sha1', $hash);
+				$post->small_file = $small_hash . '.txt';
+				$post->small_height = 650;
+				$post->small_width = 650;
+				$post->small_md5 = hash('md5', $hash);
+				$post->small_sha1 = $small_hash;
+				$post->small_size = pow(2, 31);
+
+				$thumb_hash = hash('sha1', $small_hash);
+				$post->thumb_file = $thumb_hash . '.txt';
+				$post->thumb_height = 150;
+				$post->thumb_width = 150;
+				$post->thumb_md5 = hash('md5', $small_hash);
+				$post->thumb_sha1 = $thumb_hash;
+				$post->thumb_size = pow(2, 31);
+
+				$post->rating = BooruPostModel::RATING_UNKNOWN;
+				$post->source = str_repeat('a', 255);
+				$post->submit_time = time();
+				$post->submit_ip = implode(':', array_fill(0, 8, 'ffff')); // emulate largest possible ipv6 addr
+				$post->user_id = 255;
+
+				R::store($post);
+
+				$steps['add_sample_image'] = true;
+
+				// add sample tag...
+				R::tag($post, array('sample_tag'));
+				$tag = R::find('tag');
+				$tag = array_shift($tag);
+				$tag->type = BooruTagModel::TAG_PLANE;
+				R::store($tag);
+
+				$steps['add_sample_tag'] = true;
+
+				// add sample tag alias...
+				$alias = R::dispense('tag_alias');
+				$alias->title = 'game';
+				$alias->tag = $tag;
+				R::store($alias);
+
+				$steps['add_sample_alias'] = true;
+
+				// add sample tag count...
+				$tag_count = R::dispense('tag_count');
+				$tag_count->tag = $tag;
+				$tag_count->amount = 1;
+				R::store($tag_count);
+
+				$steps['add_sample_count'] = true;
+
+				$session = R::dispense('session');
+				$session->time = time();
+				$session->sid = hash('md5', 'sample_session');
+				$session->fingerprint = hash('sha256', 'sample_fingerprint');
+				$session->useragent = str_repeat('a', 255);
+				$session->ip = implode(':', array_fill(0, 8, 'ffff')); // emulate largest possible ipv6 addr
+				$session->setMeta('data.store', array_fill(0, 20, str_repeat('a', 63)));
+				R::store($session);
+				$steps['add_sample_session'] = true;
 
 				// add triggers to the database
 				/*
@@ -171,7 +266,8 @@ class InstallerController
 						->set('amount = amount + 1')
 						->where('tag_id = new.tag_id')
 						->addSQL(';')
-					->addSQL('END');
+					->addSQL('END')
+					->get();
 
 				R::$f->begin()
 					->create_trigger('tag_magic_delete_count')
@@ -182,7 +278,8 @@ class InstallerController
 						->set('amount = amount - 1')
 						->where('tag_id = new.tag_id')
 						->addSQL(';')
-					->addSQL('END');
+					->addSQL('END')
+					->get();
 
 				R::$f->begin()
 					->create_trigger('tag_magic_new_count')
@@ -193,7 +290,8 @@ class InstallerController
 						->addSQL('(tag_id, amount)')
 						->values('(new.tag_id, 1)')
 						->addSQL(';')
-					->addSQL('END');
+					->addSQL('END')
+					->get();
 
 				R::$f->begin()
 					->create_trigger('tag_magic_drop_count')
@@ -203,9 +301,25 @@ class InstallerController
 						->delete_from('tag_count')
 						->where('tag_id = old.tag_id')
 						->addSQL(';')
-					->addSQL('END');
+					->addSQL('END')
+					->get();
 
 				$steps['add_triggers'] = true;
+
+				// drop the sample data
+				R::trashAll(array(
+					$post,
+					$tag,
+					$alias,
+					$tag_count,
+					$session,
+				));
+				$steps['drop_sample_data'] = true;
+
+				// write config file
+
+				$error = false;
+				$success = true;
 			}
 			catch(\Exception $e)
 			{
@@ -216,10 +330,13 @@ class InstallerController
 		return $this->respond('installapp.twig.html', 200, array(
 			'form'				=> array(
 				'submit'			=> $submit,
+				'success'			=> $success,
+				'error'				=> $error,
 				'db_drivers'		=> $db_drivers,
 				'db_file_write'		=> $db_file_writeable,
 				'db_prev'			=> $db,
 				'steps'				=> $steps,
+				'step_str'			=> $step_strings,
 			),
 			'status'			=> array(
 				'php'				=> array(

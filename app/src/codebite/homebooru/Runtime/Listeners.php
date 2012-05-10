@@ -72,6 +72,7 @@ $app->dispatcher->register('shot.hook.runtime.runcontroller', -10, function(Even
 		}
 		else
 		{
+			R::close();
 			$no_db = true;
 		}
 	}

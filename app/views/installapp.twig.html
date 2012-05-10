@@ -1,7 +1,7 @@
 {% extends "layout.twig.html" %}
 {% block content %}
 <div class="install">
-{% if not page.submit %}
+{% if not form.submit %}
 	<h2>homebooru installation</h2>
 	<div>
 		greetings, newcomer. i see you've decided to install homebooru for one reason or another.
@@ -92,10 +92,93 @@
 					<input type="text" class="input-xlarge" id="db_password" name="db_password">
 				</div>
 			</div>
+
+			<input type="hidden" name="submit" value="1">
+			<br><br><button type="submit" class="btn btn-danger">Submit</button>&nbsp;<button type="reset" class="btn">Cancel</button>
 		</form>
 	</div>
 
 	<br><h3>lol nothing done beyond this point. zomgsolazy dev.</h3><br>
+{% else %}
+	<h2>homebooru installation</h2>
+	<div class="pull-left span4">
+		<table class="table table-bordered table-striped table-condensed">
+			<tbody>
+				{% set aborted = false %}
+				{% for string,step in form.steps %}
+					<tr>
+						<td>{{ form.step_str[string] }}</td>
+						<td><button class="btn disabled btn-mini btn-{% if step %}success{% else %}danger{% endif %}">{% if not aborted %}{% if not step %}un{% endif %}successful{% else %}aborted{% endif %}</button></td>
+					</tr>
+					{% if not step %}
+						{% set aborted = true %}
+					{% endif %}
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div class="pull-left span7">
+		<div class="alert alert-{% if not form.success %}error{% else %}success{% endif %}">
+			{#<a class="close" data-dismiss="alert">&#215;</a>#}
+			{% if not form.success -%}
+				<h4 class="alert-heading">Error</h4>
+				The installation was aborted as one or more steps failed to complete.<br><br>
+
+				<span class="errormsg">{{ form.error }}</span>
+				{%- else -%}
+				<h4 class="alert-heading">Installation completed successfully</h4>
+				Your homebooru installation is now ready to use.<br><br>
+
+				Click a link at the top; you're all clear for takeoff.
+			{%- endif %}
+		</div>
+	</div>
+	<div class="clear"></div>
+
+	{% if not form.success %}
+		<h3>let's try again</h3><br>
+
+		<div class="well">
+			<form action="" method="post" class="form-horizontal">
+				<div class="control-group">
+					<label class="control-label" for="db_type">Select database type</label>
+					<div class="controls">
+						<select id="db_type" name="db_type">
+							{% for key,driver in form.db_drivers %}{% if driver %}<option value="{{ key }}"{% if driver == form.db_prev.type %} selected="selected"{% endif %}>{{ driver }}</option>{% endif %}{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="db_host">Database host</label>
+					<div class="controls">
+						<input type="text" class="input-large" id="db_host" name="db_host" value="{{ form.db_prev.host }}">
+						<span class="help-block">(defaults to localhost; for sqlite, this should be the path to the database file)</span>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="db_name">Database name</label>
+					<div class="controls">
+						<input type="text" class="input-xlarge" id="db_name" name="db_name" value="{{ form.db_prev.name }}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="db_user">Database user</label>
+					<div class="controls">
+						<input type="text" class="input-xlarge" id="db_user" name="db_user" value="{{ form.db_prev.user }}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="db_password">Database password</label>
+					<div class="controls">
+						<input type="text" class="input-xlarge" id="db_password" name="db_password">
+					</div>
+				</div>
+
+				<input type="hidden" name="submit" value="1">
+				<br><br><button type="submit" class="btn btn-danger">Submit</button>&nbsp;<button type="reset" class="btn">Cancel</button>
+			</form>
+		</div>
+	{% endif %}
 {% endif %}
 </div>
 {% endblock %}

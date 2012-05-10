@@ -140,16 +140,9 @@ class PostAddController
 
 				$bean->source = htmlspecialchars_decode($source, ENT_QUOTES);
 				$bean->rating = $rating;
-
 				$bean->submit_time = $now;
-
 				$bean->submit_ip = $ip;
-				$bean->submit_id = 1; // ANONYMOUS SUBMISSION. for later if needed.
-
-				//$bean->score = '0';
-				//$bean->totalratings = 0;
-				//$bean->posrating = 0;
-				//$bean->negrating = 0;
+				$bean->user_id = 1; // ANONYMOUS SUBMISSION. for later if needed.
 
 				$id = R::store($bean);
 				R::tag($bean, $tags);
