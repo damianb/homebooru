@@ -135,7 +135,9 @@ class InstallerController
 					break;
 				}
 				R::selectDatabase('init');
-				R::exec('SELECT date("now")');
+
+				// do this to test the connection...should get an exception if it fails.
+				R::exec('SELECT 0');
 
 				// mark this step as completed! (DB CONNECTION SUCCESSFUL!)
 				$steps['db_connect'] = true;
@@ -308,13 +310,14 @@ class InstallerController
 				$steps['add_triggers'] = true;
 
 				// drop the sample data
-				R::trashAll(array(
-					$post,
-					$tag,
-					$alias,
-					$tag_count,
-					$session,
-				));
+				// ? redbean bug? ref: https://github.com/gabordemooij/redbean/issues/156
+				//R::debug();
+				R::trash($post);
+				R::trashAll(R::find('post_tag'));
+				R::trash($tag);
+				R::trash($alias);
+				R::trash($tag_count);
+				R::trash($session);
 				$steps['drop_sample_data'] = true;
 
 				// write config file
@@ -329,7 +332,7 @@ class InstallerController
 							$old_db_obj = JSON::decode($old_db_file);
 							if(isset($old_db_file['db.type']))
 							{
-								file_put_contents(SHOT_CONFIG_ROOT . sprintf('/database.backup_t%s-%s.json', time(), mt_rand()), $db_file_contents);
+								file_put_contents(SHOT_CONFIG_ROOT . sprintf('/database.backup_t%s-%s.json', time(), mt_rand()), $old_db_file);
 							}
 						} catch(\Exception $e) { }
 					}
@@ -352,7 +355,7 @@ class InstallerController
 					}
 					if(file_put_contents(SHOT_CONFIG_ROOT . '/database.json', JSON::encode($db_connect)) !== false)
 					{
-						$steps['write-db_config'] = true;
+						$steps['write_db_config'] = true;
 					}
 				}
 
