@@ -51,7 +51,12 @@ $app->dispatcher->register('shot.hook.runtime.runcontroller', -10, function(Even
 		switch($db['db.type'])
 		{
 			case 'sqlite':
-				R::setup(sprintf('sqlite:%s', $db['db.file'] ?: SHOT_ROOT . '/develop/db/red.db'));
+				$db_file = $db['db.file'] ?: SHOT_ROOT . '/develop/db/red.db';
+				if(!file_exists($db_file))
+				{
+					throw new DatabaseLoadException();
+				}
+				R::setup('sqlite:' . $db_file);
 			break;
 
 			case 'mysql':
