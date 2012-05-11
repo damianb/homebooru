@@ -36,6 +36,7 @@ class StatusController
 					),
 					'twig'			=> array(
 						'version'			=> $twig_env::VERSION,
+						'debug'				=> $twig_env->isDebug(),
 					),
 					'imagine'			=> array(
 						'version'			=> 'unknown',

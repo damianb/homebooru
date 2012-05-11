@@ -85,6 +85,10 @@
 				<td><a href="https://github.com/fabpot/Twig"><strong>Twig</strong></a> version</td>
 				<td>{{ status.library.twig.version }}</td>
 			</tr>
+                        <tr>
+                                <td>Twig debug mode</td>
+                                <td><button class="btn disabled btn-mini btn-{% if not status.library.twig.debug %}success{% else %}danger{% endif %}">{% if not status.library.twig.debug %}dis{% else %}en{% endif %}abled</button></td>
+                        </tr>
 			<tr>
 				<td><a href="https://github.com/avalanche123/Imagine"><strong>Imagine</strong></a> version</td>
 				<td>{{ status.library.imagine.version }}</td>
