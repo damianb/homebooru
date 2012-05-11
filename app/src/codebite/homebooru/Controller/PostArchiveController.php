@@ -91,6 +91,7 @@ class PostArchiveController
 			),
 			'pagination'		=> $pagination,
 			'posts'				=> $beans,
+			'encounter_limit'               => ceil(count($beans) / 8),
 			'post_tags'			=> $tags,
 		));
 	}

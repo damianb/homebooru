@@ -251,6 +251,7 @@ class PostSearchController
 			'page'				=> array(
 				'search'			=> true,
 			),
+			'encounter_limit'		=> ceil(count($beans) / 8),
 			'posts'				=> $beans,
 			'post_tags'			=> $tags,
 			'pagination'		=> $pagination,
