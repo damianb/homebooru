@@ -3,6 +3,6 @@ namespace codebite\homebooru\Internal;
 use \emberlabs\openflame\Core\Internal\OpenFlameException;
 use \Exception;
 
-class SubmitFailException
+class DatabaseLoadException
 	extends Exception
 	implements OpenFlameException {}

@@ -3,6 +3,8 @@ namespace codebite\homebooru\Runtime;
 use \codebite\homebooru\WebKernel as App;
 use \codebite\homebooru\Controller\InstallerController;
 use \codebite\homebooru\Controller\CachedController;
+use \codebite\homebooru\Internal\DatabaseLoadException;
+use \emberlabs\openflame\Core\Utility\JSON;
 use \emberlabs\openflame\Event\Dispatcher;
 use \emberlabs\openflame\Event\Instance as Event;
 use \R;
@@ -33,31 +35,42 @@ $app->dispatcher->register('shot.hook.runtime.render.post', 15, function(Event $
 $app->dispatcher->register('shot.hook.runtime.runcontroller', -10, function(Event $event) use ($app) {
 	// redbean setup
 	$no_db = false;
-	if(isset($app['db.type']))
-	{
-		switch($app['db.type'])
+	try {
+		if(!file_exists(SHOT_CONFIG_ROOT . '/database.json'))
+		{
+			throw new DatabaseLoadException();
+		}
+
+		// load db file
+		$db = JSON::decode(SHOT_CONFIG_ROOT . '/database.json');
+
+		if(!isset($db['db.type']))
+		{
+			throw new DatabaseLoadException();
+		}
+		switch($db['db.type'])
 		{
 			case 'sqlite':
-				R::setup(sprintf('sqlite:%s', $app['db.file'] ?: SHOT_ROOT . '/develop/db/red.db'));
+				R::setup(sprintf('sqlite:%s', $db['db.file'] ?: SHOT_ROOT . '/develop/db/red.db'));
 			break;
 
 			case 'mysql':
 			case 'mysqli': // in case someone doesn't know that pdo doesn't do mysqli
-				R::setup(sprintf('mysql:charset=utf8;host=%s;dbname=%s', ($app['db.host'] ?: 'localhost'), $app['db.name']), $app['db.user'], $app['db.password']);
+				R::setup(sprintf('mysql:charset=utf8;host=%s;dbname=%s', ($db['db.host'] ?: 'localhost'), $db['db.name']), $db['db.user'], $db['db.password']);
 			break;
 
 			case 'pgsql':
 			case 'postgres':
 			case 'postgresql':
-				R::setup(sprintf('pgsql:host=%s;dbname=%s', ($app['db.host'] ?: 'localhost'), $app['db.name']), $app['db.user'], $app['db.password']);
+				R::setup(sprintf('pgsql:host=%s;dbname=%s', ($db['db.host'] ?: 'localhost'), $db['db.name']), $db['db.user'], $db['db.password']);
 			break;
 		}
 
 		// dump the p/w from memory
-		$app['db.password'] = NULL;
+		$db['db.password'] = NULL;
 
-		// freeze the database if not in debug mode
-		if(!SHOT_DEBUG)
+		// freeze the database if we so wish...
+		if($app['site.freeze_db'])
 		{
 			R::freeze(true);
 		}
@@ -65,18 +78,17 @@ $app->dispatcher->register('shot.hook.runtime.runcontroller', -10, function(Even
 		// get random application seed
 		$beans = R::findOrDispense('config', 'config_name = ?', array('app_seed'));
 		$bean = array_shift($beans);
-		if($bean->id)
+		if(!$bean->id)
 		{
-			$app['app.seed'] = $bean->config_str_value;
-			$app->seeder->setApplicationSeed($app['app.seed']);
-		}
-		else
-		{
+			// abort! database setup is borked! probably a botched install.
 			R::close();
-			$no_db = true;
+			throw new DatabaseLoadException();
 		}
+
+		$app['app.seed'] = $bean->config_str_value;
+		$app->seeder->setApplicationSeed($app['app.seed']);
 	}
-	else
+	catch(DatabaseLoadException $e)
 	{
 		$no_db = true;
 	}

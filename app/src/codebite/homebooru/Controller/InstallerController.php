@@ -2,6 +2,7 @@
 namespace codebite\homebooru\Controller;
 use \codebite\homebooru\Model\BooruPostModel;
 use \codebite\homebooru\Model\BooruTagModel;
+use \emberlabs\openflame\Core\Utility\JSON;
 use \R;
 
 if(!defined('SHOT_ROOT')) exit;
@@ -317,6 +318,43 @@ class InstallerController
 				$steps['drop_sample_data'] = true;
 
 				// write config file
+				if($db_file_writeable)
+				{
+					// if there's a file in there already, back it up for now
+					if(file_exists(SHOT_CONFIG_ROOT . '/database.json'))
+					{
+						// only back up the old db file if it actually has something worth backing up
+						$old_db_file = file_get_contents(SHOT_CONFIG_ROOT . '/database.json');
+						try {
+							$old_db_obj = JSON::decode($old_db_file);
+							if(isset($old_db_file['db.type']))
+							{
+								file_put_contents(SHOT_CONFIG_ROOT . sprintf('/database.backup_t%s-%s.json', time(), mt_rand()), $db_file_contents);
+							}
+						} catch(\Exception $e) { }
+					}
+					if($db['type'] == 'sqlite')
+					{
+						$db_connect = array(
+							'db.type'			=> $db['type'],
+							'db.file'			=> $db['file'],
+						);
+					}
+					else
+					{
+						$db_connect = array(
+							'db.type'			=> $db['type'],
+							'db.host'			=> $db['host'],
+							'db.name'			=> $db['name'],
+							'db.user'			=> $db['user'],
+							'db.password'		=> $db['password'],
+						);
+					}
+					if(file_put_contents(SHOT_CONFIG_ROOT . '/database.json', JSON::encode($db_connect)) !== false)
+					{
+						$steps['write-db_config'] = true;
+					}
+				}
 
 				$error = false;
 				$success = true;
