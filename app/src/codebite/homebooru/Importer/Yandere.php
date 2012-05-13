@@ -1,5 +1,6 @@
 <?php
 namespace codebite\homebooru\Importer;
+use \codebite\homebooru\WebKernel as App;
 use \emberlabs\openflame\Core\Internal\RuntimeException;
 
 class Yandere
@@ -7,7 +8,7 @@ class Yandere
 {
 	protected function getAPIURL()
 	{
-		return 'https://yande.re/post/index.xml?tags=id:%d';
+		return 'https://yande.re/post/index.xml?useragent=homebooru_' . rawurlencode(App::HOMEBOORU_VERSION) . '&tags=id:%d';
 	}
 
 	protected function getLinkURL()
