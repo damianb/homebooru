@@ -12,6 +12,6 @@ class Gelbooru
 
 	protected function getLinkURL()
 	{
-		return 'http://gelbooru.com/index.php?page=post&s=view&tags=id:%d';
+		return 'http://gelbooru.com/index.php?page=post&s=view&id=%d';
 	}
 }
