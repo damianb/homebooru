@@ -1,5 +1,5 @@
 <?php
-namespace \codebite\homebooru\Importer;
+namespace codebite\homebooru\Importer;
 
 interface ImporterInterface
 {
