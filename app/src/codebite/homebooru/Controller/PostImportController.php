@@ -23,6 +23,7 @@ class PostImportController
 		$drivers = array(
 			// soon to expand...
 			1		=> 'gelbooru',
+			2		=> 'yandere',
 		);
 
 		if($this->wasInputSet('POST::submit'))
