@@ -1,23 +1,9 @@
 <?php
-/**
- *
- *===================================================================
- *
- *  Sigma Bulletin Board
- *-------------------------------------------------------------------
- * @package     sigmabb
- * @copyright   (c) 2012 @copy@
- * @license     Dual licensed (MIT and GPLv2)
- * @link        @link@
- *
- *===================================================================
- *
- * This source file is subject to the licenses that are bundled
- * with this package in the files MIT-LICENSE.txt and GPL-LICENSE.txt
- *
- */
-
 use \codebite\homebooru\WebKernel as App;
+
+define('SHOT_DEBUG', true);
+define('SHOT_IN_PHAR', false);
+define('HOMEBOORU_IN_PHAR', false);
 
 define('SHOT_ROOT', dirname(__DIR__));
 define('SHOT_ADDON_ROOT', SHOT_ROOT . '/app/addons');
@@ -28,10 +14,6 @@ define('SHOT_INCLUDE_ROOT', SHOT_ROOT . '/app/src');
 define('SHOT_VENDOR_ROOT', SHOT_ROOT . '/app/vendor');
 define('SHOT_VIEW_ROOT', SHOT_ROOT . '/app/views');
 
-define('SHOT_DEBUG', true);
-
-define('SHOT_IN_PHAR', false);
-define('HOMEBOORU_IN_PHAR', false);
 define('SHOT_CORE_PHAR', 'shot.phar');
 define('HOMEBOORU_CORE_PHAR', 'homebooru.phar');
 
