@@ -10,7 +10,7 @@ if(!defined('SHOT_ROOT')) exit;
 class WebKernel
 	extends ShotKernel
 {
-	const HOMEBOORU_VERSION = '1.0.0dev';
+	const HOMEBOORU_VERSION = '1.0.0-dev';
 
 	public function boot()
 	{
