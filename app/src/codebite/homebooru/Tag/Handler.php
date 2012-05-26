@@ -30,7 +30,7 @@ class Handler
 			R::$f->begin()
 				->select('t.*, a.title as old_tag')->from('tag t')
 				->left_join('tag_alias a on t.id = a.tag_id')
-				->where('a.title in('  . implode(',', array_fill(0, count($tags), '?')) . ')');
+				->where('a.title in('  . R::genSlots($tags) . ')');
 			array_walk($tags, function($value, $key) { R::$f->put($value); });
 
 			$replace_tags = $remove_tags = array();

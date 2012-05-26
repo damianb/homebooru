@@ -1,7 +1,8 @@
 <?php
 namespace codebite\homebooru\Controller;
-use \codebite\homebooru\Internal\SubmitFailException;
-use \codebite\homebooru\Model\BooruPostModel;
+use \codebite\common\Controller\BaseController;
+use \codebite\common\Internal\SubmitFailException;
+use \codebite\homebooru\Model\PostModel;
 use \emberlabs\openflame\Core\Internal\RuntimeException;
 use \emberlabs\openflame\Core\DependencyInjector;
 use \R;
@@ -70,7 +71,7 @@ class PostImportController
 
 				$bean = R::dispense('post');
 
-				$bean->status = BooruPostModel::ENTRY_ACCEPT; // default status (change to config later)
+				$bean->status = PostModel::ENTRY_ACCEPT; // default status (change to config later)
 
 				$file = HOMEBOORU_IMAGE_IMPORT_ROOT . '/' . basename(trim($importer->local_filename));
 				$ext = str_replace(array('jpg'), array('jpeg'), substr($importer->local_filename, strrpos($importer->local_filename, '.') + 1));

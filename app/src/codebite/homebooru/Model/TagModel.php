@@ -5,7 +5,7 @@ use \RedBean_SimpleModel;
 
 if(!defined('SHOT_ROOT')) exit;
 
-class BooruTagModel
+class TagModel
 	extends RedBean_SimpleModel
 {
 	const TAG_GENERAL = 2;

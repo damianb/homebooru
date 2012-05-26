@@ -1,6 +1,7 @@
 <?php
 namespace codebite\homebooru\Controller;
-use \codebite\homebooru\Model\BooruPostModel;
+use \codebite\common\Controller\BaseController;
+use \codebite\homebooru\Model\PostModel;
 use \R;
 
 if(!defined('SHOT_ROOT')) exit;
@@ -32,14 +33,14 @@ class PostArchiveController
 	public function runController()
 	{
 		$offset = self::SEARCH_MAX * ($this->page - 1);
-		$beans = R::find('post', 'status = ? ORDER BY id DESC LIMIT ? OFFSET ?', array(BooruPostModel::ENTRY_ACCEPT, self::SEARCH_MAX, $offset));
+		$beans = R::find('post', 'status = ? ORDER BY id DESC LIMIT ? OFFSET ?', array(PostModel::ENTRY_ACCEPT, self::SEARCH_MAX, $offset));
 
 		$_beans = $bean_ids = $tags = $pagination = array();
 		if(!empty($beans))
 		{
 			$total = (int) R::$f->begin()
 				->select('COUNT(id)')->from('post')
-				->where('status = ?')->put(BooruPostModel::ENTRY_ACCEPT)
+				->where('status = ?')->put(PostModel::ENTRY_ACCEPT)
 				->order('BY id')
 				->get('cell');
 
@@ -65,7 +66,7 @@ class PostArchiveController
 				->from('tag t')
 				->left_join('post_tag pt')
 					->on('pt.tag_id = t.id')
-				->where('pt.post_id in(' . implode(',', array_fill(0, count($bean_ids), '?')) . ')')
+				->where('pt.post_id in(' . R::genSlots($bean_ids) . ')')
 				->group_by('pt.post_id, pt.tag_id')
 				->order_by('t.title ASC, pt.post_id ASC');
 			array_walk($bean_ids, function($value, $key) { R::$f->put($value); });

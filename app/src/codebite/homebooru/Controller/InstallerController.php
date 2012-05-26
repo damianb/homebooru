@@ -1,7 +1,8 @@
 <?php
 namespace codebite\homebooru\Controller;
-use \codebite\homebooru\Model\BooruPostModel;
-use \codebite\homebooru\Model\BooruTagModel;
+use \codebite\common\Controller\BaseController;
+use \codebite\homebooru\Model\PostModel;
+use \codebite\homebooru\Model\TagModel;
 use \emberlabs\openflame\Core\Utility\JSON;
 use \R;
 
@@ -159,7 +160,7 @@ class InstallerController
 
 				// add sample image data
 				$post = R::dispense('post');
-				$post->status = BooruPostModel::ENTRY_ACCEPT;
+				$post->status = PostModel::ENTRY_ACCEPT;
 
 				$hash = hash('sha1', 'sample');
 				$post->full_file = $hash . '.txt';
@@ -185,7 +186,7 @@ class InstallerController
 				$post->thumb_sha1 = $thumb_hash;
 				$post->thumb_size = pow(2, 31);
 
-				$post->rating = BooruPostModel::RATING_UNKNOWN;
+				$post->rating = PostModel::RATING_UNKNOWN;
 				$post->source = str_repeat('a', 255);
 				$post->submit_time = time();
 				$post->submit_ip = implode(':', array_fill(0, 8, 'ffff')); // emulate largest possible ipv6 addr
@@ -199,7 +200,7 @@ class InstallerController
 				R::tag($post, array('sample_tag'));
 				$tag = R::find('tag');
 				$tag = array_shift($tag);
-				$tag->type = BooruTagModel::TAG_PLANE;
+				$tag->type = TagModel::TAG_PLANE;
 				R::store($tag);
 
 				$steps['add_sample_tag'] = true;
@@ -240,7 +241,7 @@ class InstallerController
 				CREATE TRIGGER tag_magic_delete_count
 				AFTER DELETE ON post_tag
 				BEGIN
-				   UPDATE tag_count SET amount = amount - 1 WHERE tag_id = new.tag_id;
+				   UPDATE tag_count SET amount = amount - 1 WHERE tag_id = old.tag_id;
 				END;
 				CREATE TRIGGER tag_magic_new_count
 				AFTER INSERT ON tag
@@ -279,7 +280,7 @@ class InstallerController
 					->addSQL('BEGIN')
 						->update('tag_count')
 						->set('amount = amount - 1')
-						->where('tag_id = new.tag_id')
+						->where('tag_id = old.tag_id')
 						->addSQL(';')
 					->addSQL('END')
 					->get();
@@ -310,14 +311,12 @@ class InstallerController
 				$steps['add_triggers'] = true;
 
 				// drop the sample data
-				// ? redbean bug? ref: https://github.com/gabordemooij/redbean/issues/156
-				//R::debug();
-				R::trash($post);
-				R::trashAll(R::find('post_tag'));
-				R::trash($tag);
-				R::trash($alias);
-				R::trash($tag_count);
-				R::trash($session);
+				R::wipe('post');
+				R::wipe('post_tag');
+				R::wipe('tag');
+				R::wipe('tag_alias');
+				R::wipe('tag_count');
+				R::wipe('session');
 				$steps['drop_sample_data'] = true;
 
 				// write config file

@@ -1,6 +1,7 @@
 <?php
 namespace codebite\homebooru\Controller;
-use \codebite\homebooru\Model\BooruPostModel;
+use \codebite\common\Controller\BaseController;
+use \codebite\homebooru\Model\PostModel;
 use \R;
 
 if(!defined('SHOT_ROOT')) exit;
@@ -25,7 +26,7 @@ class PostViewController
 
 	public function runController()
 	{
-		$bean = R::findOne('post', '(status = ? AND id = ?)', array(BooruPostModel::ENTRY_ACCEPT, $this->id));
+		$bean = R::findOne('post', '(status = ? AND id = ?)', array(PostModel::ENTRY_ACCEPT, $this->id));
 
 		if(empty($bean))
 		{

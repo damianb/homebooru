@@ -1,8 +1,9 @@
 <?php
 namespace codebite\homebooru\Controller;
-use \codebite\homebooru\Internal\SubmitFailException;
-use \codebite\homebooru\Model\BooruPostModel;
-use \codebite\homebooru\Model\BooruTagModel;
+use \codebite\common\Controller\BaseController;
+use \codebite\common\Internal\SubmitFailException;
+use \codebite\homebooru\Model\PostModel;
+use \codebite\homebooru\Model\TagModel;
 use \R;
 
 if(!defined('SHOT_ROOT')) exit;
@@ -22,7 +23,7 @@ class PostEditController
 		$success = $submit = false;
 		$id = $this->getInput('GET::id', 0);
 
-		$bean = R::findOne('post', 'status = ? AND id = ?', array(BooruPostModel::ENTRY_ACCEPT, $id));
+		$bean = R::findOne('post', 'status = ? AND id = ?', array(PostModel::ENTRY_ACCEPT, $id));
 
 		if(empty($bean->id))
 		{
@@ -55,16 +56,16 @@ class PostEditController
 				switch($rating)
 				{
 					case 'safe':
-						$rating = BooruPostModel::RATING_SAFE;
+						$rating = PostModel::RATING_SAFE;
 					break;
 					case 'questionable':
-						$rating = BooruPostModel::RATING_QUESTIONABLE;
+						$rating = PostModel::RATING_QUESTIONABLE;
 					break;
 					case 'explicit':
-						$rating = BooruPostModel::RATING_EXPLICIT;
+						$rating = PostModel::RATING_EXPLICIT;
 					break;
 					default:
-						$rating = BooruPostModel::RATING_UNKNOWN;
+						$rating = PostModel::RATING_UNKNOWN;
 				}
 
 				$current_tags = $bean->getTags();

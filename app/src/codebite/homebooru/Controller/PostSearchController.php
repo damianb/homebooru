@@ -1,6 +1,7 @@
 <?php
 namespace codebite\homebooru\Controller;
-use \codebite\homebooru\Model\BooruPostModel;
+use \codebite\common\Controller\BaseController;
+use \codebite\homebooru\Model\PostModel;
 use \R;
 
 if(!defined('SHOT_ROOT')) exit;
@@ -129,7 +130,7 @@ class PostSearchController
 							->select('pt.post_id')
 							->from('post_tag pt')
 							->inner_join('tag t on pt.tag_id = t.id')
-							->where('t.title in(' . implode(',', array_fill(0, count($exclude_normal_tags), '?')) . ')')
+							->where('t.title in(' . R::genSlots($exclude_normal_tags) . ')')
 						->addSQL(') notag on p.id = notag.post_id'); // part of the left_outer_join
 				}
 				R::$f->inner_join()
@@ -137,7 +138,7 @@ class PostSearchController
 						->select('pt.post_id')
 						->from('post_tag pt')
 						->inner_join('tag t on pt.tag_id = t.id')
-						->where('t.title in(' . implode(',', array_fill(0, count($normal_tags), '?')) . ')')
+						->where('t.title in(' . R::genSlots($normal_tags) . ')')
 						->group_by('pt.post_id')
 						->having('count(distinct t.title) = ' . (int) count($normal_tags))
 					->addSQL(') yestag on p.id = yestag.post_id'); // part of the inner_join
@@ -150,7 +151,7 @@ class PostSearchController
 				$wheres .= 'notag.post_id is null AND ';
 			}
 
-			$wheres .= 'status = ' . BooruPostModel::ENTRY_ACCEPT;
+			$wheres .= 'status = ' . PostModel::ENTRY_ACCEPT;
 
 			// build extra param conditions
 			if(!empty($param_tags) || (!empty($normal_tags) && !empty($exclude_param_tags)))
@@ -226,7 +227,7 @@ class PostSearchController
 				->from('tag t')
 				->left_join('post_tag pt')
 					->on('pt.tag_id = t.id')
-				->where('pt.post_id in(' . implode(',', array_fill(0, count($bean_ids), '?')) . ')')
+				->where('pt.post_id in(' . R::genSlots($bean_ids . ')')
 				->group_by('pt.post_id, pt.tag_id')
 				->order_by('t.title ASC, pt.post_id ASC');
 			array_walk($bean_ids, $fn_put);
@@ -272,22 +273,22 @@ class PostSearchController
 					{
 						case 'u':
 						case 'unknown':
-							$param_tags['rating'] = BooruPostModel::RATING_UNKNOWN;
+							$param_tags['rating'] = PostModel::RATING_UNKNOWN;
 						break;
 
 						case 'e':
 						case 'explicit':
-							$param_tags['rating'] = BooruPostModel::RATING_EXPLICIT;
+							$param_tags['rating'] = PostModel::RATING_EXPLICIT;
 						break;
 
 						case 'q':
 						case 'questionable':
-							$param_tags['rating'] = BooruPostModel::RATING_QUESTIONABLE;
+							$param_tags['rating'] = PostModel::RATING_QUESTIONABLE;
 						break;
 
 						case 's':
 						case 'safe':
-							$param_tags['rating'] = BooruPostModel::RATING_SAFE;
+							$param_tags['rating'] = PostModel::RATING_SAFE;
 						break;
 
 						default:

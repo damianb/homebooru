@@ -3,11 +3,11 @@ namespace codebite\homebooru\Model;
 use \codebite\homebooru\Internal\SubmitFailException;
 use \R;
 use \RedBean_SimpleModel;
-use \codebite\homebooru\WebKernel as App;
+use \codebite\common\WebKernel as App;
 
 if(!defined('SHOT_ROOT')) exit;
 
-class BooruPostModel
+class PostModel
 	extends RedBean_SimpleModel
 {
 	protected $_app, $tags, $tag_beans;
@@ -30,13 +30,13 @@ class BooruPostModel
 
 	public function update()
 	{
-		if(!SHOT_DEBUG)
-		{
-			if(filter_var($this->submitter_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 & FILTER_FLAG_IPV6) === false)
-			{
-				throw new SubmitFailException('Invalid IP address');
-			}
-		}
+		//if(!SHOT_DEBUG)
+		//{
+		//	if(filter_var($this->submitter_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 & FILTER_FLAG_IPV6) === false)
+		//	{
+		//		throw new SubmitFailException('Invalid IP address');
+		//	}
+		//}
 
 		$this->tags = NULL;
 	}

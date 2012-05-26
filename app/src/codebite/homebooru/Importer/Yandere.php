@@ -1,6 +1,6 @@
 <?php
 namespace codebite\homebooru\Importer;
-use \codebite\homebooru\WebKernel as App;
+use \codebite\common\WebKernel as App;
 use \emberlabs\openflame\Core\Internal\RuntimeException;
 
 class Yandere

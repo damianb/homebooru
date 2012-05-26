@@ -1,8 +1,9 @@
 <?php
 namespace codebite\homebooru\Controller;
-use \codebite\homebooru\Internal\SubmitFailException;
-use \codebite\homebooru\Model\BooruPostModel;
-use \codebite\homebooru\Model\BooruTagModel;
+use \codebite\common\Controller\BaseController;
+use \codebite\common\Internal\SubmitFailException;
+use \codebite\homebooru\Model\PostModel;
+use \codebite\homebooru\Model\TagModel;
 use \R;
 
 if(!defined('SHOT_ROOT')) exit;
@@ -22,7 +23,7 @@ class PostDeleteController
 		$success = $submit = false;
 		$id = $this->getInput('GET::id', 0);
 
-		$bean = R::findOne('post', 'status = ? AND id = ?', array(BooruPostModel::ENTRY_ACCEPT, $id));
+		$bean = R::findOne('post', 'status = ? AND id = ?', array(PostModel::ENTRY_ACCEPT, $id));
 
 		if(empty($bean->id))
 		{

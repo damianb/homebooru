@@ -1,5 +1,6 @@
 <?php
 namespace codebite\homebooru\Controller;
+use \codebite\common\Controller\BaseController;
 
 if(!defined('SHOT_ROOT')) exit;
 

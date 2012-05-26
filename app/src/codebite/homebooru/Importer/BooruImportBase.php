@@ -1,12 +1,12 @@
 <?php
 namespace codebite\homebooru\Importer;
-use \codebite\homebooru\Model\BooruPostModel;
+use \codebite\homebooru\Model\PostModel;
 use \emberlabs\openflame\Core\Internal\RuntimeException;
 
 abstract class BooruImportBase
 	implements ImporterInterface
 {
-	public $rating = BooruPostModel::RATING_UNKNOWN;
+	public $rating = PostModel::RATING_UNKNOWN;
 	public $md5, $tags, $source, $file_url;
 	public $local_filename;
 
@@ -39,16 +39,16 @@ abstract class BooruImportBase
 		switch((string) $xml->post[0]['rating'])
 		{
 			case 's':
-				$this->rating = BooruPostModel::RATING_SAFE;
+				$this->rating = PostModel::RATING_SAFE;
 			break;
 			case 'q':
-				$this->rating = BooruPostModel::RATING_QUESTIONABLE;
+				$this->rating = PostModel::RATING_QUESTIONABLE;
 			break;
 			case 'e':
-				$this->rating = BooruPostModel::RATING_EXPLICIT;
+				$this->rating = PostModel::RATING_EXPLICIT;
 			break;
 			default:
-				$this->rating = BooruPostModel::RATING_UNKNOWN;
+				$this->rating = PostModel::RATING_UNKNOWN;
 		}
 	}
 

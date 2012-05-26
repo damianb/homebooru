@@ -1,7 +1,6 @@
 <?php
 namespace codebite\homebooru\Controller;
-use \codebite\homebooru\Model\BooruPostModel;
-use \R;
+use \codebite\common\Controller\BaseController;
 
 if(!defined('SHOT_ROOT')) exit;
 

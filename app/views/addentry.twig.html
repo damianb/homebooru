@@ -18,9 +18,9 @@
 
 		<label class="control-label" for="rating">content rating</label>
 		<div class="controls rating-group btn-group" data-toggle="buttons-radio" id="rating">
-			<button id="rating-safe" name="rating-safe" class="btn btn-success btn-small{% if post.rating == constant('codebite\\homebooru\\Model\\BooruPostModel::RATING_SAFE') %} active{% endif %}" data-toggle="button">safe</button>
-			<button id="rating-questionable" name="rating-questionable" class="btn btn-warning btn-small{% if post.rating == constant('codebite\\homebooru\\Model\\BooruPostModel::RATING_QUESTIONABLE') %} active{% endif %}" data-toggle="button">questionable</button>
-			<button id="rating-explicit" name="rating-explicit" class="btn btn-danger btn-small{% if post.rating == constant('codebite\\homebooru\\Model\\BooruPostModel::RATING_EXPLICIT') %} active{% endif%}" data-toggle="button">explicit</button>
+			<button id="rating-safe" name="rating-safe" class="btn btn-success btn-small{% if post.rating == constant('codebite\\homebooru\\Model\\PostModel::RATING_SAFE') %} active{% endif %}" data-toggle="button">safe</button>
+			<button id="rating-questionable" name="rating-questionable" class="btn btn-warning btn-small{% if post.rating == constant('codebite\\homebooru\\Model\\PostModel::RATING_QUESTIONABLE') %} active{% endif %}" data-toggle="button">questionable</button>
+			<button id="rating-explicit" name="rating-explicit" class="btn btn-danger btn-small{% if post.rating == constant('codebite\\homebooru\\Model\\PostModel::RATING_EXPLICIT') %} active{% endif%}" data-toggle="button">explicit</button>
 		</div>
 
 		<br>
