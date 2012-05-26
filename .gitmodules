@@ -19,3 +19,6 @@
 [submodule "app/vendor/lessphp"]
 	path = app/vendor/lessphp
 	url = git://github.com/leafo/lessphp.git
+[submodule "app/src/codebite/common"]
+	path = app/src/codebite/common
+	url = git://github.com/damianb/codebitebase.git
